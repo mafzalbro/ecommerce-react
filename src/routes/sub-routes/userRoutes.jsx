@@ -2,7 +2,7 @@ import { Route } from "react-router-dom";
 import UserProfile from "../../pages/user/UserProfile";
 import CartPage from "../../pages/user/cartPage";
 import CheckoutPage from "../../pages/user/checkoutPage";
-import UserSettings from "../../pages/user/userSettings";
+import UserSettings from "../../pages/user/UserProfile";
 import OrdersPage from "../../pages/user/ordersPage";
 
 const userRoutes = (
