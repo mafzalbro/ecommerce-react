@@ -103,6 +103,20 @@ export default function CheckoutPage() {
                 cartItems.map((item) => (
                   <div key={item._id} className="flex justify-between">
                     <span>{item.title}</span>
+                    {item.color && (
+                      <>
+                        <span>Color</span>
+                        <span>{item.color}</span>
+                      </>
+                    )}
+                    {item.size ? (
+                      <>
+                        <span>Size</span>
+                        <span>{item.size}</span>
+                      </>
+                    ) : (
+                      ""
+                    )}
                     <span>
                       PKR{" "}
                       {(item.totalProductDiscount * item.quantity).toFixed(2)}

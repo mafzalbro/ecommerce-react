@@ -124,7 +124,7 @@ const CartIcon = () => {
             ) : (
               <div className="text-center">
                 <p className="mb-4">Please log in to view your cart.</p>
-                <Link to="/login">
+                <Link to="/signin">
                   <Button variant="primary">Log In</Button>
                 </Link>
               </div>

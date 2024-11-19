@@ -8,7 +8,7 @@ import { ShoppingCart } from "lucide-react";
 import { ToastAction } from "@/components/ui/toast";
 import useAuth from "@/hooks/AuthProvider";
 
-const AddToCartButton = ({ product }) => {
+const AddToCartButton = ({ product, selectedColor, selectedSize }) => {
   const { cart, addCart } = useCartContext();
   const { isAuthenticated } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
@@ -56,7 +56,11 @@ const AddToCartButton = ({ product }) => {
       });
     } else {
       try {
-        const success = await addCart({ ...product, quantity: 1 });
+        const success = await addCart(
+          { ...product, quantity: 1 },
+          selectedSize,
+          selectedColor
+        );
 
         // Only update the cart if the item was successfully added
         if (success) {

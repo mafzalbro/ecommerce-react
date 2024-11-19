@@ -58,7 +58,7 @@ export default function ProductDetailsPage() {
 
   if (!product) {
     return (
-      <div className="text-center text-xl font-bold p-4">
+      <div className="text-center text-xl font-bold p-4 my-40">
         <div className="text-4xl font-semibold text-red-600">
           Product Not Found
         </div>

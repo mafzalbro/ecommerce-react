@@ -28,6 +28,10 @@ const CartPage = () => {
     0
   );
 
+
+  console.log(cart);
+  
+
   // Redirect after 5 seconds (useful for redirecting after an action like removing an item or applying a coupon)
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -172,7 +176,7 @@ const CartPage = () => {
                 ))}
               </ul>
               {/* Coupon Section */}
-              <div className="mt-6 flex flex-col sm:flex-row items-center sm:space-x-4">
+              {/* <div className="mt-6 flex flex-col sm:flex-row items-center sm:space-x-4">
                 <Input
                   type="text"
                   value={couponCode}
@@ -193,7 +197,7 @@ const CartPage = () => {
                     Coupon applied successfully!
                   </p>
                 )}
-              </div>
+              </div> */}
               <div className="mt-6 flex flex-col sm:flex-row justify-between items-center sm:space-x-4">
                 <h2 className="text-2xl font-bold mb-4 sm:mb-0">
                   Subtotal: PKR {subtotal?.toFixed(2)}
@@ -206,13 +210,16 @@ const CartPage = () => {
               </div>
             </>
           ) : (
-            <p className="text-lg text-center">Your cart is empty.</p>
+            <div className="my-40 flex flex-col items-center">
+              <p className="text-lg text-center">Your cart is empty.</p>
+              <Button>Explore Products...</Button>
+            </div>
           )}
         </div>
       ) : (
         <div className="text-center">
           <p className="mb-4">Please log in to view your cart.</p>
-          <Link to="/login">
+          <Link to="/signin">
             <Button variant="primary">Log In</Button>
           </Link>
         </div>

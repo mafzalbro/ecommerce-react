@@ -93,7 +93,7 @@ export default function NewArrivalCarousel() {
         </p>
         {loadingNewArrivals ? (
           <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid sm:grid-cols-3 gap-4">
               <Skeleton className="h-96"></Skeleton>
               <Skeleton className="h-96"></Skeleton>
               <Skeleton className="h-96"></Skeleton>
