@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import React, { Suspense } from "react";
 import Navbar from "../components/layout/navbar/Navbar";
-import Footer from "../components/layout/Footer";
+import Footer from "../components/layout/footer";
 import useAuth from "../hooks/AuthProvider";
 import mainRoutes from "./sub-routes/mainRoutes";
 import userRoutes from "./sub-routes/userRoutes";
