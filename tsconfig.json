@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "compilerOptions": {
     "esModuleInterop": true,
     "target": "es5",
@@ -38,5 +39,16 @@
   "ts-node": {
     "transpileOnly": true,
     "swc": true
+=======
+  // "files": [],
+  "references": [],
+  "compilerOptions": {
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+>>>>>>> f8fc6c5 (Initial commit)
   }
 }
