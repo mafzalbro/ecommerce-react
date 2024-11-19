@@ -24,8 +24,6 @@ const CartIcon = () => {
   const { cart, removeCart, applyCoupon } = useCartContext();
   const [open, setOpen] = useState(false);
   const [deleting, setDeleting] = useState(null); // Track the item being deleted
-  const [toastMessage, setToastMessage] = useState(null); // For toast message
-  const [toastError, setToastError] = useState(false); // Track if it's an error toast
 
   // Access cart items (assuming the structure is cart.cartItem)
   const cartItems = cart?.cartItem || [];
@@ -44,24 +42,6 @@ const CartIcon = () => {
       setDeleting(null); // Reset the deleting state if successful
     } else {
       setDeleting(null); // Reset the deleting state even if it fails
-    }
-  };
-
-  const handleApplyCoupon = async (couponCode) => {
-    try {
-      // Assuming applyCoupon is a function in CartContext to apply the coupon
-      const success = await applyCoupon(couponCode);
-      if (!success) {
-        throw new Error("Invalid coupon code");
-      }
-      console.log({ success });
-      setToastMessage("Coupon applied successfully!");
-      setToastError(false); // Success toast
-    } catch (error) {
-      console.log({ error });
-
-      setToastMessage("No coupon found");
-      setToastError(true); // Error toast
     }
   };
 
@@ -120,28 +100,6 @@ const CartIcon = () => {
                   </>
                 )}
 
-                {/* Coupon handling */}
-                <div className="mt-4">
-                  <div className="flex justify-between items-center">
-                    <input
-                      type="text"
-                      placeholder="Enter coupon code"
-                      className="p-2 border rounded-md"
-                      id="couponCode"
-                    />
-                    <Button
-                      variant="default"
-                      onClick={() =>
-                        handleApplyCoupon(
-                          document.getElementById("couponCode").value
-                        )
-                      }
-                    >
-                      Apply Coupon
-                    </Button>
-                  </div>
-                </div>
-
                 <div className="mt-4 flex justify-between items-center">
                   <div className="flex space-x-2">
                     <span className="font-semibold">
@@ -174,18 +132,7 @@ const CartIcon = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Toast Notification for Success or Error */}
-        {toastMessage && (
-          <Toast
-            variant={toastError ? "destructive" : "default"} // Destructive for error, default for success
-            onClose={() => setToastMessage(null)}
-          >
-            <ToastTitle>{toastMessage}</ToastTitle>
-            <ToastAction altText="Close" onClick={() => setToastMessage(null)}>
-              Close
-            </ToastAction>
-          </Toast>
-        )}
+     
       </div>
     </ToastProvider>
   );
