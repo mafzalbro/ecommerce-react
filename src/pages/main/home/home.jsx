@@ -8,6 +8,7 @@ import Spinner from "@/components/ui/spinner";
 import SaleOfferCard from "./arrivals";
 import Categories from "./categories";
 import AmazingHero from "./main-hero";
+import TestimonialsCard from "./testimonials-contact";
 
 const Home = () => {
   const { products, loadingProducts } = useProducts();
@@ -31,6 +32,8 @@ const Home = () => {
           <Spinner />
         )}
       </div>
+
+      <TestimonialsCard />
     </main>
   );
 };

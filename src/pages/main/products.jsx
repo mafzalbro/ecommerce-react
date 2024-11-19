@@ -7,7 +7,7 @@ import Pagination from "./pagination";
 
 // eslint-disable-next-line react/prop-types
 const Products = ({ searchParams }) => {
-  const { loadingProducts, products, setLoadingProducts } =
+  const { loadingProducts, products, totalResults, setLoadingProducts } =
     useProducts(searchParams);
 
   // State for pagination
@@ -17,9 +17,8 @@ const Products = ({ searchParams }) => {
   // const [loadingMore, setLoadingMore] = useState(false);
 
   const limit = 8; // Set your limit per page
-
-  // Calculate totalPages based on available products and limit
-  const totalPages = Math.ceil(products?.length / limit);
+  const totalPages = Math.floor(totalResults / limit);
+  
 
   // Handle loading more products with a delay
   // const loadMoreProducts = () => {
@@ -72,7 +71,11 @@ const Products = ({ searchParams }) => {
 
   // If no products, display message
   if (products?.length === 0) {
-    return <div>No products available.</div>;
+    return (
+      <div className="h-screen flex justify-center items-center">
+        No products available.
+      </div>
+    );
   }
 
   // Once products are loaded, show the actual cards and Load More button

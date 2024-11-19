@@ -13,14 +13,17 @@ export const CartProvider = ({ children }) => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   // Add item to cart
-  const addCart = async (item) => {
+  const addCart = async (item, size, color) => {
     setIsProcessing(true);
 
     try {
       const cartData = {
         cartItem: [
           {
+            size,
+            color,
             productId: item._id,
+            title: item.title,
             quantity: item.quantity || 1,
             price: item.price,
             totalProductDiscount: item.totalProductDiscount || 0,
@@ -161,8 +164,6 @@ export const CartProvider = ({ children }) => {
     try {
       const response = await fetcher.get("/restorex/carts/getLoggedUserCart");
       if (response?.data?.cart) {
-        console.log({ cart: response?.data?.cart });
-
         // Set the full cart including cartItem and top-level properties
         setCart(response.data.cart);
         return response.data.cart; // Return the full cart data

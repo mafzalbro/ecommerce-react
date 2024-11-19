@@ -55,7 +55,7 @@ const AmazingHero = () => {
               <ShoppingBag className="ml-2 h-5 w-5" />
             </Button>
           </Link>
-          <a href={"#categories"}>
+          <Link to={"/become-a-seller"}>
             <Button
               variant="outline"
               size="lg"
@@ -64,7 +64,7 @@ const AmazingHero = () => {
               Become a Seller!
               <ArrowDown className="ml-2 h-5 w-5" />
             </Button>
-          </a>
+          </Link>
         </motion.div>
       </div>
       <div className="absolute inset-0 bg-black opacity-40 backdrop-blur-sm">

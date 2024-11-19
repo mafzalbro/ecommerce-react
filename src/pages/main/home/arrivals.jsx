@@ -14,6 +14,7 @@ import {
 import { Star } from "lucide-react";
 import AddToCartButton from "../../../components/layout/products/AddToCartButton";
 import { useProducts } from "../../../hooks/useProducts";
+import { Skeleton } from "../../../components/ui/skeleton";
 
 function NewArrivalCard({ product }) {
   const { title, discription, imgCover, price, discount, rating } = product;
@@ -25,9 +26,7 @@ function NewArrivalCard({ product }) {
       <div className="relative">
         <img
           src={imgCover}
-          srcSet={
-            "https://img.freepik.com/premium-photo/joint-development-new-product-business-technology-internet_161452-207.jpg"
-          }
+          srcSet={"/placeholder.png"}
           alt={title}
           width={384}
           height={200}
@@ -86,14 +85,20 @@ export default function NewArrivalCarousel() {
   return (
     <div className="min-h-screen py-12 bg-white dark:bg-primary-foreground">
       <div className="container mx-auto px-4">
-        <h1 className="text-4xl font-bold text-center text-primary dark:text-primary mb-8">
+        <h2 className="text-4xl font-bold text-center text-primary dark:text-primary mb-8">
           New Arrivals
-        </h1>
+        </h2>
         <p className="text-xl text-center text-primary dark:text-primary mb-12">
           Check out our latest products!
         </p>
         {loadingNewArrivals ? (
-          <div className="text-center">Loading new arrivals...</div>
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-3 gap-4">
+              <Skeleton className="h-96"></Skeleton>
+              <Skeleton className="h-96"></Skeleton>
+              <Skeleton className="h-96"></Skeleton>
+            </div>
+          </div>
         ) : (
           <Carousel
             className="w-full max-w-4xl mx-auto"

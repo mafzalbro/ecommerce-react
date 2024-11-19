@@ -3,7 +3,7 @@ import fetcher from "@/utils/fetcher";
 
 export function useProducts(searchParams) {
   const [products, setProducts] = useState([]);
-  const [totalPages, setTotalPages] = useState([]);
+  const [totalResults, setTotalResults] = useState([]);
   const [heavyProducts, setHeavyProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingHeavyProducts, setLoadingHeavyProducts] = useState(true);
@@ -31,7 +31,7 @@ export function useProducts(searchParams) {
         `/api/v1/products/getAllProducts?${query}`
       );
       setProducts(response.data.getAllProducts);
-      setTotalPages(response.data);
+      setTotalResults(response.data.totalResults);
     } catch (err) {
       console.log("Error fetching products:", err);
     } finally {
@@ -107,7 +107,7 @@ export function useProducts(searchParams) {
     loadingProductById,
     loadingNewArrivals,
     getProductById,
-    totalPages,
+    totalResults,
     setLoadingProducts,
   };
 }

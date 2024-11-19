@@ -131,8 +131,6 @@ const CartIcon = () => {
             )}
           </DialogContent>
         </Dialog>
-
-     
       </div>
     </ToastProvider>
   );

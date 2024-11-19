@@ -22,6 +22,8 @@ export default function ProductDetailsPage() {
     loadingProductById,
   } = useProducts();
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(product?.size || ""); // Track selected size
+  const [selectedColor, setSelectedColor] = useState(product?.color?.[0] || ""); // Track selected color
 
   // Fetch the product details using the provided productId
   React.useEffect(() => {
@@ -66,6 +68,14 @@ export default function ProductDetailsPage() {
       </div>
     );
   }
+
+  const handleSizeChange = (size) => {
+    setSelectedSize(size); // Update selected size
+  };
+
+  const handleColorChange = (color) => {
+    setSelectedColor(color); // Update selected color
+  };
 
   return (
     <>
@@ -182,7 +192,17 @@ export default function ProductDetailsPage() {
                 Size:
               </span>
               <div className="flex space-x-2">
-                <span className="font-semibold">{product.size}</span>
+                {product?.size?.map((size, index) => (
+                  <button
+                    key={index}
+                    className={`px-3 py-1 border rounded-md ${
+                      selectedSize === size ? "bg-blue-500 text-white" : ""
+                    }`}
+                    onClick={() => handleSizeChange(size)}
+                  >
+                    {size}
+                  </button>
+                ))}
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -191,11 +211,22 @@ export default function ProductDetailsPage() {
               </span>
               <div className="flex space-x-2">
                 {product?.color?.map((color, index) => (
-                  <div
-                    key={index}
-                    className={`hover:scale-110 transition transform`}
-                  >
-                    {color}
+                  <div key={index} className="flex flex-col items-center">
+                    {/* Color button */}
+                    <button
+                      className={`w-8 h-8 rounded-full ${
+                        selectedColor === color
+                          ? "border-4 border-blue-500 dark:border-blue-300 ring ring-black dark:ring-white"
+                          : ""
+                      }`}
+                      style={{ backgroundColor: color }}
+                      onClick={() => handleColorChange(color)}
+                      aria-label={`Select color ${color}`} // Optional: for accessibility
+                    ></button>
+                    {/* Label for the color */}
+                    <span className="text-sm text-gray-700 dark:text-gray-300 mt-1">
+                      {color}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -207,7 +238,12 @@ export default function ProductDetailsPage() {
             {product?.description}
           </p>
 
-          <AddToCartButton product={product} />
+          {/* Add to Cart Button */}
+          <AddToCartButton
+            product={product}
+            selectedSize={selectedSize}
+            selectedColor={selectedColor}
+          />
         </div>
       </div>
 
