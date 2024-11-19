@@ -6,10 +6,10 @@ import {
   TableCell,
   TableHead,
   TableRow,
-} from "@/components/ui/table";
+} from "../../components/ui/table";
 import { Loader2, AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { toast } from "@/hooks/use-toast";
+import { Button } from "../../components/ui/button";
+import { toast } from "../../hooks/use-toast";
 
 const OrdersPage = () => {
   const { order, loading, error, getOrders } = useOrder();
