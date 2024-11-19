@@ -18,7 +18,7 @@ const getAuthToken = () => {
 
 const fetcher = axios.create({
   // eslint-disable-next-line no-undef
-  baseURL: "https://my-fyp-restorex.vercel.app/",
+  baseURL: import.meta.env.VITE_BACKEND_ORIGIN,
   headers: {
     "Content-Type": "application/json",
     Authorization: `Bearer ${getAuthToken()}`,

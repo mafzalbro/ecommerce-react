@@ -1,47 +1,4 @@
 {
-<<<<<<< HEAD
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": false,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "incremental": true,
-    "jsx": "preserve",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "paths": {
-      "react": ["./node_modules/@types/react"],
-    }
-  },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
-  "ts-node": {
-    "transpileOnly": true,
-    "swc": true
-=======
-  // "files": [],
-  "references": [],
   "compilerOptions": {
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
@@ -49,6 +6,5 @@
     "paths": {
       "@/*": ["./src/*"]
     }
->>>>>>> f8fc6c5 (Initial commit)
   }
 }
