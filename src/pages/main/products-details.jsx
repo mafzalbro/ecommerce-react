@@ -217,9 +217,9 @@ export default function ProductDetailsPage() {
                   <div key={index} className="flex flex-col items-center">
                     {/* Color button */}
                     <button
-                      className={`w-8 h-8 rounded-full ${
+                      className={`w-8 h-8 rounded-full border ${
                         selectedColor === color
-                          ? "border-4 border-blue-500 dark:border-blue-300 ring ring-black dark:ring-white"
+                          ? "border-2 border-blue-500 dark:border-blue-300 ring-1 ring-black dark:ring-white"
                           : ""
                       }`}
                       style={{ backgroundColor: color }}
