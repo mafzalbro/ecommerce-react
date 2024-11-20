@@ -93,7 +93,7 @@ export default function ProductDetailsPage() {
                   src={product?.imgCover}
                   // srcSet={"/placeholder.png"}
                   alt="Product Image"
-                  className="object-cover  h-80"
+                  className="object-cover w-full h-80"
                   onClick={() => setSelectedImage(product?.imgCover || null)}
                 />
               </div>
