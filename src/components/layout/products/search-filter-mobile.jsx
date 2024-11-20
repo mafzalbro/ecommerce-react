@@ -189,7 +189,11 @@ const FilterMobile = ({ onFilterChange }) => {
                           key={subCategory._id}
                           value={subCategory._id}
                         >
-                          {subCategory.name}
+                          <Link
+                            to={`/products?category=${subCategory.category}&category=${subCategory._id}`}
+                          >
+                            {subCategory.name}
+                          </Link>
                         </SelectItem>
                       ))
                     )}

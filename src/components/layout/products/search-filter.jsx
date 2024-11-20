@@ -87,7 +87,7 @@ const Filter = ({ onFilterChange }) => {
   ]);
 
   return (
-    <div className="filter flex flex-col p-4 md:p-6 border rounded-md shadow-md bg-white">
+    <div className="filter flex flex-col p-4 md:p-6 border rounded-md shadow-md">
       {/* Clear Filters Button */}
       {window.location.search && (
         <div className="w-full text-right">
@@ -169,13 +169,17 @@ const Filter = ({ onFilterChange }) => {
                     ? "bg-primary text-primary-foreground"
                     : ""
                 }`}
-                variant={"link"}
+                // variant={"link"}
                 // variant={
                 //   selectedSubCategory === subCategory._id ? "primary" : "outline"
                 // }
                 onClick={() => setSelectedSubCategory(subCategory._id)}
               >
-                {subCategory.name}
+                <Link
+                  to={`/products?category=${subCategory.category}&subCategory=${subCategory._id}`}
+                >
+                  {subCategory.name}
+                </Link>
               </div>
             ))}
           </div>
