@@ -26,11 +26,12 @@ const UserProfileCard = ({ initialUserData }) => {
     const { name, value } = e.target;
     setUserData((prevData) => ({ ...prevData, [name]: value }));
   };
-
+  
   const handleSave = async () => {
     if (isEditing) {
       // Save profile changes
       await updateProfile(userData._id, userData);
+      
       localStorage.setItem("user", JSON.stringify({ user: userData }));
     }
     setIsEditing(false);

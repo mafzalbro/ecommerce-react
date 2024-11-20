@@ -39,7 +39,7 @@ const Navbar = () => {
         {/* Show Sign In/Sign Up links if the user is not logged in (Desktop) */}
         <div className="hidden md:flex md:gap-2">
           {!isAuthenticated ? (
-            <div className="space-x-4">
+            <div className="space-x-4 flex">
               <Link to="/signin">
                 <Button variant="outline">Sign In</Button>
               </Link>
