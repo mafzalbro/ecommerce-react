@@ -1,4 +1,5 @@
 import { ModeToggle } from "@/components/theme/mode-toggle";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const footerLinks = [
@@ -13,9 +14,9 @@ const Footer = () => {
         <ul className="flex justify-center space-x-4">
           {footerLinks.map((link, index) => (
             <li key={index}>
-              <a href={link.link} className="hover:text-gray-300">
+              <Link to={link.link} className="hover:text-gray-300">
                 {link.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
