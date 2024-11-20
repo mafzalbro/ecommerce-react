@@ -33,9 +33,9 @@ const useOrder = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetcher.get("/restorex/orders/getOrders");
-      console.log(response.data);
-      setOrder(response.data); // Assuming getAllOrders is an array
+      const response = await fetcher.get("/restorex/orders/getAllOrders");
+      console.log(response.data.orders);
+      setOrder(response.data.orders); // Assuming getAllOrders is an array
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || "Something went wrong");

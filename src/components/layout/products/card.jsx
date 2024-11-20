@@ -79,15 +79,15 @@ function ProductCard({ product }) {
         <div className="flex justify-between items-center mt-4">
           {product.price && product.priceAfterDiscount ? (
             <div className="flex items-center">
-              <span className="text-xl font-bold text-red-500 line-through mr-2">
+              <span className="text-base font-bold text-red-500 line-through mr-2">
                 PKR {product.price?.toFixed(2)}
               </span>
-              <span className="text-2xl font-bold">
+              <span className="text-base font-bold">
                 PKR {product.priceAfterDiscount?.toFixed(2)}
               </span>
             </div>
           ) : (
-            <span className="text-2xl font-bold">
+            <span className="text-base  font-bold">
               PKR {product.price?.toFixed(2)}
             </span>
           )}

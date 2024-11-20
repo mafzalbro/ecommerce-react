@@ -20,7 +20,7 @@ export const CartProvider = ({ children }) => {
       const cartData = {
         cartItem: [
           {
-            producttitle: size,
+            productSize: size,
             productColor: color,
             productId: item._id,
             producttitle: item.title,
@@ -163,6 +163,10 @@ export const CartProvider = ({ children }) => {
 
   // Fetch cart from backend and update local state
   const getCart = async () => {
+    if (JSON.parse(localStorage.getItem("user"))?.role !== "user") {
+      return;
+    }
+
     setIsProcessing(true);
     try {
       const response = await fetcher.get("/restorex/carts/getLoggedUserCart");

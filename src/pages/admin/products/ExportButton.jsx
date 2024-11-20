@@ -1,10 +1,14 @@
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 const ExportButton = ({ products }) => {
   const handleExport = () => {
-    const csvHeader = "ID,Title,Description,Price,Category\n";
+    const csvHeader =
+      "ID,CoverImage,Images,Title,Description,Price,Category,SubCategory\n";
     const csvRows = products.map((product) => {
-      return `${product.id},${product.title},${product.description},${product.price},${product.category}`;
+      return `${product.id},${product.imgCover},${product.images},${
+        product.title
+      },${product.description},${product.price},${product.category?.join()},${product.subcategory?.join()}`;
     });
     const csvData = csvHeader + csvRows.join("\n");
 
@@ -16,12 +20,13 @@ const ExportButton = ({ products }) => {
   };
 
   return (
-    <button
-      className="px-4 py-2 bg-blue-600 text-white rounded-md"
+    <Button
+      variant="outline"
+      className="px-4 py-2 rounded-md"
       onClick={handleExport}
     >
       Export CSV
-    </button>
+    </Button>
   );
 };
 

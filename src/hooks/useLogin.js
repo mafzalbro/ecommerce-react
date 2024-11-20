@@ -72,6 +72,8 @@ export function useLogin() {
       localStorage.setItem("token", JSON.stringify(data?.token));
       setUser(data.user); // Set the user data in state
       setRole(data.user?.role); // Set the role data in state
+      setIsAuthenticated(true);
+      
       return data;
     } catch (err) {
       setError(

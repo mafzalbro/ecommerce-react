@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import fetcher from "@/utils/fetcher";
 
 export function useProducts(searchParams) {
@@ -12,7 +12,6 @@ export function useProducts(searchParams) {
   const [newArrivals, setNewArrivals] = useState([]);
   const [loadingNewArrivals, setLoadingNewArrivals] = useState(true);
 
-  // Function to get products with query parameters
   const getProducts = useCallback(async () => {
     setLoadingProducts(true);
     try {
@@ -33,7 +32,7 @@ export function useProducts(searchParams) {
       setProducts(response.data.getAllProducts);
       setTotalResults(response.data.totalResults);
     } catch (err) {
-      console.log("Error fetching products:", err);
+      console.error("Error fetching products:", err);
     } finally {
       setLoadingProducts(false);
     }
@@ -82,12 +81,32 @@ export function useProducts(searchParams) {
     }
   }, []);
 
+  // Function to delete a product by its ID
+  const deleteProduct = useCallback(async (productId) => {
+    try {
+      setLoadingProducts(true);
+      const response = await fetcher.delete(
+        `/api/v1/products/deleteProduct/${productId}`
+      );
+      if (response.status === 200) {
+        // Update products list by removing the deleted product
+        setProducts((prevProducts) =>
+          prevProducts.filter((product) => product._id !== productId)
+        );
+      }
+    } catch (err) {
+      console.log("Error deleting product:", err);
+    } finally {
+      setLoadingProducts(false);
+    }
+  }, []);
+
   // Initial fetch for all products and populated products
   useEffect(() => {
     getProducts();
     getpopulatedProducts();
     getNewArrivals(); // Fetch new arrivals
-  }, [getProducts, getpopulatedProducts, getNewArrivals]);
+  }, [getProducts]);
 
   // Separate effect for fetching a product by ID
   const someProductId = null; // Replace with your logic to get an ID
@@ -109,5 +128,6 @@ export function useProducts(searchParams) {
     getProductById,
     totalResults,
     setLoadingProducts,
+    deleteProduct,
   };
 }

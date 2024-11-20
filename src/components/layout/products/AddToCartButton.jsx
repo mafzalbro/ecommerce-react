@@ -10,21 +10,39 @@ import useAuth from "@/hooks/AuthProvider";
 
 const AddToCartButton = ({ product, selectedColor, selectedSize }) => {
   const { cart, addCart } = useCartContext();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, role, logout } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
       // Show a toast prompting user to log in
       toast({
-        variant: "default",
+        variant: "destructive",
         title: "You must be logged in to add items to the cart!",
         description: (
           <div className="flex items-center space-x-4">
-            <p className="text-sm">Please log in to continue shopping.</p>
-            <Link to="/signin" className="text-sm font-medium">
-              Go to Sign In
-            </Link>
+            <Button>
+              <Link to="/signin" className="text-sm font-medium">
+                Go to Sign In
+              </Link>
+            </Button>
+          </div>
+        ),
+      });
+      return;
+    }
+
+    if (role !== "user") {
+      // Show a toast prompting user to log in
+      toast({
+        variant: "destructive",
+        title: `Your are ${role?.slice(0, 1).toUpperCase()}${role?.slice(
+          1
+        )}! Please Sign In as User...`,
+        description: (
+          <div className="flex items-center space-x-4">
+            <p className="text-sm">Please log in as a user.</p>
+            <Button onClick={() => logout()}>Logout</Button>
           </div>
         ),
       });

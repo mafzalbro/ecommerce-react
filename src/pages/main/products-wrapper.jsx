@@ -14,6 +14,7 @@ const ProductsWrapper = () => {
       [searchParams]
     );
   }
+  
 
   // Memoize the params to avoid unnecessary re-renders
   const memoized = useMemo(() => params, [params]);

@@ -15,6 +15,7 @@ import { Star } from "lucide-react";
 import AddToCartButton from "../../../components/layout/products/AddToCartButton";
 import { useProducts } from "../../../hooks/useProducts";
 import { Skeleton } from "../../../components/ui/skeleton";
+import { Link } from "react-router-dom";
 
 function NewArrivalCard({ product }) {
   const { title, discription, imgCover, price, discount, rating } = product;
@@ -37,9 +38,14 @@ function NewArrivalCard({ product }) {
         </Badge>
       </div>
       <CardContent className="p-4">
-        <h3 className="text-lg font-semibold mb-2 text-primary dark:text-primary">
-          {title}
-        </h3>
+        <Link
+          to={`/products/${product._id}`}
+          className="hover:text-blue-500 dark:hover:text-blue-300"
+        >
+          <h3 className="text-lg font-semibold mb-2 text-primary dark:text-primary">
+            {title}
+          </h3>
+        </Link>
         <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
           {discription}
         </p>

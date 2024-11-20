@@ -40,6 +40,8 @@ const OrdersPage = () => {
     );
   }
 
+  console.log();
+  
   return (
     <div className="container overflow-x-auto p-6">
       <h1 className="text-3xl font-bold mb-8 text-center">All Orders</h1>

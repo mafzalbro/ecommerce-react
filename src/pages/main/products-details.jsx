@@ -22,8 +22,6 @@ export default function ProductDetailsPage() {
     loadingProductById,
   } = useProducts();
 
-  console.log(product);
-
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedSize, setSelectedSize] = useState(product?.size || ""); // Track selected size
   const [selectedColor, setSelectedColor] = useState(product?.color?.[0] || ""); // Track selected color
