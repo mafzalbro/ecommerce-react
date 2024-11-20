@@ -8,7 +8,9 @@ const ExportButton = ({ products }) => {
     const csvRows = products.map((product) => {
       return `${product.id},${product.imgCover},${product.images},${
         product.title
-      },${product.description},${product.price},${product.category?.join()},${product.subcategory?.join()}`;
+      },${product.description},${product.price},${JSON.stringify(
+        product.category
+      )},${JSON.stringify(product.subcategory)}`;
     });
     const csvData = csvHeader + csvRows.join("\n");
 

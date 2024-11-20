@@ -27,8 +27,10 @@ const PaginationComponent = ({
         {/* Previous Page Button */}
         <PaginationItem>
           <PaginationPrevious
-            href="#"
             onClick={() => handlePageChange(currentPage - 1)}
+            className={`cursor-pointer ${
+              currentPage === 1 ? "opacity-50 pointer-events-none" : ""
+            }`}
             disabled={currentPage === 1}
           />
         </PaginationItem>
@@ -38,6 +40,9 @@ const PaginationComponent = ({
           (page) => (
             <PaginationItem key={page}>
               <PaginationLink
+                className={`cursor-pointer ${
+                  currentPage === page ? "font-bold" : ""
+                }`}
                 onClick={() => handlePageChange(page)}
                 isActive={currentPage === page}
               >
@@ -58,6 +63,9 @@ const PaginationComponent = ({
         <PaginationItem>
           <PaginationNext
             onClick={() => handlePageChange(currentPage + 1)}
+            className={`cursor-pointer ${
+              currentPage === totalPages ? "opacity-50 pointer-events-none" : ""
+            }`}
             disabled={currentPage === totalPages}
           />
         </PaginationItem>

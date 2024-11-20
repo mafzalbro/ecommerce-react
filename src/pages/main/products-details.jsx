@@ -31,6 +31,8 @@ export default function ProductDetailsPage() {
     getProductById(productId);
   }, [productId, getProductById]);
 
+  console.log(product);
+
   if (loadingProductById) {
     return (
       <div className="p-4 md:p-8">
@@ -187,7 +189,7 @@ export default function ProductDetailsPage() {
           </div>
 
           {/* Sizes and Colors */}
-          <div className="flex space-x-4 mt-4">
+          <div className="flex flex-wrap sm:flex-col gap-4 space-x-4 mt-4">
             <div className="flex items-center space-x-2">
               <span className="text-xl text-gray-700 dark:text-gray-300">
                 Size:

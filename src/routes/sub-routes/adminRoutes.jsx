@@ -8,6 +8,7 @@ import SubCategoriesPage from "../../pages/admin/SubCategoriesPage";
 import QueriesPage from "../../pages/admin/QueriesPage";
 import RequestsPage from "../../pages/admin/RequestsPage";
 import ProductPageWrapper from "../../pages/admin/products/ProductPageWrapper";
+import UpdateProductPage from "../../pages/admin/UpdateProductPage";
 
 const userRoutes = (
   <>
@@ -18,6 +19,7 @@ const userRoutes = (
     <Route path="/admin/categories" element={<CategoriesPage />} />
     <Route path="/admin/subcategories" element={<SubCategoriesPage />} />
     <Route path="/admin/products" element={<ProductPageWrapper />} />
+    <Route path="/admin/products/:id" element={<UpdateProductPage />} />
     <Route path="/admin/queries" element={<QueriesPage />} />
     <Route path="/admin/requests" element={<RequestsPage />} />
   </>

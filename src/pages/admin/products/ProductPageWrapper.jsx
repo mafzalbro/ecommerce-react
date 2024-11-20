@@ -2,7 +2,6 @@ import { memo, useMemo, useState, useEffect } from "react";
 import Pagination from "./Pagination";
 import ExportButton from "./ExportButton";
 import { Input } from "@/components/ui/input";
-import Spinner from "@/components/ui/spinner";
 import { useProducts } from "../../../hooks/useProducts";
 import ProductTable from "./ProductsTable";
 
@@ -12,7 +11,8 @@ const ProductPageWrapper = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [loading, setLoading] = useState(false);
-  const { products, loadingProducts, deleteProduct } = useProducts();
+  const { products, loadingProducts, totalResults, deleteProduct } =
+    useProducts();
 
   useEffect(() => {
     let filtered = products;
@@ -58,7 +58,6 @@ const ProductPageWrapper = () => {
         />
         <div className="flex flex-col sm:flex-row gap-2">
           <ExportButton products={filteredProducts} />
-          <ExportButton products={filteredProducts} />
         </div>
       </div>
 
@@ -70,6 +69,11 @@ const ProductPageWrapper = () => {
           loading={loading || loadingProducts}
         />
       </div>
+
+      <p className="my-4 bg-secondary text-center py-2">
+        Total Products:
+        <span className="font-bold mx-1">{totalResults}</span>
+      </p>
 
       {/* Pagination */}
       <Pagination

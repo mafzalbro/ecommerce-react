@@ -15,7 +15,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { TrashIcon, EyeIcon, MoreHorizontalIcon } from "lucide-react"; // Import icons from lucide-react or other source
+import { TrashIcon, EyeIcon, MoreHorizontalIcon, Edit2 } from "lucide-react"; // Import icons from lucide-react or other source
 import { Link } from "react-router-dom";
 import {
   DropdownMenu,
@@ -160,11 +160,16 @@ const ProductTable = ({ products, loading, deleteProduct }) => (
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem
-                      onClick={() => alert("View Product")} // Action for viewing product
-                    >
+                    <DropdownMenuItem>
+                      <Edit2 className="w-4 h-4 mr-2" />
+                      <Link to={`/admin/products/${product._id}`}>
+                        Edit Product
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
                       <EyeIcon className="w-4 h-4 mr-2" />
-                      View Product
+                      <Link to={`/products/${product._id}`}>View Product</Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
@@ -190,6 +195,6 @@ const ProductTable = ({ products, loading, deleteProduct }) => (
       )}
     </TableBody>
   </Table>
-); 
+);
 
 export default ProductTable;

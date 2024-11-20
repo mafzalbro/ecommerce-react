@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import fetcher from "@/utils/fetcher";
+import { toast } from "@/hooks/use-toast";
 
 export function useProducts(searchParams) {
   const [products, setProducts] = useState([]);
@@ -38,7 +39,6 @@ export function useProducts(searchParams) {
     }
   }, [searchParams]);
 
-  // Function to get populated products
   const getpopulatedProducts = useCallback(async () => {
     setLoadingHeavyProducts(true);
     try {
@@ -51,7 +51,6 @@ export function useProducts(searchParams) {
     }
   }, []);
 
-  // Function to get a product by its ID
   const getProductById = useCallback(async (id) => {
     if (!id) return;
     setLoadingProductById(true);
@@ -61,6 +60,7 @@ export function useProducts(searchParams) {
         `/api/v1/products/getProductsById/${id}`
       );
       setProductById(response.data.getProductsById);
+      return response.data.getProductsById;
     } catch (err) {
       console.log("Error fetching product by ID:", err);
     } finally {
@@ -68,7 +68,6 @@ export function useProducts(searchParams) {
     }
   }, []);
 
-  // Function to get new arrivals
   const getNewArrivals = useCallback(async () => {
     setLoadingNewArrivals(true);
     try {
@@ -81,7 +80,6 @@ export function useProducts(searchParams) {
     }
   }, []);
 
-  // Function to delete a product by its ID
   const deleteProduct = useCallback(async (productId) => {
     try {
       setLoadingProducts(true);
@@ -89,7 +87,6 @@ export function useProducts(searchParams) {
         `/api/v1/products/deleteProduct/${productId}`
       );
       if (response.status === 200) {
-        // Update products list by removing the deleted product
         setProducts((prevProducts) =>
           prevProducts.filter((product) => product._id !== productId)
         );
@@ -101,20 +98,48 @@ export function useProducts(searchParams) {
     }
   }, []);
 
-  // Initial fetch for all products and populated products
+  const updateProduct = useCallback(async (id, updatedProduct) => {
+    try {
+      const response = await fetcher.put(
+        `/api/v1/products/updateProduct/${id}`,
+        updatedProduct
+      );
+
+      if (response.status === 201) {
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === id ? response.data.updateProduct : product
+          )
+        );
+
+        // Show success toast
+        toast({
+          title: "Success",
+          description: "Product updated successfully!",
+          variant: "success",
+        });
+      }
+
+      return response;
+    } catch (err) {
+      console.error("Error updating product:", err);
+
+      // Show error toast
+      toast({
+        title: "Error",
+        description: "Failed to update the product. Please try again.",
+        variant: "destructive",
+      });
+
+      throw err;
+    }
+  }, []);
+
   useEffect(() => {
     getProducts();
     getpopulatedProducts();
-    getNewArrivals(); // Fetch new arrivals
+    getNewArrivals();
   }, [getProducts]);
-
-  // Separate effect for fetching a product by ID
-  const someProductId = null; // Replace with your logic to get an ID
-  useEffect(() => {
-    if (someProductId) {
-      getProductById(someProductId);
-    }
-  }, [getProductById]);
 
   return {
     products,
@@ -129,5 +154,6 @@ export function useProducts(searchParams) {
     totalResults,
     setLoadingProducts,
     deleteProduct,
+    updateProduct,
   };
 }
