@@ -163,7 +163,7 @@ export default function ProductDetailsPage() {
 
           <div className="flex items-baseline space-x-4">
             <span className="text-3xl font-bold text-blue-600">
-              ${product?.price}
+              PKR {product?.price}
             </span>
             {product?.quantity > 0 ? (
               <Badge className="bg-green-500 text-white rounded-full py-1 px-4">
