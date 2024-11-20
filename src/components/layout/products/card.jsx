@@ -43,7 +43,7 @@ function ProductCard({ product }) {
 
       <div className="relative">
         <img
-          src={product?.images[0]}
+          src={product?.imgCover}
           alt={product.title}
           className="w-full h-48 object-cover rounded-md"
         />

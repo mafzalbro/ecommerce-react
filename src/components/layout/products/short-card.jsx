@@ -7,7 +7,7 @@ function ShortProductCard({ product }) {
     <div className="border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out bg-card w-[96vw] mx-auto sm:w-full sm:mx-0">
       <div className="relative">
         <img
-          src={product?.images[0]}
+          src={product?.imgCover}
           alt={product.title}
           className="w-full md:w-[220px] h-48 md:h-56 object-cover"
         />

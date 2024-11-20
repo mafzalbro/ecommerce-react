@@ -91,7 +91,7 @@ export default function ProductDetailsPage() {
               <div className="aspect-w-1 aspect-h-1 border-2 border-indigo-500 rounded-lg overflow-hidden shadow-lg cursor-pointer">
                 <img
                   src={product?.imgCover}
-                  srcSet={"/placeholder.png"}
+                  // srcSet={"/placeholder.png"}
                   alt="Product Image"
                   className="object-cover  h-80"
                   onClick={() => setSelectedImage(product?.imgCover || null)}
