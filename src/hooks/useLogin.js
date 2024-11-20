@@ -91,6 +91,7 @@ export function useLogin() {
     localStorage.removeItem("user");
     localStorage.removeItem("cart");
     localStorage.removeItem("token");
+    window.location.reload();
   };
 
   // Function to update user information

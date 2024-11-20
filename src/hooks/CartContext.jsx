@@ -20,10 +20,10 @@ export const CartProvider = ({ children }) => {
       const cartData = {
         cartItem: [
           {
-            size,
-            color,
+            producttitle: size,
+            productColor: color,
             productId: item._id,
-            title: item.title,
+            producttitle: item.title,
             quantity: item.quantity || 1,
             price: item.price,
             totalProductDiscount: item.totalProductDiscount || 0,
@@ -41,6 +41,9 @@ export const CartProvider = ({ children }) => {
       } else {
         newCart.cartItem.push({
           productId: item._id,
+          color,
+          size,
+          title: item.title,
           quantity: item.quantity || 1,
           price: item.price,
           totalProductDiscount: item.totalProductDiscount || 0,

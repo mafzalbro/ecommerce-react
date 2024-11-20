@@ -16,6 +16,7 @@ import { ShoppingCart, CreditCard, Truck } from "lucide-react";
 import useAuth from "../../hooks/AuthProvider";
 import { useCartContext } from "@/hooks/CartContext";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Link } from "react-router-dom";
 export default function CheckoutPage() {
   const { user } = useAuth();
   const { getCart } = useCartContext();
@@ -39,8 +40,6 @@ export default function CheckoutPage() {
       try {
         const { cartItem } = await getCart(); // Get the cart items from CartContext
         setCartItems(cartItem); // Set cart items to the state
-
-        console.log(cartItem);
 
         // Calculate the total price dynamically based on cart items
         const total = cartItem?.reduce(
@@ -83,53 +82,96 @@ export default function CheckoutPage() {
     }));
   };
 
+  if (cartItems.length === 0) {
+    return <div className="my-60 flex flex-col items-center">
+      <p>First Add semething to checkout...</p>
+      <Link to={"/products"}>
+      <Button>See Products</Button>
+      </Link>
+    </div>;
+  }
+
   return (
     <div className="container mx-auto py-10">
       <h1 className="text-3xl font-bold mb-8 text-center">Checkout</h1>
       <div className="grid gap-8 md:grid-cols-2">
         {/* Order Summary */}
-        <Card>
+        <Card className="p-6 shadow-md rounded-lg bg-white dark:bg-gray-950">
+          {/* Order Summary Header */}
           <CardHeader>
-            <CardTitle className="flex items-center">
-              <ShoppingCart className="mr-2" />
+            <CardTitle className="flex items-center text-xl font-semibold text-gray-800 dark:text-gray-100">
+              <ShoppingCart className="mr-2 text-indigo-600 dark:text-indigo-400" />
               Order Summary
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
+
+          <CardContent className="mt-4">
+            <div className="space-y-6">
+              {/* Loading Skeleton */}
               {isLoading ? (
-                <Skeleton className="h-6 w-full" />
+                <Skeleton className="h-6 w-full rounded-lg" />
               ) : (
                 cartItems.map((item) => (
-                  <div key={item._id} className="flex justify-between">
-                    <span>{item.title}</span>
-                    {item.color && (
-                      <>
-                        <span>Color</span>
-                        <span>{item.color}</span>
-                      </>
-                    )}
-                    {item.size ? (
-                      <>
-                        <span>Size</span>
-                        <span>{item.size}</span>
-                      </>
-                    ) : (
-                      ""
-                    )}
-                    <span>
-                      PKR{" "}
-                      {(item.totalProductDiscount * item.quantity).toFixed(2)}
+                  <div
+                    key={item._id}
+                    className="flex flex-col space-y-2 p-4 bg-gray-50 rounded-lg shadow-sm dark:bg-gray-700 md:flex-row md:space-y-0 md:justify-between md:items-center"
+                  >
+                    {/* Item Title */}
+                    <span className="font-medium text-gray-700 dark:text-gray-300">
+                      {item.title}
                     </span>
-                    <span>PKR {(item.price * item.quantity).toFixed(2)}</span>
+
+                    {/* Item Details (Color & Size) */}
+                    <div className="space-y-2">
+                      {item.color && (
+                        <div className="flex items-center space-x-2">
+                          <span className="font-medium text-gray-600 dark:text-gray-400">
+                            Color:
+                          </span>
+                          <span className="bg-gray-200 text-gray-800 py-1 px-2 rounded text-sm dark:bg-gray-600 dark:text-gray-200">
+                            {item.color}
+                          </span>
+                        </div>
+                      )}
+
+                      {item.size && (
+                        <div className="flex items-center space-x-2">
+                          <span className="font-medium text-gray-600 dark:text-gray-400">
+                            Size:
+                          </span>
+                          <span className="bg-gray-200 text-gray-800 py-1 px-2 rounded text-sm dark:bg-gray-600 dark:text-gray-200">
+                            {item.size}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Pricing Details */}
+                    <div className="flex flex-col items-end space-y-1">
+                      <span className="text-gray-600 text-sm dark:text-gray-400">
+                        PKR{" "}
+                        {item.totalProductDiscount
+                          ? (item.totalProductDiscount * item.quantity).toFixed(
+                              2
+                            )
+                          : "0.00"}
+                      </span>
+                      <span className="font-bold text-gray-800 dark:text-gray-100">
+                        PKR {(item.price * item.quantity).toFixed(2)}
+                      </span>
+                    </div>
                   </div>
                 ))
               )}
-              <Separator />
-              <div className="flex justify-between font-bold">
-                <span>Total</span>
+
+              {/* Separator Line */}
+              <Separator className="border-gray-300 dark:border-gray-600" />
+
+              {/* Total Section */}
+              <div className="flex justify-between font-bold text-lg text-gray-800 dark:text-gray-100">
+                <span>Total Discount:</span>
                 <span>PKR {totalProductDiscount.toFixed(2)}</span>
-                <span>PKR {totalPrice.toFixed(2)}</span>
+                <span>Total Price: PKR {totalPrice.toFixed(2)}</span>
               </div>
             </div>
           </CardContent>

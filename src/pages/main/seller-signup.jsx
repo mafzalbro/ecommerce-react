@@ -16,7 +16,7 @@ import {
 import { Navigate, useNavigate } from "react-router-dom";
 
 const SellerRegisterPage = () => {
-  const { signup, loading, error } = useLogin();
+  const { signup, logout, loading, error } = useLogin();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
@@ -57,7 +57,11 @@ const SellerRegisterPage = () => {
   };
 
   if (isAuthenticated) {
-    return <Navigate to={"/"} />;
+    return (
+      <div className="my-40 flex justify-center items-center">
+        <Button onClick={() => logout()}>Please Logout From Old Account to create</Button>
+      </div>
+    );
   }
 
   return (

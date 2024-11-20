@@ -22,7 +22,7 @@ function ProductCard({ product }) {
       <div className="text-sm text-gray-600 dark:text-gray-300 mb-2 flex gap-2">
         {product?.category && (
           <Link
-            to={`/products?category=${product?.category.slug}`}
+            to={`/products?category=${product?.category?._id}`}
             className="hover:text-blue-500"
           >
             {product.category.name}
@@ -32,10 +32,10 @@ function ProductCard({ product }) {
           <>
             /
             <Link
-              to={`/products?category=${product?.category?.slug}&subcategory=${product.subcategory?.slug}`}
+              to={`/products?category=${product?.category?._id}&subCategory=${product.subcategory?._id}`}
               className="hover:text-blue-500"
             >
-              {product.subcategory?.slug}
+              {product.subcategory?.name}
             </Link>
           </>
         )}

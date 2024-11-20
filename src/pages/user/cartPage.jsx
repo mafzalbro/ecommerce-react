@@ -28,9 +28,7 @@ const CartPage = () => {
     0
   );
 
-
   console.log(cart);
-  
 
   // Redirect after 5 seconds (useful for redirecting after an action like removing an item or applying a coupon)
   useEffect(() => {
@@ -139,6 +137,30 @@ const CartPage = () => {
                         <p className="text-sm text-gray-500">
                           PKR {item.price?.toFixed(2)}
                         </p>
+                        {/* Item Details (Color & Size) */}
+                        <div className="my-4">
+                          {item.color && (
+                            <div className="flex items-center space-x-2">
+                              <span className="font-medium text-gray-600">
+                                Color:
+                              </span>
+                              <span className="bg-gray-200 text-gray-800 py-1 px-2 rounded text-sm">
+                                {item.color}
+                              </span>
+                            </div>
+                          )}
+
+                          {item.size && (
+                            <div className="flex items-center space-x-2">
+                              <span className="font-medium text-gray-600">
+                                Size:
+                              </span>
+                              <span className="bg-gray-200 text-gray-800 py-1 px-2 rounded text-sm">
+                                {item.size}
+                              </span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
@@ -212,7 +234,9 @@ const CartPage = () => {
           ) : (
             <div className="my-40 flex flex-col items-center">
               <p className="text-lg text-center">Your cart is empty.</p>
-              <Button>Explore Products...</Button>
+              <Link to="/products">
+                <Button>Explore Products...</Button>
+              </Link>
             </div>
           )}
         </div>

@@ -31,7 +31,7 @@ const AppRoutes = () => {
               element={<ProtectedRoute role="user"></ProtectedRoute>}
             />
           )}
-          {isAuthenticated && role === "user" ? userRoutes : null}
+          {(isAuthenticated && !!role) ? userRoutes : null}
           {/* Protected routes for sellers */}
           {isAuthenticated && role !== "seller" && (
             <Route

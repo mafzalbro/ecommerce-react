@@ -2,9 +2,9 @@ import { ModeToggle } from "@/components/theme/mode-toggle";
 
 const Footer = () => {
   const footerLinks = [
-    { label: "Privacy Policy", link: "/privacy-policy" },
-    { label: "Terms of Service", link: "/terms-of-service" },
-    { label: "Support", link: "/support" },
+    { label: "Home", link: "/" },
+    { label: "About", link: "/about" },
+    { label: "Contact", link: "/contact" },
   ];
 
   return (

@@ -4,6 +4,7 @@ import { ShoppingBag, Package, Percent, Star, ArrowDown } from "lucide-react"; /
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import SearchProducts from "./search-products";
+import { AiFillShopping } from "react-icons/ai";
 
 const AmazingHero = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -62,7 +63,7 @@ const AmazingHero = () => {
               className="text-base sm:text-lg px-6 py-4 sm:px-8 sm:py-5 bg-white/10 text-white hover:bg-white/20 backdrop-blur-lg"
             >
               Become a Seller!
-              <ArrowDown className="ml-2 h-5 w-5" />
+              <AiFillShopping className="ml-2 h-5 w-5" />
             </Button>
           </Link>
         </motion.div>

@@ -37,7 +37,7 @@ function Seller() {
         <p className="mt-4 text-lg">
           Want to Sell with Restorex?{" "}
           <Link
-            className="text-blue-700 underline"
+            className="text-blue-700 dark:text-blue-300 underline"
             to="/seller-signup"
           >
             Sign Up Here!
