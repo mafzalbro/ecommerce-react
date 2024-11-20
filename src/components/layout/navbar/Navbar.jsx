@@ -41,10 +41,10 @@ const Navbar = () => {
           {!isAuthenticated ? (
             <div className="space-x-4 flex">
               <Link to="/signin">
-                <Button variant="outline">Sign In</Button>
+                <Button variant="secondary">Sign In</Button>
               </Link>
               <Link to="/signup">
-                <Button variant="outline">Sign Up</Button>
+                <Button variant="secondary">Sign Up</Button>
               </Link>
             </div>
           ) : (
