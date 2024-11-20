@@ -14,7 +14,6 @@ const ProductsWrapper = () => {
       [searchParams]
     );
   }
-  
 
   // Memoize the params to avoid unnecessary re-renders
   const memoized = useMemo(() => params, [params]);
@@ -41,10 +40,13 @@ const ProductsWrapper = () => {
   };
 
   return (
-    <div>
-      <Filter onFilterChange={handleFilterChange} />
-      {/* Render the filter component */}
-      <Products searchParams={memoized} />
+    <div className="flex my-4">
+      <div className="">
+        <Filter onFilterChange={handleFilterChange} />
+      </div>
+      <div>
+        <Products searchParams={memoized} />
+      </div>
     </div>
   );
 };

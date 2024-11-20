@@ -19,7 +19,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 export default function CheckoutPage() {
   const { user } = useAuth();
-  const { getCart } = useCartContext();
+  const { cart } = useCartContext();
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [cartItems, setCartItems] = useState([]); // State to store cart items
@@ -38,16 +38,17 @@ export default function CheckoutPage() {
   useEffect(() => {
     const get = async () => {
       try {
-        const { cartItem } = await getCart(); // Get the cart items from CartContext
-        setCartItems(cartItem); // Set cart items to the state
+        console.log(cart);
+
+        setCartItems(cart.cartItem); // Set cart items to the state
 
         // Calculate the total price dynamically based on cart items
-        const total = cartItem?.reduce(
+        const total = cart.cartItem?.reduce(
           (total, item) => total + item.price * item.quantity,
           0
         );
 
-        const totalDiscount = cartItem?.reduce(
+        const totalDiscount = cart.cartItem?.reduce(
           (total, item) => total + item.totalProductDiscount * item.quantity,
           0
         );
@@ -81,14 +82,17 @@ export default function CheckoutPage() {
       [id]: value,
     }));
   };
+  console.log(cartItems);
 
   if (cartItems.length === 0) {
-    return <div className="my-60 flex flex-col items-center">
-      <p>First Add semething to checkout...</p>
-      <Link to={"/products"}>
-      <Button>See Products</Button>
-      </Link>
-    </div>;
+    return (
+      <div className="my-60 flex flex-col items-center">
+        <p>First Add semething to checkout...</p>
+        <Link to={"/products"}>
+          <Button>See Products</Button>
+        </Link>
+      </div>
+    );
   }
 
   return (
@@ -117,7 +121,7 @@ export default function CheckoutPage() {
                     className="flex flex-col space-y-2 p-4 bg-gray-50 rounded-lg shadow-sm dark:bg-gray-700 md:flex-row md:space-y-0 md:justify-between md:items-center"
                   >
                     {/* Item Title */}
-                    <span className="font-medium text-gray-700 dark:text-gray-300">
+                    <span className="font-medium">
                       {item.title}
                     </span>
 
@@ -155,6 +159,7 @@ export default function CheckoutPage() {
                               2
                             )
                           : "0.00"}
+                        <span className="mx-1">Discount</span>
                       </span>
                       <span className="font-bold text-gray-800 dark:text-gray-100">
                         PKR {(item.price * item.quantity).toFixed(2)}

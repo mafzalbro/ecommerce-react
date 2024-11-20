@@ -102,7 +102,7 @@ const Filter = ({ onFilterChange }) => {
 
   return (
     <div className="filter mx-10 flex justify-between items-center">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-row sm:flex-col items-center gap-2">
         <Input
           type="text"
           value={searchTerm}

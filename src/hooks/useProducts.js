@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import fetcher from "@/utils/fetcher";
 import { toast } from "@/hooks/use-toast";
 
 export function useProducts(searchParams) {
   const [products, setProducts] = useState([]);
-  const [totalResults, setTotalResults] = useState([]);
+  const [totalResults, setTotalResults] = useState(0);
   const [heavyProducts, setHeavyProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingHeavyProducts, setLoadingHeavyProducts] = useState(true);
@@ -13,6 +13,13 @@ export function useProducts(searchParams) {
   const [newArrivals, setNewArrivals] = useState([]);
   const [loadingNewArrivals, setLoadingNewArrivals] = useState(true);
 
+  // Caching Maps
+  const productsCache = useRef(new Map());
+  const productByIdCache = useRef(new Map());
+  const newArrivalsCache = useRef(null);
+  const heavyProductsCache = useRef(null);
+
+  // Fetch all products
   const getProducts = useCallback(async () => {
     setLoadingProducts(true);
     try {
@@ -23,15 +30,25 @@ export function useProducts(searchParams) {
       if (searchParams?.subCategory)
         query += `subcategory=${searchParams.subCategory}&`;
 
-      if (query?.endsWith("&")) {
-        query = query.slice(0, -1);
-      }
+      if (query?.endsWith("&")) query = query.slice(0, -1);
 
-      const response = await fetcher.get(
-        `/api/v1/products/getAllProducts?${query}`
-      );
-      setProducts(response.data.getAllProducts);
-      setTotalResults(response.data.totalResults);
+      const cacheKey = `/api/v1/products/getAllProducts?${query}`;
+      if (productsCache.current.has(cacheKey)) {
+        // Use cached data if available
+        const cachedData = productsCache.current.get(cacheKey);
+        setProducts(cachedData.products);
+        setTotalResults(cachedData.totalResults);
+      } else {
+        const response = await fetcher.get(cacheKey);
+        const data = {
+          products: response.data.getAllProducts,
+          totalResults: response.data.totalResults,
+        };
+        // Cache response
+        productsCache.current.set(cacheKey, data);
+        setProducts(data.products);
+        setTotalResults(data.totalResults);
+      }
     } catch (err) {
       console.error("Error fetching products:", err);
     } finally {
@@ -39,44 +56,69 @@ export function useProducts(searchParams) {
     }
   }, [searchParams]);
 
-  const getpopulatedProducts = useCallback(async () => {
+  // Fetch populated (heavy) products
+  const getPopulatedProducts = useCallback(async () => {
     setLoadingHeavyProducts(true);
-    try {
-      const response = await fetcher.get("/api/v1/products/getProducts");
-      setHeavyProducts(response.data.getProducts);
-    } catch (err) {
-      console.log("Error fetching populated products:", err);
-    } finally {
-      setLoadingHeavyProducts(false);
+    const cacheKey = "/api/v1/products/getProducts";
+    if (heavyProductsCache.current) {
+      // Use cached data if available
+      setHeavyProducts(heavyProductsCache.current);
+    } else {
+      try {
+        const response = await fetcher.get(cacheKey);
+        setHeavyProducts(response.data.getProducts);
+        // Cache response
+        heavyProductsCache.current = response.data.getProducts;
+      } catch (err) {
+        console.log("Error fetching populated products:", err);
+      } finally {
+        setLoadingHeavyProducts(false);
+      }
     }
   }, []);
 
+  // Fetch product by ID
   const getProductById = useCallback(async (id) => {
     if (!id) return;
     setLoadingProductById(true);
-
-    try {
-      const response = await fetcher.get(
-        `/api/v1/products/getProductsById/${id}`
-      );
-      setProductById(response.data.getProductsById);
-      return response.data.getProductsById;
-    } catch (err) {
-      console.log("Error fetching product by ID:", err);
-    } finally {
-      setLoadingProductById(false);
+    if (productByIdCache.current.has(id)) {
+      // Use cached data if available
+      setProductById(productByIdCache.current.get(id));
+    } else {
+      try {
+        const response = await fetcher.get(
+          `/api/v1/products/getProductsById/${id}`
+        );
+        const product = response.data.getProductsById;
+        setProductById(product);
+        // Cache response
+        productByIdCache.current.set(id, product);
+        return product;
+      } catch (err) {
+        console.log("Error fetching product by ID:", err);
+      } finally {
+        setLoadingProductById(false);
+      }
     }
   }, []);
 
+  // Fetch new arrivals
   const getNewArrivals = useCallback(async () => {
     setLoadingNewArrivals(true);
-    try {
-      const response = await fetcher.get("/api/v1/products/newArrivals");
-      setNewArrivals(response.data.newArrivals);
-    } catch (err) {
-      console.log("Error fetching new arrivals:", err);
-    } finally {
-      setLoadingNewArrivals(false);
+    if (newArrivalsCache.current) {
+      // Use cached data if available
+      setNewArrivals(newArrivalsCache.current);
+    } else {
+      try {
+        const response = await fetcher.get("/api/v1/products/newArrivals");
+        setNewArrivals(response.data.newArrivals);
+        // Cache response
+        newArrivalsCache.current = response.data.newArrivals;
+      } catch (err) {
+        console.log("Error fetching new arrivals:", err);
+      } finally {
+        setLoadingNewArrivals(false);
+      }
     }
   }, []);
 
@@ -90,6 +132,13 @@ export function useProducts(searchParams) {
         setProducts((prevProducts) =>
           prevProducts.filter((product) => product._id !== productId)
         );
+        // Remove from cache
+        productsCache.current.forEach((data, key) => {
+          data.products = data.products.filter(
+            (product) => product._id !== productId
+          );
+          productsCache.current.set(key, data);
+        });
       }
     } catch (err) {
       console.log("Error deleting product:", err);
@@ -104,40 +153,40 @@ export function useProducts(searchParams) {
         `/api/v1/products/updateProduct/${id}`,
         updatedProduct
       );
-
       if (response.status === 201) {
+        const updatedData = response.data.updateProduct;
         setProducts((prevProducts) =>
           prevProducts.map((product) =>
-            product._id === id ? response.data.updateProduct : product
+            product._id === id ? updatedData : product
           )
         );
-
-        // Show success toast
+        // Update cache
+        productsCache.current.forEach((data, key) => {
+          data.products = data.products.map((product) =>
+            product._id === id ? updatedData : product
+          );
+          productsCache.current.set(key, data);
+        });
         toast({
           title: "Success",
           description: "Product updated successfully!",
           variant: "success",
         });
       }
-
-      return response;
     } catch (err) {
       console.error("Error updating product:", err);
-
-      // Show error toast
       toast({
         title: "Error",
         description: "Failed to update the product. Please try again.",
         variant: "destructive",
       });
-
       throw err;
     }
   }, []);
 
   useEffect(() => {
     getProducts();
-    getpopulatedProducts();
+    getPopulatedProducts();
     getNewArrivals();
   }, [getProducts]);
 
