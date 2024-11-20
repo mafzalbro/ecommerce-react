@@ -27,7 +27,6 @@ function NewArrivalCard({ product }) {
       <div className="relative">
         <img
           src={imgCover}
-          srcSet={"/placeholder.png"}
           alt={title}
           width={384}
           height={200}
