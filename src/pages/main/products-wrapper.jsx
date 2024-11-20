@@ -1,5 +1,6 @@
 import { memo, useMemo } from "react";
 import Filter from "../../components/layout/products/search-filter";
+import FilterMobile from "../../components/layout/products/search-filter-mobile";
 import { useSearchParams } from "react-router-dom";
 import Products from "./products";
 
@@ -40,11 +41,14 @@ const ProductsWrapper = () => {
   };
 
   return (
-    <div className="flex my-4">
-      <div className="">
+    <div className="flex flex-col sm:flex-row my-4 mx-2">
+      <div className="sm:w-1/4 hidden sm:inline-block">
         <Filter onFilterChange={handleFilterChange} />
       </div>
-      <div>
+      <div className="sm:hidden">
+        <FilterMobile onFilterChange={handleFilterChange} />
+      </div>
+      <div className="sm:w-3/4">
         <Products searchParams={memoized} />
       </div>
     </div>

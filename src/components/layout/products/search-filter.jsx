@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useMemo } from "react";
+import { Button } from "../../ui/button";
 import {
   Select,
   SelectTrigger,
@@ -7,19 +8,12 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useCategories } from "@/hooks/useCategories";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { useDebounce } from "use-debounce";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { FilterIcon } from "lucide-react";
-import { Button } from "../../ui/button";
 import { Link, useSearchParams } from "react-router-dom";
 import { MdOutlineClearAll } from "react-icons/md";
+import { useCategories } from "@/hooks/useCategories";
 
 const Filter = ({ onFilterChange }) => {
   const [searchParams] = useSearchParams();
@@ -46,18 +40,14 @@ const Filter = ({ onFilterChange }) => {
 
     if (categoryId && categories.length > 0) {
       const category = categories.find((cat) => cat._id === categoryId);
-      if (category) {
-        setSelectedCategory(category._id);
-      }
+      if (category) setSelectedCategory(category._id);
     }
 
     if (subCategoryId && subCategories.length > 0) {
       const subCategory = subCategories.find(
         (sub) => sub._id === subCategoryId
       );
-      if (subCategory) {
-        setSelectedSubCategory(subCategory._id);
-      }
+      if (subCategory) setSelectedSubCategory(subCategory._id);
     }
   }, [searchParams, categories, subCategories]);
 
@@ -73,10 +63,7 @@ const Filter = ({ onFilterChange }) => {
 
   const handleCategoryChange = (value) => {
     setSelectedCategory(value);
-  };
-
-  const handleSubCategoryChange = (value) => {
-    setSelectedSubCategory(value);
+    setSelectedSubCategory(""); // Reset subcategory when category changes
   };
 
   const handleClearFilters = () => {
@@ -86,7 +73,6 @@ const Filter = ({ onFilterChange }) => {
     onFilterChange({});
   };
 
-  // Update filters when any change happens
   useMemo(() => {
     onFilterChange({
       searchTerm: debouncedSearchTerm,
@@ -101,111 +87,101 @@ const Filter = ({ onFilterChange }) => {
   ]);
 
   return (
-    <div className="filter mx-10 flex justify-between items-center">
-      <div className="flex flex-row sm:flex-col items-center gap-2">
+    <div className="filter flex flex-col p-4 md:p-6 border rounded-md shadow-md bg-white">
+      {/* Clear Filters Button */}
+      {window.location.search && (
+        <div className="w-full text-right">
+          <Link to="/products">
+            <Button
+              className="!my-0 !py-0 text-xs"
+              variant="ghost"
+              onClick={handleClearFilters}
+            >
+              <MdOutlineClearAll className="mr-2" /> Clear Filters
+            </Button>
+          </Link>
+        </div>
+      )}
+
+      {/* Search Input */}
+      <div className="w-full">
+        <Label htmlFor="search" className="block mb-2 text-sm font-medium">
+          Search
+        </Label>
         <Input
+          id="search"
           type="text"
           value={searchTerm}
           onChange={handleSearchChange}
           placeholder="Search products"
+          className="w-full"
         />
       </div>
 
-      <div className="flex items-center gap-2">
-        {window.location.search ? (
-          <Link to={"/products"}>
-            <Button variant={"ghost"} onClick={handleClearFilters}>
-              <MdOutlineClearAll /> clear{" "}
-            </Button>
-          </Link>
+      {/* Category Select */}
+      <div className="w-full">
+        <Label htmlFor="category" className="block mb-2 text-sm font-medium">
+          Category
+        </Label>
+        <Select
+          value={selectedCategory}
+          onValueChange={handleCategoryChange}
+          disabled={loadingCategories || errorCategories}
+        >
+          <SelectTrigger id="category" className="w-full">
+            <SelectValue
+              placeholder={
+                categories.find((cat) => cat._id === selectedCategory)?.name ||
+                "Select Category"
+              }
+            />
+          </SelectTrigger>
+          <SelectContent>
+            {loadingCategories ? (
+              <SelectItem>Loading...</SelectItem>
+            ) : errorCategories ? (
+              <SelectItem>Error loading categories</SelectItem>
+            ) : (
+              categories.map((category) => (
+                <SelectItem key={category._id} value={category._id}>
+                  {category.name}
+                </SelectItem>
+              ))
+            )}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Subcategory Buttons */}
+      <div className="w-full">
+        <Label className="block my-2 text-sm font-medium">Subcategory</Label>
+        {loadingSubCategories ? (
+          <p className="text-sm text-gray-500">Loading...</p>
+        ) : errorSubCategories ? (
+          <p className="text-sm text-red-500">Error loading subcategories</p>
+        ) : selectedCategory && subCategories.length > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {subCategories.map((subCategory) => (
+              <div
+                key={subCategory._id}
+                className={`text-xs border rounded-lg py-1 px-3 cursor-pointer ${
+                  selectedSubCategory === subCategory._id
+                    ? "bg-primary text-primary-foreground"
+                    : ""
+                }`}
+                variant={"link"}
+                // variant={
+                //   selectedSubCategory === subCategory._id ? "primary" : "outline"
+                // }
+                onClick={() => setSelectedSubCategory(subCategory._id)}
+              >
+                {subCategory.name}
+              </div>
+            ))}
+          </div>
         ) : (
-          ""
+          <p className="text-sm text-gray-500">Select a category first</p>
         )}
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant={"secondary"}>
-              <FilterIcon />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="p-4 w-80">
-            <div className="flex flex-col justify-center">
-              {/* Category Select */}
-              <div className="mb-4">
-                <Label>Category: </Label>
-                <Select
-                  value={selectedCategory}
-                  onValueChange={handleCategoryChange}
-                  disabled={loadingCategories || errorCategories}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue
-                      placeholder={
-                        categories.find((cat) => cat._id === selectedCategory)
-                          ?.name || "Select Category"
-                      }
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {loadingCategories ? (
-                      <SelectItem>Loading...</SelectItem>
-                    ) : errorCategories ? (
-                      <SelectItem>Error loading categories</SelectItem>
-                    ) : (
-                      categories.map((category) => (
-                        <SelectItem key={category._id} value={category._id}>
-                          {category.name}
-                        </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Subcategory Select */}
-              <div>
-                <Label>Subcategory: </Label>
-                <Select
-                  value={selectedSubCategory}
-                  onValueChange={handleSubCategoryChange}
-                  disabled={loadingSubCategories || !selectedCategory}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue
-                      placeholder={
-                        subCategories.find(
-                          (sub) => sub._id === selectedSubCategory
-                        )?.name || "Select Subcategory"
-                      }
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {loadingSubCategories ? (
-                      <SelectItem>Loading...</SelectItem>
-                    ) : errorSubCategories ? (
-                      <SelectItem>Error loading subcategories</SelectItem>
-                    ) : (
-                      subCategories.map((subCategory) => (
-                        <SelectItem
-                          key={subCategory._id}
-                          value={subCategory._id}
-                        >
-                          {subCategory.name}
-                        </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {/* Clear Filters Button */}
-            <div className="mt-4">
-              <Button variant="secondary" onClick={handleClearFilters}>
-                Clear Filters
-              </Button>
-            </div>
-          </PopoverContent>
-        </Popover>
       </div>
     </div>
   );

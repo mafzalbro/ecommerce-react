@@ -9,21 +9,21 @@ const SimpleHero = () => {
       {/* Container */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Content Section */}
-        <div className="flex flex-col md:flex-row-reverse items-center gap-8">
+        <div className="flex flex-col-reverse sm:flex-row-reverse items-center gap-8">
           {/* Left Section: Text */}
           <div className="text-center md:text-left">
             {/* Search Bar */}
-            <div>
+            <div className="mx-4">
               <SearchProducts />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-semibold">
+            <h1 className="text-3xl sm:text-4xl font-semibold">
               Welcome to Our Shop
             </h1>
             <p className="mt-2">
               Browse thousands of products at the best prices. Shop with
               confidence and convenience.
             </p>
-            <div className="mt-4 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+            <div className="mt-4 flex gap-4 justify-center md:justify-start">
               <Link to="/products">
                 <Button size="lg" className="w-full sm:w-auto">
                   Shop Now
