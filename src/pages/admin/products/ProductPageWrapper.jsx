@@ -1,9 +1,9 @@
 import { memo, useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import ProductPage from "./ProductPage";
-import Pagination from "../products/Pagination"; // Assuming pagination component exists
-import ExportButton from "../../components/layout/products/ExportButton"; // Assuming export button exists
-import Filter from "../../components/layout/products/Filter"; // Assuming you have a Filter component
+import ProductPage from "./ProductsPage";
+import Pagination from "./Pagination";
+import ExportButton from "./ExportButton";
+import Filter from "./SearchFilter";
 
 const ProductPageWrapper = () => {
   const [searchParams, setSearchParams] = useSearchParams();

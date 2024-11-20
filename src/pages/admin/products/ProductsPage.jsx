@@ -1,7 +1,6 @@
 import { memo, useState, useEffect } from "react";
-import { useProducts } from "../../hooks/useProducts";
-import { Skeleton } from "../../components/ui/skeleton";
-import Pagination from "../main/pagination";
+import { useProducts } from "@/hooks/useProducts";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -12,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Pagination from "./Pagination";
 
 // eslint-disable-next-line react/prop-types
 const Products = ({ searchParams }) => {

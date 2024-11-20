@@ -8,8 +8,8 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { useCategories } from "@/hooks/useCategories";
-import { Input } from "../../ui/input";
-import { Label } from "../../ui/label";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useDebounce } from "use-debounce";
 import {
   Popover,
@@ -17,11 +17,11 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { FilterIcon } from "lucide-react";
-import { Button } from "../../ui/button";
+import { Button } from "@/components/ui/button";
 import { Link, useSearchParams } from "react-router-dom";
 import { MdOutlineClearAll } from "react-icons/md";
 
-const Filter = ({ onFilterChange }) => {
+const SearchFilter = ({ onFilterChange }) => {
   const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -211,4 +211,4 @@ const Filter = ({ onFilterChange }) => {
   );
 };
 
-export default Filter;
+export default SearchFilter;

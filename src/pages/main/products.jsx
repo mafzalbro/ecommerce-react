@@ -17,7 +17,7 @@ const Products = ({ searchParams }) => {
   // const [loadingMore, setLoadingMore] = useState(false);
 
   const limit = 8; // Set your limit per page
-  const totalPages = Math.floor(totalResults / limit);
+  const totalPages = Math.floor((products.length > 8 ? totalResults : 7) / limit);
   
 
   // Handle loading more products with a delay

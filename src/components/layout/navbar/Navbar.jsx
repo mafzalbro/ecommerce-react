@@ -6,15 +6,24 @@ import NavigationMenu from "@/components/layout/navbar/NavigationMenu";
 import LogoutButton from "@/components/layout/navbar/LogoutButton";
 import MobileNav from "@/components/layout/navbar/MobileNav";
 import CartIcon from "../../../pages/user/cartIcon";
+import AdminMenu from "./AdminMenu";
+import SellerMenu from "./SellerMenu";
+import UserMenu from "./UserMenu";
+
 const Navbar = () => {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, role, logout } = useAuth();
 
   return (
     <nav className="px-4">
       <div className="flex justify-between items-center">
         <Link to={"/"}>
           {/* <h1 className="text-2xl font-bold">{getMeta().title}</h1> */}
-          <img src="/logo.png" alt={getMeta().title} className="w-20" style={{textShadow: "1px 2px 20px white"}}/>
+          <img
+            src="/logo.png"
+            alt={getMeta().title}
+            className="w-20"
+            style={{ textShadow: "1px 2px 20px white" }}
+          />
         </Link>
 
         {/* Desktop View */}
@@ -22,10 +31,15 @@ const Navbar = () => {
           <NavigationMenu />
         </div>
 
+        {/* Role-Specific Menus */}
+        {role === "admin" && <AdminMenu />}
+        {role === "seller" && <SellerMenu />}
+        {role === "user" && <UserMenu />}
+
         {/* Show Sign In/Sign Up links if the user is not logged in (Desktop) */}
-        <div className="flex gap-2">
+        <div className="hidden md:flex md:gap-2">
           {!isAuthenticated ? (
-            <div className="hidden md:flex space-x-4">
+            <div className="space-x-4">
               <Link to="/signin">
                 <Button variant="outline">Sign In</Button>
               </Link>
@@ -36,7 +50,7 @@ const Navbar = () => {
           ) : (
             <LogoutButton onClick={logout} />
           )}
-          <CartIcon />
+          {role === "user" && <CartIcon />}
         </div>
         {/* Mobile Nav */}
         <MobileNav />

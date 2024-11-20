@@ -5,9 +5,6 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import ProductCategories from "./ProductCategories";
-import AdminMenu from "./AdminMenu";
-import SellerMenu from "./SellerMenu";
-import UserMenu from "./UserMenu";
 import useAuth from "@/hooks/AuthProvider";
 import { Link } from "react-router-dom";
 import { Button } from "../../ui/button";
@@ -30,11 +27,6 @@ const NavigationMenuWrapper = ({ className }) => {
 
         {/* Product Categories */}
         <ProductCategories className={className} />
-
-        {/* Role-Specific Menus */}
-        {role === "admin" && <AdminMenu className={className} />}
-        {role === "seller" && <SellerMenu className={className} />}
-        {role === "user" && <UserMenu className={className} />}
       </NavigationMenuList>
     </NavigationMenu>
   );

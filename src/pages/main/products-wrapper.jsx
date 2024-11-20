@@ -7,10 +7,13 @@ const ProductsWrapper = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Convert the searchParams into an object
-  const params = useMemo(
-    () => Object.fromEntries(searchParams.entries()),
-    [searchParams]
-  );
+  let params;
+  if (Object.values(searchParams).every((value) => value === "")) {
+    params = useMemo(
+      () => Object.fromEntries(searchParams.entries()),
+      [searchParams]
+    );
+  }
 
   // Memoize the params to avoid unnecessary re-renders
   const memoized = useMemo(() => params, [params]);
@@ -18,7 +21,12 @@ const ProductsWrapper = () => {
   // Update the search params whenever filters change
   const handleFilterChange = (newFilters) => {
     // Merge existing params with new filters
-    const updatedParams = { ...params, ...newFilters };
+    let updatedParams;
+    if (Object.values(newFilters).every((value) => value === "")) {
+      updatedParams = { ...params };
+    } else {
+      updatedParams = { ...params, ...newFilters };
+    }
 
     // Remove any parameters that are empty or falsy
     Object.keys(updatedParams).forEach((key) => {
@@ -33,7 +41,7 @@ const ProductsWrapper = () => {
 
   return (
     <div>
-      <Filter onFilterChange={handleFilterChange} />{" "}
+      <Filter onFilterChange={handleFilterChange} />
       {/* Render the filter component */}
       <Products searchParams={memoized} />
     </div>
