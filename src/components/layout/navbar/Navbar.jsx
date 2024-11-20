@@ -50,7 +50,7 @@ const Navbar = () => {
           ) : (
             <LogoutButton onClick={logout} />
           )}
-          {role === "user" && <CartIcon />}
+          {role !== "admin" && role !== "seller" && <CartIcon />}
         </div>
         {/* Mobile Nav */}
         <MobileNav />
