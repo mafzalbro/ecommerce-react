@@ -36,13 +36,13 @@ export const AuthProvider = ({ children }) => {
     }
 
     const parsedUser = JSON.parse(storedUser);
-    setUser(parsedUser.user);
+    setUser(parsedUser?.user);
 
     // Set authentication status to true
     setIsAuthenticated(true);
 
     // Set the role from the user data (assuming the user data contains the role)
-    setRole(parsedUser.user.role || null);
+    setRole(parsedUser?.user?.role || null);
   }, []);
 
   return (
