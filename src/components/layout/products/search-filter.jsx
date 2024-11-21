@@ -14,6 +14,7 @@ import { useDebounce } from "use-debounce";
 import { Link, useNavigate } from "react-router-dom";
 import { MdOutlineClearAll } from "react-icons/md";
 import { useCategories } from "@/hooks/useCategories";
+import { AiOutlineClose } from "react-icons/ai";
 
 const Filter = () => {
   const [searchParams] = useState(new URLSearchParams(window.location.search));
@@ -117,16 +118,16 @@ const Filter = () => {
   ]);
 
   return (
-    <div className="filter flex flex-col p-4 md:p-6 border rounded-md shadow-md">
+    <div className="filter flex flex-col p-4 md:p-6 border rounded-md shadow-md relative">
       {/* Clear Filters Button */}
       {window.location.search && (
-        <div className="w-full text-right">
+        <div className="w-full text-right absolute top-0 right-2">
           <Button
             className="!my-0 !py-0 text-xs"
             variant="ghost"
             onClick={handleClearFilters}
           >
-            <MdOutlineClearAll className="mr-2 inline" /> Clear Filters
+            <AiOutlineClose className="mr-2 inline" /> Clear Filters
           </Button>
         </div>
       )}
