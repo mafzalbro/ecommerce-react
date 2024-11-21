@@ -20,9 +20,13 @@ const Filter = ({ onFilterChange }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
 
-  // Debounced search term
+  // Debounced states for search and price
   const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
+  const [debouncedMinPrice] = useDebounce(minPrice, 500);
+  const [debouncedMaxPrice] = useDebounce(maxPrice, 500);
 
   const {
     categories,
@@ -66,24 +70,48 @@ const Filter = ({ onFilterChange }) => {
     setSelectedSubCategory(""); // Reset subcategory when category changes
   };
 
+  const handlePriceChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "minPrice") {
+      setMinPrice(value);
+    } else if (name === "maxPrice") {
+      setMaxPrice(value);
+    }
+  };
+
   const handleClearFilters = () => {
     setSearchTerm("");
     setSelectedCategory("");
     setSelectedSubCategory("");
+    setMinPrice("");
+    setMaxPrice("");
     onFilterChange({});
   };
 
   useMemo(() => {
-    onFilterChange({
-      searchTerm: debouncedSearchTerm,
-      category: selectedCategory,
-      subCategory: selectedSubCategory,
-    });
+    // Only trigger filter change if there is any valid filter
+    if (
+      debouncedSearchTerm ||
+      selectedCategory ||
+      selectedSubCategory ||
+      debouncedMinPrice ||
+      debouncedMaxPrice
+    ) {
+      onFilterChange({
+        searchTerm: debouncedSearchTerm,
+        category: selectedCategory,
+        subCategory: selectedSubCategory,
+        priceGte: debouncedMinPrice ? debouncedMinPrice : undefined,
+        priceLte: debouncedMaxPrice ? debouncedMaxPrice : undefined,
+      });
+    }
   }, [
     debouncedSearchTerm,
     onFilterChange,
     selectedCategory,
     selectedSubCategory,
+    debouncedMinPrice,
+    debouncedMaxPrice,
   ]);
 
   return (
@@ -91,15 +119,15 @@ const Filter = ({ onFilterChange }) => {
       {/* Clear Filters Button */}
       {window.location.search && (
         <div className="w-full text-right">
-          <Link to="/products">
-            <Button
-              className="!my-0 !py-0 text-xs"
-              variant="ghost"
-              onClick={handleClearFilters}
-            >
-              <MdOutlineClearAll className="mr-2" /> Clear Filters
-            </Button>
-          </Link>
+          <Button
+            className="!my-0 !py-0 text-xs"
+            variant="ghost"
+            onClick={handleClearFilters}
+          >
+            <Link to="/products">
+              <MdOutlineClearAll className="mr-2 inline" /> Clear Filters
+            </Link>
+          </Button>
         </div>
       )}
 
@@ -115,6 +143,35 @@ const Filter = ({ onFilterChange }) => {
           onChange={handleSearchChange}
           placeholder="Search products"
           className="w-full"
+        />
+      </div>
+
+      {/* Price Range Inputs */}
+      <Label className="block mb-2 text-sm font-medium">Price Range</Label>
+      <div className="w-full flex gap-2 items-center justify-center">
+        {/* <Label htmlFor="minPrice" className="block mb-2 text-sm font-medium">
+          Min Price
+        </Label> */}
+        <input
+          id="minPrice"
+          name="minPrice"
+          type="number"
+          value={minPrice}
+          onChange={handlePriceChange}
+          placeholder="Min Price"
+          className="w-full bg-transparent p-1 rounded-md text-sm"
+        />
+        {/* <Label htmlFor="maxPrice" className="block mb-2 text-sm font-medium">
+          Max Price
+        </Label> */}
+        <input
+          id="maxPrice"
+          name="maxPrice"
+          type="number"
+          value={maxPrice}
+          onChange={handlePriceChange}
+          placeholder="Max Price"
+          className="w-full bg-transparent p-1 rounded-md text-sm"
         />
       </div>
 
@@ -169,10 +226,6 @@ const Filter = ({ onFilterChange }) => {
                     ? "bg-primary text-primary-foreground"
                     : ""
                 }`}
-                // variant={"link"}
-                // variant={
-                //   selectedSubCategory === subCategory._id ? "primary" : "outline"
-                // }
                 onClick={() => setSelectedSubCategory(subCategory._id)}
               >
                 <Link

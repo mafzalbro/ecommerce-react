@@ -1,6 +1,30 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import fetcher from "@/utils/fetcher";
 import { toast } from "@/hooks/use-toast";
+
+// Cache expiration time (5 seconds)
+const CACHE_EXPIRATION_TIME = 15000;
+
+function setCache(key, data) {
+  const cacheData = {
+    data,
+    timestamp: Date.now(),
+  };
+  localStorage.setItem(key, JSON.stringify(cacheData));
+}
+
+function getCache(key) {
+  const cacheData = JSON.parse(localStorage.getItem(key));
+  if (!cacheData) return null;
+
+  // Check if the cache has expired
+  if (Date.now() - cacheData.timestamp > CACHE_EXPIRATION_TIME) {
+    localStorage.removeItem(key); // Remove expired cache
+    return null;
+  }
+
+  return cacheData.data;
+}
 
 export function useProducts(searchParams) {
   const [products, setProducts] = useState([]);
@@ -13,29 +37,42 @@ export function useProducts(searchParams) {
   const [newArrivals, setNewArrivals] = useState([]);
   const [loadingNewArrivals, setLoadingNewArrivals] = useState(true);
 
-  // Caching Maps
-  const productsCache = useRef(new Map());
-  const productByIdCache = useRef(new Map());
-  const newArrivalsCache = useRef(null);
-  const heavyProductsCache = useRef(null);
+  // Memoize searchParams to prevent unnecessary re-renders
+  const memoizedSearchParams = useMemo(() => searchParams, [searchParams]);
 
-  // Fetch all products
+  // Fetch products with caching mechanism
   const getProducts = useCallback(async () => {
     setLoadingProducts(true);
     try {
-      let query = "";
-      if (searchParams?.category) query += `category=${searchParams.category}&`;
-      if (searchParams?.searchTerm)
-        query += `keyword=${searchParams.searchTerm}&`;
-      if (searchParams?.subCategory)
-        query += `subcategory=${searchParams.subCategory}&`;
+      let query = new URLSearchParams();
 
-      if (query?.endsWith("&")) query = query.slice(0, -1);
+      // Add existing filters
+      if (memoizedSearchParams?.category)
+        query.set("category", memoizedSearchParams.category);
+      if (memoizedSearchParams?.searchTerm)
+        query.set("keyword", memoizedSearchParams.searchTerm);
+      if (memoizedSearchParams?.subCategory)
+        query.set("subcategory", memoizedSearchParams.subCategory);
 
-      const cacheKey = `/api/v1/products/getAllProducts?${query}`;
-      if (productsCache.current.has(cacheKey)) {
-        // Use cached data if available
-        const cachedData = productsCache.current.get(cacheKey);
+      // Add price filters (mapped to price[gte] and price[lte])
+      if (
+        memoizedSearchParams?.priceGte &&
+        !isNaN(memoizedSearchParams.priceGte)
+      ) {
+        query.set("price[gte]", memoizedSearchParams.priceGte);
+      }
+      if (
+        memoizedSearchParams?.priceLte &&
+        !isNaN(memoizedSearchParams.priceLte)
+      ) {
+        query.set("price[lte]", memoizedSearchParams.priceLte);
+      }
+
+      const queryString = query.toString();
+      const cacheKey = `/api/v1/products/getAllProducts?${queryString}`;
+
+      const cachedData = getCache(cacheKey);
+      if (cachedData) {
         setProducts(cachedData.products);
         setTotalResults(cachedData.totalResults);
       } else {
@@ -44,31 +81,29 @@ export function useProducts(searchParams) {
           products: response.data.getAllProducts,
           totalResults: response.data.totalResults,
         };
-        // Cache response
-        productsCache.current.set(cacheKey, data);
         setProducts(data.products);
         setTotalResults(data.totalResults);
+        setCache(cacheKey, data);
       }
     } catch (err) {
       console.error("Error fetching products:", err);
     } finally {
       setLoadingProducts(false);
     }
-  }, [searchParams]);
+  }, [memoizedSearchParams]);
 
-  // Fetch populated (heavy) products
+  // Fetch populated (heavy) products with cache
   const getPopulatedProducts = useCallback(async () => {
     setLoadingHeavyProducts(true);
     const cacheKey = "/api/v1/products/getProducts";
-    if (heavyProductsCache.current) {
-      // Use cached data if available
-      setHeavyProducts(heavyProductsCache.current);
+    const cachedData = getCache(cacheKey);
+    if (cachedData) {
+      setHeavyProducts(cachedData);
     } else {
       try {
         const response = await fetcher.get(cacheKey);
         setHeavyProducts(response.data.getProducts);
-        // Cache response
-        heavyProductsCache.current = response.data.getProducts;
+        setCache(cacheKey, response.data.getProducts);
       } catch (err) {
         console.log("Error fetching populated products:", err);
       } finally {
@@ -77,23 +112,20 @@ export function useProducts(searchParams) {
     }
   }, []);
 
-  // Fetch product by ID
+  // Fetch product by ID with cache
   const getProductById = useCallback(async (id) => {
     if (!id) return;
     setLoadingProductById(true);
-    if (productByIdCache.current.has(id)) {
-      // Use cached data if available
-      setProductById(productByIdCache.current.get(id));
+    const cacheKey = `/api/v1/products/getProductsById/${id}`;
+    const cachedData = getCache(cacheKey);
+    if (cachedData) {
+      setProductById(cachedData);
     } else {
       try {
-        const response = await fetcher.get(
-          `/api/v1/products/getProductsById/${id}`
-        );
+        const response = await fetcher.get(cacheKey);
         const product = response.data.getProductsById;
         setProductById(product);
-        // Cache response
-        productByIdCache.current.set(id, product);
-        return product;
+        setCache(cacheKey, product);
       } catch (err) {
         console.log("Error fetching product by ID:", err);
       } finally {
@@ -102,18 +134,18 @@ export function useProducts(searchParams) {
     }
   }, []);
 
-  // Fetch new arrivals
+  // Fetch new arrivals with cache
   const getNewArrivals = useCallback(async () => {
     setLoadingNewArrivals(true);
-    if (newArrivalsCache.current) {
-      // Use cached data if available
-      setNewArrivals(newArrivalsCache.current);
+    const cacheKey = "/api/v1/products/newArrivals";
+    const cachedData = getCache(cacheKey);
+    if (cachedData) {
+      setNewArrivals(cachedData);
     } else {
       try {
-        const response = await fetcher.get("/api/v1/products/newArrivals");
+        const response = await fetcher.get(cacheKey);
         setNewArrivals(response.data.newArrivals);
-        // Cache response
-        newArrivalsCache.current = response.data.newArrivals;
+        setCache(cacheKey, response.data.newArrivals);
       } catch (err) {
         console.log("Error fetching new arrivals:", err);
       } finally {
@@ -122,6 +154,7 @@ export function useProducts(searchParams) {
     }
   }, []);
 
+  // Delete product with cache update
   const deleteProduct = useCallback(async (productId) => {
     try {
       setLoadingProducts(true);
@@ -132,12 +165,9 @@ export function useProducts(searchParams) {
         setProducts((prevProducts) =>
           prevProducts.filter((product) => product._id !== productId)
         );
-        // Remove from cache
-        productsCache.current.forEach((data, key) => {
-          data.products = data.products.filter(
-            (product) => product._id !== productId
-          );
-          productsCache.current.set(key, data);
+        // Clear caches related to this product
+        Object.keys(localStorage).forEach((key) => {
+          if (key.includes(productId)) localStorage.removeItem(key);
         });
       }
     } catch (err) {
@@ -147,6 +177,7 @@ export function useProducts(searchParams) {
     }
   }, []);
 
+  // Update product and cache
   const updateProduct = useCallback(async (id, updatedProduct) => {
     try {
       const response = await fetcher.put(
@@ -160,13 +191,10 @@ export function useProducts(searchParams) {
             product._id === id ? updatedData : product
           )
         );
-        // Update cache
-        productsCache.current.forEach((data, key) => {
-          data.products = data.products.map((product) =>
-            product._id === id ? updatedData : product
-          );
-          productsCache.current.set(key, data);
-        });
+        setCache(
+          `/api/v1/products/getAllProducts?category=${updatedProduct.category}`,
+          updatedData
+        ); // Update cache with new product data
         toast({
           title: "Success",
           description: "Product updated successfully!",
