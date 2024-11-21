@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../../ui/button";
 import {
   Select,
@@ -11,12 +11,12 @@ import {
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { useDebounce } from "use-debounce";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MdOutlineClearAll } from "react-icons/md";
 import { useCategories } from "@/hooks/useCategories";
 
-const Filter = ({ onFilterChange }) => {
-  const [searchParams] = useSearchParams();
+const Filter = () => {
+  const [searchParams] = useState(new URLSearchParams(window.location.search));
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
@@ -27,6 +27,8 @@ const Filter = ({ onFilterChange }) => {
   const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
   const [debouncedMinPrice] = useDebounce(minPrice, 500);
   const [debouncedMaxPrice] = useDebounce(maxPrice, 500);
+
+  const navigate = useNavigate(); // Use navigate to push query params
 
   const {
     categories,
@@ -85,33 +87,33 @@ const Filter = ({ onFilterChange }) => {
     setSelectedSubCategory("");
     setMinPrice("");
     setMaxPrice("");
-    onFilterChange({});
+    // Reset URL parameters to default (without filters)
+    navigate("/products");
   };
 
-  useMemo(() => {
-    // Only trigger filter change if there is any valid filter
-    if (
-      debouncedSearchTerm ||
-      selectedCategory ||
-      selectedSubCategory ||
-      debouncedMinPrice ||
-      debouncedMaxPrice
-    ) {
-      onFilterChange({
-        searchTerm: debouncedSearchTerm,
-        category: selectedCategory,
-        subCategory: selectedSubCategory,
-        priceGte: debouncedMinPrice ? debouncedMinPrice : undefined,
-        priceLte: debouncedMaxPrice ? debouncedMaxPrice : undefined,
-      });
-    }
+  // Function to update the URL query params
+  const updateUrlParams = () => {
+    const params = new URLSearchParams();
+
+    if (debouncedSearchTerm) params.set("search", debouncedSearchTerm);
+    if (selectedCategory) params.set("category", selectedCategory);
+    if (selectedSubCategory) params.set("subCategory", selectedSubCategory);
+    if (debouncedMinPrice) params.set("priceGte", debouncedMinPrice);
+    if (debouncedMaxPrice) params.set("priceLte", debouncedMaxPrice);
+
+    navigate(`/products?${params.toString()}`);
+  };
+
+  useEffect(() => {
+    // Update the URL when filters change
+    updateUrlParams();
   }, [
     debouncedSearchTerm,
-    onFilterChange,
     selectedCategory,
     selectedSubCategory,
     debouncedMinPrice,
     debouncedMaxPrice,
+    navigate,
   ]);
 
   return (
@@ -124,9 +126,7 @@ const Filter = ({ onFilterChange }) => {
             variant="ghost"
             onClick={handleClearFilters}
           >
-            <Link to="/products">
-              <MdOutlineClearAll className="mr-2 inline" /> Clear Filters
-            </Link>
+            <MdOutlineClearAll className="mr-2 inline" /> Clear Filters
           </Button>
         </div>
       )}
@@ -149,9 +149,6 @@ const Filter = ({ onFilterChange }) => {
       {/* Price Range Inputs */}
       <Label className="block mb-2 text-sm font-medium">Price Range</Label>
       <div className="w-full flex gap-2 items-center justify-center">
-        {/* <Label htmlFor="minPrice" className="block mb-2 text-sm font-medium">
-          Min Price
-        </Label> */}
         <input
           id="minPrice"
           name="minPrice"
@@ -161,9 +158,6 @@ const Filter = ({ onFilterChange }) => {
           placeholder="Min Price"
           className="w-full bg-transparent p-1 rounded-md text-sm"
         />
-        {/* <Label htmlFor="maxPrice" className="block mb-2 text-sm font-medium">
-          Max Price
-        </Label> */}
         <input
           id="maxPrice"
           name="maxPrice"
@@ -201,7 +195,9 @@ const Filter = ({ onFilterChange }) => {
             ) : (
               categories.map((category) => (
                 <SelectItem key={category._id} value={category._id}>
-                  {category.name}
+                  <Link to={`/products?category=${category._id}`}>
+                    {category.name}
+                  </Link>
                 </SelectItem>
               ))
             )}

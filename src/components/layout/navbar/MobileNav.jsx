@@ -1,10 +1,5 @@
 import { useState } from "react";
-import {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-  SheetClose,
-} from "@/components/ui/sheet";
+import { Sheet, SheetTrigger, SheetContent, SheetClose } from "../../ui/sheet";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import useAuth from "@/hooks/AuthProvider";
@@ -23,10 +18,8 @@ const MobileNav = () => {
       {/* Hamburger Icon for Small Screens */}
       <div className="md:hidden">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger>
-            <button onClick={toggleMenu} className="p-2">
-              <BiMenuAltRight size={24} />
-            </button>
+          <SheetTrigger onClick={toggleMenu} className="p-2">
+            <BiMenuAltRight size={24} />
           </SheetTrigger>
 
           {/* Mobile Drawer Menu */}

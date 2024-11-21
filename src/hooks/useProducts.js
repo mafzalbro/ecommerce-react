@@ -214,9 +214,15 @@ export function useProducts(searchParams) {
 
   useEffect(() => {
     getProducts();
-    getPopulatedProducts();
-    getNewArrivals();
   }, [getProducts]);
+  
+  useEffect(() => {
+    getPopulatedProducts();
+  }, [getPopulatedProducts]);
+
+  useEffect(() => {
+    getPopulatedProducts();
+  }, [getNewArrivals]);
 
   return {
     products,

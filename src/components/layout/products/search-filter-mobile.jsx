@@ -1,5 +1,16 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
+import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
+import { useSearchParams } from "react-router-dom";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { FilterIcon } from "lucide-react";
+import { Button } from "../../ui/button";
+import { MdOutlineClearAll } from "react-icons/md";
 import {
   Select,
   SelectTrigger,
@@ -8,58 +19,29 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { useCategories } from "@/hooks/useCategories";
-import { Input } from "../../ui/input";
-import { Label } from "../../ui/label";
-import { useDebounce } from "use-debounce";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { FilterIcon } from "lucide-react";
-import { Button } from "../../ui/button";
-import { Link, useSearchParams } from "react-router-dom";
-import { MdOutlineClearAll } from "react-icons/md";
+import { Link } from "react-router-dom";
 
-const FilterMobile = ({ onFilterChange }) => {
-  const [searchParams] = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSubCategory, setSelectedSubCategory] = useState("");
-
-  // Debounced search term
-  const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
+const FilterMobile = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState(
+    searchParams.get("searchTerm") || ""
+  );
+  const [selectedCategory, setSelectedCategory] = useState(
+    searchParams.get("category") || ""
+  );
+  const [selectedSubCategory, setSelectedSubCategory] = useState(
+    searchParams.get("subCategory") || ""
+  );
 
   const {
     categories,
     subCategories,
     loadingCategories,
-    loadingSubCategories,
     fetchSubCategoriesForCategory,
     errorCategories,
+    loadingSubCategories,
     errorSubCategories,
   } = useCategories();
-
-  useEffect(() => {
-    const categoryId = searchParams.get("category");
-    const subCategoryId = searchParams.get("subCategory");
-
-    if (categoryId && categories.length > 0) {
-      const category = categories.find((cat) => cat._id === categoryId);
-      if (category) {
-        setSelectedCategory(category._id);
-      }
-    }
-
-    if (subCategoryId && subCategories.length > 0) {
-      const subCategory = subCategories.find(
-        (sub) => sub._id === subCategoryId
-      );
-      if (subCategory) {
-        setSelectedSubCategory(subCategory._id);
-      }
-    }
-  }, [searchParams, categories, subCategories]);
 
   useEffect(() => {
     if (selectedCategory) {
@@ -69,36 +51,38 @@ const FilterMobile = ({ onFilterChange }) => {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
+    setSearchParams((prevParams) => {
+      if (e.target.value) {
+        return { ...prevParams, searchTerm: e.target.value };
+      } else {
+        const { searchTerm, ...rest } = Object.fromEntries(
+          prevParams.entries()
+        );
+        return rest;
+      }
+    });
   };
 
   const handleCategoryChange = (value) => {
     setSelectedCategory(value);
+    setSearchParams((prevParams) => {
+      return { ...prevParams, category: value };
+    });
   };
 
   const handleSubCategoryChange = (value) => {
     setSelectedSubCategory(value);
+    setSearchParams((prevParams) => {
+      return { ...prevParams, subCategory: value };
+    });
   };
 
   const handleClearFilters = () => {
     setSearchTerm("");
     setSelectedCategory("");
     setSelectedSubCategory("");
-    onFilterChange({});
+    setSearchParams({});
   };
-
-  // Update filters when any change happens
-  useMemo(() => {
-    onFilterChange({
-      searchTerm: debouncedSearchTerm,
-      category: selectedCategory,
-      subCategory: selectedSubCategory,
-    });
-  }, [
-    debouncedSearchTerm,
-    onFilterChange,
-    selectedCategory,
-    selectedSubCategory,
-  ]);
 
   return (
     <div className="filter flex justify-between items-center">
@@ -190,7 +174,7 @@ const FilterMobile = ({ onFilterChange }) => {
                           value={subCategory._id}
                         >
                           <Link
-                            to={`/products?category=${subCategory.category}&category=${subCategory._id}`}
+                            to={`/products?category=${subCategory.category}&subCategory=${subCategory._id}`}
                           >
                             {subCategory.name}
                           </Link>

@@ -18,11 +18,11 @@ const NavigationMenuWrapper = ({ className }) => {
       <NavigationMenuList className={className + " flex gap-4"}>
         {/* Home Link */}
         <NavigationMenuItem>
-          <NavigationMenuLink className="flex items-center hover:text-gray-300">
+          <div className="flex items-center hover:text-gray-300">
             <Button variant="outline" className="flex items-center">
               <Link to={"/"}>Home</Link>
             </Button>
-          </NavigationMenuLink>
+          </div>
         </NavigationMenuItem>
 
         {/* Product Categories */}
