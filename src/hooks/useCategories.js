@@ -1,24 +1,36 @@
 import { useState, useEffect, useCallback } from "react";
 import fetcher from "@/utils/fetcher";
+import { setCache, getCache } from "@/utils/caching";
 
 export function useCategories() {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(false);
   const [loadingSubCategories, setLoadingSubCategories] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(null); // Track selected category
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [error, setError] = useState(null);
 
-  // Function to fetch categories with optional filters
+  // Function to fetch categories with optional filters and caching
   const getCategories = useCallback(async () => {
     if (loadingCategories) return; // Skip if already loading categories
     setLoadingCategories(true);
+
+    // Check if categories are in cache
+    const cachedCategories = getCache("categories");
+    if (cachedCategories) {
+      setCategories(cachedCategories);
+      setLoadingCategories(false); // No need to load again if cached
+      return;
+    }
+
     try {
       const response = await fetcher.get(
         "/restorex/categories/getAllCategories"
       );
+      const fetchedCategories = response.data.getAllCategories;
 
-      setCategories(response.data.getAllCategories); // Always update categories
+      setCategories(fetchedCategories);
+      setCache("categories", fetchedCategories); // Cache the fetched categories
     } catch (err) {
       setError("Error fetching categories");
       console.log(err);
@@ -27,17 +39,28 @@ export function useCategories() {
     }
   }, [loadingCategories]);
 
-  // Function to fetch subcategories for a specific category with optional filters
+  // Function to fetch subcategories for a specific category with caching
   const getSubCategories = useCallback(
     async (categoryId) => {
       if (!categoryId || loadingSubCategories) return; // Skip if no categoryId or already loading
       setLoadingSubCategories(true);
+
+      // Check if subcategories for this category are in cache
+      const cachedSubCategories = getCache(`subcategories_${categoryId}`);
+      if (cachedSubCategories) {
+        setSubCategories(cachedSubCategories);
+        setLoadingSubCategories(false); // No need to load again if cached
+        return;
+      }
+
       try {
         const response = await fetcher.get(
           `/restorex/categories/${categoryId}/subcategories/getAllSubCategories`
         );
+        const fetchedSubCategories = response.data.getAllSubCategories;
 
-        setSubCategories(response.data.getAllSubCategories); // Always update subcategories
+        setSubCategories(fetchedSubCategories);
+        setCache(`subcategories_${categoryId}`, fetchedSubCategories); // Cache the subcategories for the category
       } catch (err) {
         setError("Error fetching subcategories");
         console.log(err);
