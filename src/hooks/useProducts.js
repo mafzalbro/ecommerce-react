@@ -1,30 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import fetcher from "@/utils/fetcher";
+import { setCache, getCache } from "@/utils/caching";
 import { toast } from "@/hooks/use-toast";
-
-// Cache expiration time (5 seconds)
-const CACHE_EXPIRATION_TIME = 15000;
-
-function setCache(key, data) {
-  const cacheData = {
-    data,
-    timestamp: Date.now(),
-  };
-  localStorage.setItem(key, JSON.stringify(cacheData));
-}
-
-function getCache(key) {
-  const cacheData = JSON.parse(localStorage.getItem(key));
-  if (!cacheData) return null;
-
-  // Check if the cache has expired
-  if (Date.now() - cacheData.timestamp > CACHE_EXPIRATION_TIME) {
-    localStorage.removeItem(key); // Remove expired cache
-    return null;
-  }
-
-  return cacheData.data;
-}
 
 export function useProducts(searchParams) {
   const [products, setProducts] = useState([]);
@@ -215,7 +192,7 @@ export function useProducts(searchParams) {
   useEffect(() => {
     getProducts();
   }, [getProducts]);
-  
+
   useEffect(() => {
     getPopulatedProducts();
   }, [getPopulatedProducts]);
