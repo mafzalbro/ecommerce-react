@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Popover,
   PopoverTrigger,
@@ -22,16 +22,10 @@ import { useCategories } from "@/hooks/useCategories";
 import { Link } from "react-router-dom";
 
 const FilterMobile = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState(
-    searchParams.get("searchTerm") || ""
-  );
-  const [selectedCategory, setSelectedCategory] = useState(
-    searchParams.get("category") || ""
-  );
-  const [selectedSubCategory, setSelectedSubCategory] = useState(
-    searchParams.get("subCategory") || ""
-  );
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubCategory, setSelectedSubCategory] = useState("");
 
   const {
     categories,
@@ -51,37 +45,47 @@ const FilterMobile = () => {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    setSearchParams((prevParams) => {
-      if (e.target.value) {
-        return { ...prevParams, searchTerm: e.target.value };
-      } else {
-        const { searchTerm, ...rest } = Object.fromEntries(
-          prevParams.entries()
-        );
-        return rest;
-      }
-    });
+    // Update the search parameter in the URL
+    const params = new URLSearchParams(window.location.search);
+    if (e.target.value) {
+      params.set("searchTerm", e.target.value);
+    } else {
+      params.delete("searchTerm");
+    }
+    navigate(`/products?${params.toString()}`);
   };
 
   const handleCategoryChange = (value) => {
     setSelectedCategory(value);
-    setSearchParams((prevParams) => {
-      return { ...prevParams, category: value };
-    });
+    setSelectedSubCategory(""); // Reset subcategory when category changes
+    // Update the category parameter in the URL
+    const params = new URLSearchParams(window.location.search);
+    if (value) {
+      params.set("category", value);
+    } else {
+      params.delete("category");
+    }
+    navigate(`/products?${params.toString()}`);
   };
 
   const handleSubCategoryChange = (value) => {
     setSelectedSubCategory(value);
-    setSearchParams((prevParams) => {
-      return { ...prevParams, subCategory: value };
-    });
+    // Update the subcategory parameter in the URL
+    const params = new URLSearchParams(window.location.search);
+    if (value) {
+      params.set("subCategory", value);
+    } else {
+      params.delete("subCategory");
+    }
+    navigate(`/products?${params.toString()}`);
   };
 
   const handleClearFilters = () => {
     setSearchTerm("");
     setSelectedCategory("");
     setSelectedSubCategory("");
-    setSearchParams({});
+    // Reset all filters in the URL
+    navigate("/products");
   };
 
   return (
@@ -173,11 +177,7 @@ const FilterMobile = () => {
                           key={subCategory._id}
                           value={subCategory._id}
                         >
-                          <Link
-                            to={`/products?category=${subCategory.category}&subCategory=${subCategory._id}`}
-                          >
-                            {subCategory.name}
-                          </Link>
+                          {subCategory.name}
                         </SelectItem>
                       ))
                     )}

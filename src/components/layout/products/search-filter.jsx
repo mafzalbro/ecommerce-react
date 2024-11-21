@@ -95,7 +95,7 @@ const Filter = () => {
   const updateUrlParams = () => {
     const params = new URLSearchParams();
 
-    if (debouncedSearchTerm) params.set("search", debouncedSearchTerm);
+    if (debouncedSearchTerm) params.set("searchTerm", debouncedSearchTerm);
     if (selectedCategory) params.set("category", selectedCategory);
     if (selectedSubCategory) params.set("subCategory", selectedSubCategory);
     if (debouncedMinPrice) params.set("priceGte", debouncedMinPrice);
@@ -133,11 +133,11 @@ const Filter = () => {
 
       {/* Search Input */}
       <div className="w-full">
-        <Label htmlFor="search" className="block mb-2 text-sm font-medium">
+        <Label htmlFor="searchTerm" className="block mb-2 text-sm font-medium">
           Search
         </Label>
         <Input
-          id="search"
+          id="searchTerm"
           type="text"
           value={searchTerm}
           onChange={handleSearchChange}
