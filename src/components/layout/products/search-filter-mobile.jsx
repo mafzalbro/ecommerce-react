@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
@@ -20,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { useCategories } from "@/hooks/useCategories";
 import { Link } from "react-router-dom";
+import { useDebounce } from "use-debounce"; // Import useDebounce
 
 const FilterMobile = () => {
   const navigate = useNavigate();
@@ -37,22 +37,28 @@ const FilterMobile = () => {
     errorSubCategories,
   } = useCategories();
 
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 500); // Apply debounce on searchTerm
+
   useEffect(() => {
     if (selectedCategory) {
       fetchSubCategoriesForCategory(selectedCategory);
     }
   }, [selectedCategory, fetchSubCategoriesForCategory]);
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-    // Update the search parameter in the URL
-    const params = new URLSearchParams(window.location.search);
-    if (e.target.value) {
-      params.set("searchTerm", e.target.value);
+  useEffect(() => {
+    if (debouncedSearchTerm !== "") {
+      const params = new URLSearchParams(window.location.search);
+      params.set("searchTerm", debouncedSearchTerm);
+      navigate(`/products?${params.toString()}`);
     } else {
+      const params = new URLSearchParams(window.location.search);
       params.delete("searchTerm");
+      navigate(`/products?${params.toString()}`);
     }
-    navigate(`/products?${params.toString()}`);
+  }, [debouncedSearchTerm, navigate]);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value); // This will trigger debounce effect
   };
 
   const handleCategoryChange = (value) => {
