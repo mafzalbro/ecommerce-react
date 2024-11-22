@@ -55,7 +55,7 @@ const AddToCartButton = ({ product, selectedColor, selectedSize }) => {
     const existingItem = cart.cartItem.find(
       (item) => item.productId === product._id
     );
-
+    
     if (existingItem) {
       toast({
         variant: "default",

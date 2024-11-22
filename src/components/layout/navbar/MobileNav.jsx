@@ -18,9 +18,9 @@ const MobileNav = () => {
       {/* Hamburger Icon for Small Screens */}
       <div className="md:hidden">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger onClick={toggleMenu} className="p-2">
+          <Button variant="outline" onClick={toggleMenu} className="p-2">
             <BiMenuAltRight size={24} />
-          </SheetTrigger>
+          </Button>
 
           {/* Mobile Drawer Menu */}
           <SheetContent

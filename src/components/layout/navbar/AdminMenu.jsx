@@ -77,7 +77,7 @@ const AdminMenu = ({ className }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="text-lg font-medium">
-        <Button variant="ghost" className="flex items-center space-x-2">
+        <div variant="ghost" className="flex items-center space-x-2">
           <Avatar className="w-8 h-8">
             <AvatarImage
               src={`https://api.dicebear.com/6.x/initials/svg?seed=${user?.name}`}
@@ -92,7 +92,7 @@ const AdminMenu = ({ className }) => {
           </Avatar>
           <small className="text-xs">Hey, Admin</small>
           <AiOutlineDownCircle className="ml-1 w-4 h-4 text-gray-500" />
-        </Button>
+        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-[250px] p-2">
         <DropdownMenuLabel>Menu</DropdownMenuLabel>

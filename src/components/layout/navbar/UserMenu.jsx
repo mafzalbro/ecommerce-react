@@ -39,7 +39,7 @@ const UserMenu = () => {
               .join("")}
           </AvatarFallback>
         </Avatar>
-        <small className="text-xs">Hey, {user?.name?.split(" ")[0]}</small>
+        <small className="text-xs hidden sm:block">Hey, {user?.name?.split(" ")[0]}</small>
         <AiOutlineDownCircle className="ml-1 w-4 h-4 text-gray-500" />{" "}
         {/* Add icon */}
       </DropdownMenuTrigger>

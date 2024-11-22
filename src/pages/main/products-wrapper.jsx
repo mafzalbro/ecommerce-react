@@ -17,7 +17,7 @@ const ProductsWrapper = () => {
   );
 
   return (
-    <div className="flex flex-col sm:flex-row my-4 mx-2">
+    <div className="flex flex-col sm:flex-row my-4 mx-2 min-h-screen">
       <div className="sm:w-1/4 hidden sm:inline-block">
         <Filter />
       </div>

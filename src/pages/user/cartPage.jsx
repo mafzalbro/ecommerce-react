@@ -7,6 +7,7 @@ import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { Input } from "../../components/ui/input";
 import { toast } from "../../hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import "./cart.css";
 
 const CartPage = () => {
   const { isAuthenticated } = useAuth(); // Use authentication hook
@@ -22,13 +23,13 @@ const CartPage = () => {
   const [couponCode, setCouponCode] = useState(""); // State for coupon code input
   const [isCouponApplied, setIsCouponApplied] = useState(false); // State to track if coupon is applied
 
+  useEffect(() => {}, [cart]);
+
   // Calculate subtotal using the updated cart structure
   const subtotal = cart.cartItem.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
-
-  console.log(cart);
 
   // Redirect after 5 seconds (useful for redirecting after an action like removing an item or applying a coupon)
   useEffect(() => {
@@ -42,16 +43,19 @@ const CartPage = () => {
   useEffect(() => {
     const hash = window.location.hash.slice(1);
     if (hash) {
-      const matchedItem = cart.cartItem.find((item) => item._id === hash);
+      const matchedItem = cart.cartItem.find((item) => item.productId === hash);
+
       if (matchedItem) {
         highlightedRef.current = document.getElementById(
-          `cart-item-${matchedItem._id}`
+          `${matchedItem.productId}`
         );
+
         if (highlightedRef.current) {
           highlightedRef.current.scrollIntoView({
             behavior: "smooth",
             block: "center",
           });
+
           highlightedRef.current.classList.add("vibrate");
           setTimeout(() => {
             highlightedRef.current.classList.remove("vibrate");
@@ -127,24 +131,46 @@ const CartPage = () => {
               <ul className="space-y-4">
                 {cart.cartItem.map((item) => (
                   <li
-                    key={item._id}
-                    id={`cart-item-${item._id}`}
+                    key={item.productId}
+                    id={`${item.productId}`}
                     className="flex flex-col sm:flex-row items-center justify-between p-4 shadow-md rounded-lg border"
                   >
                     <div className="flex items-center gap-4 mb-4 sm:mb-0">
                       <div>
                         <h2 className="text-xl font-semibold">{item.title}</h2>
-                        <p className="text-sm text-gray-500">
-                          PKR {item.price?.toFixed(2)}
-                        </p>
+                        <div className="flex gap-2 items-center flex-wrap">
+                          <p className="text-sm text-gray-600 dark:text-gray-200">
+                            PKR{" "}
+                            {item.totalProductDiscount !== 0
+                              ? item.price -
+                                (item.price * item.totalProductDiscount) / 100
+                              : item.price}
+                          </p>
+
+                          {item.totalProductDiscount !== 0 && (
+                            <p
+                              className={`text-xs text-gray-500 dark:text-gray-300 ${
+                                item.totalProductDiscount !== 0 &&
+                                "line-through"
+                              }`}
+                            >
+                              PKR {item.price?.toFixed(2)}
+                            </p>
+                          )}
+                        </div>
+                        {item.totalProductDiscount !== 0 && (
+                          <p className="text-sm text-gray-600 dark:text-gray-200">
+                            {item.totalProductDiscount}% OFF
+                          </p>
+                        )}
                         {/* Item Details (Color & Size) */}
-                        <div className="my-4">
+                        <div className="my-4 flex flex-wrap gap-2">
                           {item.color && (
                             <div className="flex items-center space-x-2">
-                              <span className="font-medium text-gray-600">
+                              <span className="font-medium text-gray-900 dark:text-gray-100">
                                 Color:
                               </span>
-                              <span className="bg-gray-200 text-gray-800 py-1 px-2 rounded text-sm">
+                              <span className="bg-gray-100 dark:bg-gray-800 py-1 px-2 rounded text-sm">
                                 {item.color}
                               </span>
                             </div>
@@ -152,10 +178,10 @@ const CartPage = () => {
 
                           {item.size && (
                             <div className="flex items-center space-x-2">
-                              <span className="font-medium text-gray-600">
+                              <span className="font-medium text-gray-900 dark:text-gray-100">
                                 Size:
                               </span>
-                              <span className="bg-gray-200 text-gray-800 py-1 px-2 rounded text-sm">
+                              <span className="bg-gray-100 dark:bg-gray-800 py-1 px-2 rounded text-sm">
                                 {item.size}
                               </span>
                             </div>
@@ -165,6 +191,7 @@ const CartPage = () => {
                     </div>
                     <div className="flex items-center gap-4">
                       <Button
+                        variant={"outline"}
                         onClick={() =>
                           handleUpdateQuantity(item, item.quantity - 1)
                         }
@@ -177,6 +204,7 @@ const CartPage = () => {
                         {item.quantity}
                       </span>
                       <Button
+                        variant={"outline"}
                         onClick={() =>
                           handleUpdateQuantity(item, item.quantity + 1)
                         }
@@ -189,7 +217,7 @@ const CartPage = () => {
                         variant="destructive"
                         onClick={() => handleRemoveItem(item)}
                         disabled={isProcessing}
-                        className="p-2"
+                        className="px-2"
                       >
                         Remove
                       </Button>

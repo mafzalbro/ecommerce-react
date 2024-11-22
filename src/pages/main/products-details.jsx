@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import DateDisplay from "@/components/layout/items/DateDisplay";
 import { useProducts } from "../../hooks/useProducts";
@@ -13,6 +13,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import GoBack from "../../components/layout/admin/GoBack";
+import useAuth from "../../hooks/AuthProvider";
+import { PencilIcon } from "lucide-react";
 
 export default function ProductDetailsPage() {
   const { productId } = useParams();
@@ -25,6 +29,7 @@ export default function ProductDetailsPage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedSize, setSelectedSize] = useState(product?.size || ""); // Track selected size
   const [selectedColor, setSelectedColor] = useState(product?.color?.[0] || ""); // Track selected color
+  const [selectedCover, setSelectedCover] = useState(product?.imgCover || []); // Track selected color
 
   // Fetch the product details using the provided productId
   React.useEffect(() => {
@@ -62,6 +67,7 @@ export default function ProductDetailsPage() {
   if (!product) {
     return (
       <div className="text-center text-xl font-bold p-4 my-40">
+        <GoBack to={"/products"} />
         <div className="text-4xl font-semibold text-red-600">
           Product Not Found
         </div>
@@ -73,15 +79,39 @@ export default function ProductDetailsPage() {
   }
 
   const handleSizeChange = (size) => {
+    const currentImage = product?.imagesArray
+      ?.filter((image) => {
+        return image.sizes[0] === size;
+      })
+      .map((imgArr) => imgArr.images);
+
+    setSelectedCover(currentImage);
+
     setSelectedSize(size); // Update selected size
   };
 
   const handleColorChange = (color) => {
-    setSelectedColor(color); // Update selected color
+    const currentImage = product?.imagesArray
+      ?.filter((image) => {
+        return image.colors[0] === color;
+      })
+      .map((imgArr) => imgArr.images);
+    setSelectedCover(currentImage);
+    setSelectedColor(color);
   };
-
+  const { role } = useAuth();
   return (
     <>
+      {role === "admin" && (
+        <div className="w-full flex justify-end px-4">
+          <Link to={`/admin/products/${product._id}`}>
+            <Button variant="outline">
+              <PencilIcon />
+              Edit
+            </Button>
+          </Link>
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-4 md:p-8">
         {/* Product Images Section */}
         <div className="flex flex-col space-y-4">
@@ -90,11 +120,21 @@ export default function ProductDetailsPage() {
             <DialogTrigger asChild>
               <div className="aspect-w-1 aspect-h-1 border-2 border-indigo-500 rounded-lg overflow-hidden shadow-lg cursor-pointer">
                 <img
-                  src={product?.imgCover}
+                  src={
+                    selectedCover?.length !== 0
+                      ? selectedCover[0]
+                      : product?.imgCover
+                  }
                   // srcSet={"/placeholder.png"}
                   alt="Product Image"
                   className="object-cover w-full h-80"
-                  onClick={() => setSelectedImage(product?.imgCover || null)}
+                  onClick={() =>
+                    setSelectedImage(
+                      selectedCover?.length !== 0
+                        ? selectedCover[0]
+                        : product?.imgCover || null
+                    )
+                  }
                 />
               </div>
             </DialogTrigger>
@@ -123,7 +163,7 @@ export default function ProductDetailsPage() {
 
           {/* Additional Product Images */}
           <div className="grid grid-cols-4 gap-2">
-            {product?.images?.map((image, index) => (
+            {selectedCover?.slice(1)?.map((image, index) => (
               <Dialog key={index}>
                 <DialogTrigger asChild>
                   <img
@@ -174,6 +214,11 @@ export default function ProductDetailsPage() {
                 Out of stock
               </Badge>
             )}
+            {product?.discount && (
+              <span className="text-sm font-bold text-red-500 border rounded-lg px-4 py-1">
+                {product?.discount}% Discount
+              </span>
+            )}
           </div>
 
           {/* Quantity, Sold, and Stock */}
@@ -182,10 +227,10 @@ export default function ProductDetailsPage() {
               <span className="font-semibold">Stock:</span> {product?.quantity}{" "}
               Pcs
             </div>
-            <div>
+            {/* <div>
               <span className="font-semibold">Sold:</span> {product?.sold || 0}{" "}
               Pcs
-            </div>
+            </div> */}
           </div>
 
           {/* Sizes and Colors */}

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Card,
   CardContent,
@@ -20,18 +19,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useProducts } from "../../hooks/useProducts";
 import GoBack from "../../components/layout/admin/GoBack";
-import { pinataUpload } from "@/utils/uploads";
 import CategorySelection from "./products/CategorySelection";
+import { pinataUpload } from "@/utils/uploads";
 
-const UpdateProductPage = () => {
+const AddProductPage = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
-  const { getProductById, updateProduct } = useProducts();
+  const { addProduct } = useProducts();
 
-  const [product, setProduct] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
@@ -43,55 +40,14 @@ const UpdateProductPage = () => {
   const [imgCover, setImgCover] = useState("");
   const [imgCoverPreview, setImgCoverPreview] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [colors, setColors] = useState("");
-  const [sizes, setSizes] = useState("");
   const [fileUploading, setFileUploading] = useState(false);
   const [imagesUploading, setImagesUploading] = useState(-1);
-
-  useEffect(() => {
-    const fetchProduct = async () => {
-      const data = await getProductById(id);
-
-      if (!data) {
-        console.error("Product not found!");
-        navigate("/admin/products", { replace: true });
-        return;
-      }
-
-      setProduct(data);
-      setTitle(data?.title);
-      setDescription(data?.description);
-      setPrice(data?.price);
-      setQuantity(data?.quantity);
-      setDiscount(data?.discount);
-      setImgCoverPreview(data?.imgCover);
-      setImgCover(data?.imgCover);
-      setSelectedCategory(data?.category);
-      setSelectedSubCategory(data?.subcategory);
-      setColors(data?.color?.join());
-      setSizes(data?.size?.join());
-
-      const colorSizeMappedImages = data?.imagesArray?.map((item) => ({
-        color: item.colors,
-        size: item.sizes,
-        image: item.images,
-        price: item.price,
-        quantity: item.quantity,
-        file: null,
-        preview: item.images,
-        mode: "url",
-      }));
-
-      setColorSizeImages(colorSizeMappedImages || []);
-      setIsLoading(false);
-    };
-    fetchProduct();
-  }, [id]);
+  const [colors, setColors] = useState("");
+  const [sizes, setSizes] = useState("");
 
   const handleCategoryChange = (categoryId) => {
     setSelectedCategory(categoryId);
-    setSelectedSubCategory(null);
+    setSelectedSubCategory(null); // Reset subcategory when a new category is selected
   };
 
   const handleSubCategoryChange = (subCategoryId) => {
@@ -102,6 +58,7 @@ const UpdateProductPage = () => {
     const file = e.target.files[0];
     if (file) {
       try {
+        // Upload file to Pinata and get the URL
         setImagesUploading(index);
         const uploadedUrl = await pinataUpload(file);
         setImagesUploading(-1);
@@ -114,7 +71,6 @@ const UpdateProductPage = () => {
           mode: "upload",
         };
         setColorSizeImages(updatedColorSizeImages);
-        // openImagePreview(URL.createObjectURL(file));
       } catch (error) {
         console.error("Error uploading image to Pinata:", error);
       }
@@ -135,15 +91,6 @@ const UpdateProductPage = () => {
       },
     ]);
   };
-
-  // const openImagePreview = (previewUrl) => {
-  //   setCurrentImagePreview(previewUrl);
-  // };
-
-  // const closeImagePreview = () => {
-  //   setCurrentImagePreview("");
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -153,64 +100,46 @@ const UpdateProductPage = () => {
         image.mode === "upload" ? image.image : image.preview
       );
 
-      const updatedProduct = {
+      const newProduct = {
         title,
         description,
         price,
         quantity,
         discount,
+        color: colors?.split(",").map((color) => color.trim()),
+        size: sizes?.split(",").map((size) => size.trim()),
         category: selectedCategory,
         subcategory: selectedSubCategory,
         imgCover,
         imagesArray: updatedColorSizeImages.map((item, index) => ({
           images: item,
-          sizes: sizes?.split(",").map((size) => size.trim()),
-          colors: colors?.split(",").map((color) => color.trim()),
+          sizes: colorSizeImages[index]?.size
+            ? [colorSizeImages[index].size]
+            : sizes?.split(",").map((size) => size.trim()),
+          colors: colorSizeImages[index]?.color
+            ? [colorSizeImages[index].color]
+            : colors?.split(",").map((color) => color.trim()),
           price: colorSizeImages[index].price,
           quantity: colorSizeImages[index].quantity,
         })),
       };
 
-      await updateProduct(id, updatedProduct);
+      await addProduct(newProduct);
       navigate("/admin/products");
     } catch (error) {
-      console.error("Error updating product:", error);
+      console.error("Error adding product:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="p-6 space-y-4 max-w-screen-lg mx-auto">
-        <Card>
-          <CardHeader>
-            <Skeleton className="h-8 w-32" />
-            <Skeleton className="h-4 w-64 mt-2" />
-          </CardHeader>
-          <CardContent>
-            <Skeleton className="h-10 w-full mb-4" />
-            <Skeleton className="h-10 w-full mb-4" />
-            <Skeleton className="h-10 w-full mb-4" />
-            <Skeleton className="h-10 w-full mb-4" />
-            <Skeleton className="h-32 w-full mb-4" />
-            <Skeleton className="h-24 w-24 mb-4" />
-            <Skeleton className="h-10 w-32" />
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="p-6 space-y-4 max-w-screen-lg mx-auto">
-      <GoBack to="/admin/products"></GoBack>
+      <GoBack to="/admin/products" />
       <Card>
         <CardHeader>
-          <CardTitle className={"text-2xl"}>Update Product</CardTitle>
-          <CardDescription>
-            Update the details for your product.
-          </CardDescription>
+          <CardTitle className={"text-2xl"}>Add Product</CardTitle>
+          <CardDescription>Add a new product to the inventory.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
@@ -236,7 +165,7 @@ const UpdateProductPage = () => {
                   }}
                   placeholder="Enter a description (10-100 characters)"
                   required
-                  maxLength={400} // Enforces max characters at the HTML level
+                  maxLength={400}
                 />
                 <p className="text-sm text-gray-500 my-2 placeholder:text-xs">
                   {description?.length || 0}/400 characters
@@ -251,8 +180,6 @@ const UpdateProductPage = () => {
               <CategorySelection
                 onCategoryChange={handleCategoryChange}
                 onSubCategoryChange={handleSubCategoryChange}
-                selectedSubCategory={selectedSubCategory}
-                selectedCategory={selectedCategory}
               />
 
               <div>
@@ -335,17 +262,14 @@ const UpdateProductPage = () => {
                     <div className="flex space-x-2 items-center flex-col my-2 sm:flex-row border rounded-md p-2">
                       {/* Color Select Dropdown */}
                       <Select
-                        value={image.color[0]} // Controlled value
-                        onValueChange={(value) => {
-                          // Avoid state updates that cause infinite loops
-                          if (image.color !== value) {
-                            setColorSizeImages(
-                              colorSizeImages.map((img, idx) =>
-                                idx === index ? { ...img, color: value } : img
-                              )
-                            );
-                          }
-                        }}
+                        value={image.color}
+                        onValueChange={(value) =>
+                          setColorSizeImages(
+                            colorSizeImages.map((img, idx) =>
+                              idx === index ? { ...img, color: value } : img
+                            )
+                          )
+                        }
                       >
                         <SelectTrigger className="w-[180px]">
                           <SelectValue placeholder="Select Color" />
@@ -354,9 +278,10 @@ const UpdateProductPage = () => {
                           <SelectGroup>
                             <SelectLabel>Colors</SelectLabel>
                             {colors
-                              ?.split(",")
-                              ?.filter((color) => color !== "")
-                              ?.map((color, i) => (
+                              .split(",")
+                              .map((color) => color.trim())
+                              .filter((color) => color !== "")
+                              .map((color, i) => (
                                 <SelectItem key={i} value={color}>
                                   {color}
                                 </SelectItem>
@@ -367,17 +292,14 @@ const UpdateProductPage = () => {
 
                       {/* Size Select Dropdown */}
                       <Select
-                        value={image.size[0]} // Controlled value
-                        onValueChange={(value) => {
-                          // Avoid state updates that cause infinite loops
-                          if (image.size !== value) {
-                            setColorSizeImages(
-                              colorSizeImages.map((img, idx) =>
-                                idx === index ? { ...img, size: value } : img
-                              )
-                            );
-                          }
-                        }}
+                        value={image.size}
+                        onValueChange={(value) =>
+                          setColorSizeImages(
+                            colorSizeImages.map((img, idx) =>
+                              idx === index ? { ...img, size: value } : img
+                            )
+                          )
+                        }
                       >
                         <SelectTrigger className="w-[180px]">
                           <SelectValue placeholder="Select Size" />
@@ -386,9 +308,10 @@ const UpdateProductPage = () => {
                           <SelectGroup>
                             <SelectLabel>Sizes</SelectLabel>
                             {sizes
-                              ?.split(",")
-                              ?.filter((size) => size !== "")
-                              ?.map((size, i) => (
+                              .split(",")
+                              .map((size) => size.trim())
+                              .filter((size) => size !== "")
+                              .map((size, i) => (
                                 <SelectItem key={i} value={size}>
                                   {size}
                                 </SelectItem>
@@ -398,7 +321,7 @@ const UpdateProductPage = () => {
                       </Select>
 
                       {/* Image Upload */}
-                      {false ? (
+                      {imagesUploading === index ? (
                         "Uploading..."
                       ) : (
                         <Input
@@ -422,7 +345,7 @@ const UpdateProductPage = () => {
               </div>
 
               <Button type="submit" disabled={isSubmitting} className="mt-4">
-                {isSubmitting ? "Updating..." : "Update Product"}
+                {isSubmitting ? "Adding..." : "Add Product"}
               </Button>
             </div>
           </form>
@@ -432,4 +355,4 @@ const UpdateProductPage = () => {
   );
 };
 
-export default UpdateProductPage;
+export default AddProductPage;

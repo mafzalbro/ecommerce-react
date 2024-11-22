@@ -1,18 +1,18 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 
-const ExportButton = ({ categories }) => {
+const ExportButton = ({ subCategories }) => {
   const handleExport = () => {
-    const csvHeader = "ID,Name,Slug,Image\n";
-    const csvRows = categories.map((category) => {
-      return `${category._id},${category.name},${category.slug},${category.Image}`;
+    const csvHeader = "ID,Name,Slug,Category,Created At,Updated At\n";
+    const csvRows = subCategories.map((subCategory) => {
+      return `${subCategory._id},${subCategory.name},${subCategory.slug},${subCategory.category},${subCategory.createdAt},${subCategory.updatedAt}`;
     });
     const csvData = csvHeader + csvRows.join("\n");
 
     const blob = new Blob([csvData], { type: "text/csv" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "categories.csv";
+    link.download = "subcategories.csv";
     link.click();
   };
 

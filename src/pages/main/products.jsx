@@ -7,6 +7,7 @@ import Pagination from "./pagination";
 
 // eslint-disable-next-line react/prop-types
 const Products = ({ searchParams }) => {
+  
   const { loadingProducts, products, totalResults, setLoadingProducts } =
     useProducts(searchParams);
 
@@ -49,7 +50,7 @@ const Products = ({ searchParams }) => {
         const endIndex = startIndex + limit;
         setVisibleProducts(products.slice(startIndex, endIndex)); // Show the slice based on the current page
         setLoadingProducts(false);
-      }, 1000); // 500ms delay, you can adjust the time
+      }, 300); // 500ms delay, you can adjust the time
 
       setLoadingProducts(true);
       // Clear the timer when the component is unmounted or products change
@@ -81,7 +82,7 @@ const Products = ({ searchParams }) => {
   // Once products are loaded, show the actual cards and Load More button
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mx-2">
+      <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mx-2">
         {visibleProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

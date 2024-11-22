@@ -24,7 +24,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"; // Import DropdownMenu components
+} from "@/components/ui/dropdown-menu";
 
 const ProductTable = ({ products, loading, deleteProduct }) => (
   <Table>
@@ -76,7 +76,7 @@ const ProductTable = ({ products, loading, deleteProduct }) => (
             </TableCell>
           </TableRow>
         ))
-      ) : products.length > 0 ? (
+      ) : products?.length > 0 ? (
         products.map((product) => (
           <TableRow key={product.id}>
             <TableCell>

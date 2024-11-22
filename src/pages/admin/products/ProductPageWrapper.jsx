@@ -4,8 +4,11 @@ import ExportButton from "./ExportButton";
 import { Input } from "@/components/ui/input";
 import { useProducts } from "../../../hooks/useProducts";
 import ProductTable from "./ProductsTable";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const ProductPageWrapper = () => {
+  const navigate = useNavigate();
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -16,7 +19,6 @@ const ProductPageWrapper = () => {
 
   useEffect(() => {
     let filtered = products;
-
     if (searchQuery) {
       filtered = filtered.filter(
         (product) =>
@@ -42,7 +44,7 @@ const ProductPageWrapper = () => {
 
   const paginatedProducts = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+    return filteredProducts?.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredProducts, currentPage, itemsPerPage]);
 
   return (
@@ -58,6 +60,13 @@ const ProductPageWrapper = () => {
         />
         <div className="flex flex-col sm:flex-row gap-2">
           <ExportButton products={filteredProducts} />
+          <Button
+            onClick={() => {
+              navigate("/admin/products/new");
+            }}
+          >
+            Add New
+          </Button>
         </div>
       </div>
 
@@ -78,7 +87,7 @@ const ProductPageWrapper = () => {
       {/* Pagination */}
       <Pagination
         currentPage={currentPage}
-        totalItems={filteredProducts.length}
+        totalItems={filteredProducts?.length}
         itemsPerPage={itemsPerPage}
         onPageChange={handlePageChange}
       />

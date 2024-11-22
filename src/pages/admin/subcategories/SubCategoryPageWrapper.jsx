@@ -2,40 +2,33 @@ import { memo, useMemo, useState, useEffect } from "react";
 import Pagination from "./Pagination";
 import ExportButton from "./ExportButton";
 import { Input } from "@/components/ui/input";
-import { useCategories } from "../../../hooks/useCategories";
-import CategoryTable from "./CategoryTable";
+import SubCategoryTable from "./SubCategoryTable";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useCategories } from "../../../hooks/useCategories";
 
-const CategoryPageWrapper = () => {
+const SubCategoryPageWrapper = () => {
   const navigate = useNavigate();
-  const [filteredCategories, setFilteredCategories] = useState([]);
+  const [filteredSubCategories, setFilteredSubCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [loading, setLoading] = useState(false);
 
-  const {
-    categories,
-    subCategories,
-    loadingCategories,
-    loadingSubCategories,
-    error,
-    deleteCategory,
-  } = useCategories();
-  
+  const { subCategories, loadingSubCategories, error, deleteSubCategoryById } =
+    useCategories();
 
   useEffect(() => {
-    let filtered = categories;
+    let filtered = subCategories;
 
     if (searchQuery) {
-      filtered = filtered.filter((category) =>
-        category?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter((subCategory) =>
+        subCategory?.name?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    setFilteredCategories(filtered);
-  }, [searchQuery, categories]);
+    setFilteredSubCategories(filtered);
+  }, [searchQuery, subCategories]);
 
   const handlePageChange = (pageNumber) => {
     setLoading(true);
@@ -47,27 +40,27 @@ const CategoryPageWrapper = () => {
     }, 1000);
   };
 
-  const paginatedCategories = useMemo(() => {
+  const paginatedSubCategories = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredCategories?.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredCategories, currentPage, itemsPerPage]);
+    return filteredSubCategories?.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredSubCategories, currentPage, itemsPerPage]);
 
   return (
     <div className="p-4 max-w-screen-xl mx-auto">
-      <h1 className="text-4xl my-10">Manage Categories</h1>
+      <h1 className="text-4xl my-10">Manage Subcategories</h1>
       <div className="flex justify-between items-center mb-4">
         <Input
           type="text"
           className="w-full max-w-md"
-          placeholder="Search categories..."
+          placeholder="Search subcategories..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <div className="flex flex-col sm:flex-row gap-2">
-          <ExportButton categories={filteredCategories} />
+          <ExportButton subCategories={filteredSubCategories} />
           <Button
             onClick={() => {
-              navigate("/admin/categories/new");
+              navigate("/admin/subcategories/new");
             }}
           >
             Add New
@@ -77,23 +70,22 @@ const CategoryPageWrapper = () => {
 
       {/* Table with Skeleton */}
       <div className="overflow-x-auto">
-        <CategoryTable
-          categories={paginatedCategories}
-          subCategories={subCategories}
-          loading={loading || loadingCategories || loadingSubCategories}
-          deleteCategory={deleteCategory}
+        <SubCategoryTable
+          subCategories={paginatedSubCategories}
+          loading={loading || loadingSubCategories}
+          deleteSubCategory={deleteSubCategoryById}
         />
       </div>
 
       <p className="my-4 bg-secondary text-center py-2">
-        Total Categories:
-        <span className="font-bold mx-1">{categories?.length}</span>
+        Total Subcategories:
+        <span className="font-bold mx-1">{subCategories?.length}</span>
       </p>
 
       {/* Pagination */}
       <Pagination
         currentPage={currentPage}
-        totalItems={filteredCategories.length}
+        totalItems={filteredSubCategories?.length}
         itemsPerPage={itemsPerPage}
         onPageChange={handlePageChange}
       />
@@ -101,4 +93,4 @@ const CategoryPageWrapper = () => {
   );
 };
 
-export default memo(CategoryPageWrapper);
+export default memo(SubCategoryPageWrapper);

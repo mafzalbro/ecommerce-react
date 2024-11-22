@@ -26,7 +26,7 @@ export const CartProvider = ({ children }) => {
             producttitle: item.title,
             quantity: item.quantity || 1,
             price: item.price,
-            totalProductDiscount: item.totalProductDiscount || 0,
+            totalProductDiscount: item.discount || 0,
           },
         ],
       };
@@ -112,8 +112,19 @@ export const CartProvider = ({ children }) => {
     }
   };
   const updateCartItemQuantity = async (item, quantity) => {
-    setIsProcessing(true);
+    // setIsProcessing(true);
     try {
+      setCart({
+        ...cart,
+        cartItem: cart.cartItem.map((cartItem) => {
+          if (cartItem.productId === item.productId) {
+            // console.log("Updating quantity for:", cartItem.productId);
+            return { ...cartItem, quantity };
+          }
+          return cartItem;
+        }),
+      });
+
       // Make the API call to update the product quantity in the backend
       const response = await fetcher.put(
         `/restorex/carts/updateProductQuantity/${item.productId}`,
@@ -122,8 +133,8 @@ export const CartProvider = ({ children }) => {
 
       if (response?.data) {
         // Update the cart state with the response data
-        setCart(response?.data?.cart);
-        console.log("Item quantity updated:", response.data);
+        // setCart(response?.data?.cart);
+        // console.log("Item quantity updated:", response.data);
         return response?.data?.cart;
       } else {
         console.error("Failed to update item quantity on the server");
@@ -133,7 +144,7 @@ export const CartProvider = ({ children }) => {
       console.error("Error updating item quantity:", err);
       throw err; // Throw error if something goes wrong
     } finally {
-      setIsProcessing(false); // Stop the loading state
+      // setIsProcessing(false); // Stop the loading state
     }
   };
 
@@ -163,7 +174,7 @@ export const CartProvider = ({ children }) => {
 
   // Fetch cart from backend and update local state
   const getCart = async () => {
-    if (JSON.parse(localStorage.getItem("user"))?.role !== "user") {
+    if (JSON.parse(localStorage.getItem("user"))?.user?.role !== "user") {
       return;
     }
 

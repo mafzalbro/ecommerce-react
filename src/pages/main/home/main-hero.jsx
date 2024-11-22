@@ -23,7 +23,7 @@ const SimpleHero = () => {
               Browse thousands of products at the best prices. Shop with
               confidence and convenience.
             </p>
-            <div className="mt-4 flex gap-4 justify-center md:justify-start">
+            <div className="mt-4 flex-col sm:flex-row mx-4 flex sm:gap-4 justify-center md:justify-start">
               <Link to="/products">
                 <Button size="lg" className="w-full sm:w-auto">
                   Shop Now

@@ -37,23 +37,25 @@ const Navbar = () => {
         {role === "user" && <UserMenu />}
 
         {/* Show Sign In/Sign Up links if the user is not logged in (Desktop) */}
-        <div className="hidden md:flex md:gap-2">
-          {!isAuthenticated ? (
-            <div className="space-x-4 flex">
-              <Link to="/signin">
-                <Button variant="secondary">Sign In</Button>
-              </Link>
-              <Link to="/signup">
-                <Button variant="secondary">Sign Up</Button>
-              </Link>
-            </div>
-          ) : (
-            <LogoutButton onClick={logout} />
-          )}
+        <div className="flex gap-2 items-center">
+          <div className="hidden md:flex md:gap-2">
+            {!isAuthenticated ? (
+              <div className="space-x-4 flex">
+                <Link to="/signin">
+                  <Button variant="secondary">Sign In</Button>
+                </Link>
+                <Link to="/signup">
+                  <Button variant="secondary">Sign Up</Button>
+                </Link>
+              </div>
+            ) : (
+              <LogoutButton onClick={logout} />
+            )}
+          </div>
+          {role !== "admin" && role !== "seller" && <CartIcon />}
+          {/* Mobile Nav */}
+          <MobileNav />
         </div>
-        {role !== "admin" && role !== "seller" && <CartIcon />}
-        {/* Mobile Nav */}
-        <MobileNav />
       </div>
     </nav>
   );
