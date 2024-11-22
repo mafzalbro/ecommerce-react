@@ -15,12 +15,12 @@ export function useCategories() {
     if (loadingCategories) return;
     setLoadingCategories(true);
 
-    const cachedCategories = sessionStorage.getItem("categories");
-    if (cachedCategories) {
-      setCategories(cachedCategories);
-      setLoadingCategories(false);
-      return cachedCategories;
-    }
+    // const cachedCategories = getCache("categories");
+    // if (cachedCategories) {
+    //   setCategories(cachedCategories);
+    //   setLoadingCategories(false);
+    //   return cachedCategories;
+    // }
 
     try {
       const response = await fetcher.get(
@@ -29,7 +29,7 @@ export function useCategories() {
       const fetchedCategories = response.data.getAllCategories;
 
       setCategories(fetchedCategories);
-      sessionStorage.setItem("categories", fetchedCategories);
+      setCache("categories", fetchedCategories);
       return fetchedCategories;
     } catch (err) {
       setError("Error fetching categories");
@@ -166,23 +166,23 @@ export function useCategories() {
     },
     [getCategories]
   );
-
   const getAllSubCategories = useCallback(async () => {
+
     setLoadingSubCategories(true);
-    const subCategoriesKey = `getAllSubCategories`;
-    const cachedSubCategory = sessionStorage.getItem(subCategoriesKey);
+    const subCategoriesKey = `/restorex/subcategories/getAllSubCategories`;
+    const cachedSubCategory = getCache(subCategoriesKey);
     if (cachedSubCategory) {
-      setSubCategories(cachedSubCategory);
+      setSubCategories(cachedSubCategory)
       setLoadingSubCategories(false);
       return cachedSubCategory;
     }
 
     try {
-      const response = await fetcher.get(`/restorex/subcategories/getAllSubCategories`);
+      const response = await fetcher.get(subCategoriesKey);
       const allSubCategories = response.data.getAllSubCategories;
 
       // Cache the allSubCategories
-      sessionStorage.setItem(subCategoriesKey, allSubCategories);
+      setCache(subCategoriesKey, allSubCategories);
 
       setSubCategories(allSubCategories);
     } catch (err) {
