@@ -64,7 +64,7 @@ export const QuickLinksDashboard = () => {
   return (
     <div className="space-y-8 p-6">
       {/* Title and Description */}
-      <div className="text-center">
+      <div className="text-center my-4">
         <h1 className="text-4xl font-semibold text-gray-800 dark:text-white mb-2">
           Admin Dashboard
         </h1>

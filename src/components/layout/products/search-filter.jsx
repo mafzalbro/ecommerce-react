@@ -73,6 +73,10 @@ const Filter = () => {
     setSelectedSubCategory(""); // Reset subcategory when category changes
   };
 
+  const handleSubCategoryChange = (value) => {
+    setSelectedSubCategory(value);
+  };
+
   const handlePriceChange = (e) => {
     const { name, value } = e.target;
     if (name === "minPrice") {
@@ -214,26 +218,53 @@ const Filter = () => {
         ) : errorSubCategories ? (
           <p className="text-sm text-red-500">Error loading subcategories</p>
         ) : selectedCategory && subCategories.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
-            {subCategories.map((subCategory) => (
-              <div
-                key={subCategory._id}
-                className={`text-xs border rounded-lg py-1 px-3 cursor-pointer ${
-                  selectedSubCategory === subCategory._id
-                    ? "bg-primary text-primary-foreground"
-                    : ""
-                }`}
-                onClick={() => setSelectedSubCategory(subCategory._id)}
-              >
-                <Link
-                  to={`/products?category=${subCategory.category}&subCategory=${subCategory._id}`}
-                >
-                  {subCategory.name}
-                </Link>
-              </div>
-            ))}
-          </div>
+          <Select
+            value={selectedSubCategory}
+            onValueChange={handleSubCategoryChange}
+            disabled={loadingSubCategories || !selectedCategory}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue
+                placeholder={
+                  subCategories.find((sub) => sub._id === selectedSubCategory)
+                    ?.name || "Select Subcategory"
+                }
+              />
+            </SelectTrigger>
+            <SelectContent>
+              {loadingSubCategories ? (
+                <SelectItem>Loading...</SelectItem>
+              ) : errorSubCategories ? (
+                <SelectItem>Error loading subcategories</SelectItem>
+              ) : (
+                subCategories.map((subCategory) => (
+                  <SelectItem key={subCategory._id} value={subCategory._id}>
+                    {subCategory.name}
+                  </SelectItem>
+                ))
+              )}
+            </SelectContent>
+          </Select>
         ) : (
+          // <div className="flex flex-wrap gap-2">
+          //   {subCategories.map((subCategory) => (
+          //     <div
+          //       key={subCategory._id}
+          //       className={`text-xs border rounded-lg py-1 px-3 cursor-pointer ${
+          //         selectedSubCategory === subCategory._id
+          //           ? "bg-primary text-primary-foreground"
+          //           : ""
+          //       }`}
+          //       onClick={() => setSelectedSubCategory(subCategory._id)}
+          //     >
+          //       <Link
+          //         to={`/products?category=${subCategory.category}&subCategory=${subCategory._id}`}
+          //       >
+          //         {subCategory.name}
+          //       </Link>
+          //     </div>
+          //   ))}
+          // </div>
           <p className="text-sm text-gray-500">Select a category first</p>
         )}
       </div>

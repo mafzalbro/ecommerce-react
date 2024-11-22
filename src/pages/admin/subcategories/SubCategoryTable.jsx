@@ -68,7 +68,7 @@ const SubCategoryTable = ({ subCategories, loading, deleteSubCategory }) => {
                   to={`/admin/categories/${subCategory.category}`}
                   className="text-blue-500 hover:underline"
                 >
-                  {subCategory.category || "N/A"}
+                  Visit
                 </Link>
               </TableCell>
               <TableCell>

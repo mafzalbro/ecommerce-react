@@ -63,7 +63,7 @@ function ProductCard({ product }) {
         <p className="text-sm mt-2">
           {product?.description?.length < 20
             ? product?.description
-            : product?.description.slice(0, 20) + "..."}
+            : product?.description?.slice(0, 20) + "..."}
         </p>
 
         {/* Rating */}

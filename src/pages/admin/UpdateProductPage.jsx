@@ -333,6 +333,54 @@ const UpdateProductPage = () => {
                 {colorSizeImages.map((image, index) => (
                   <div key={index} className="space-y-2 flex items-center">
                     <div className="flex space-x-2 items-center flex-col my-2 sm:flex-row border rounded-md p-2">
+                      <div>
+                        <Label>Price</Label>
+                        <Input
+                          type="number"
+                          value={price}
+                          onChange={(e) =>
+                            setColorSizeImages(
+                              colorSizeImages.map((img) => ({
+                                ...img,
+                                price: value,
+                              }))
+                            )
+                          }
+                          placeholder="Enter the price"
+                          required
+                        />
+                      </div>
+                      {/* Color Select Dropdown */}
+                      <Select
+                        value={image.color[0]} // Controlled value
+                        onValueChange={(value) => {
+                          // Avoid state updates that cause infinite loops
+                          if (image.color !== value) {
+                            setColorSizeImages(
+                              colorSizeImages.map((img, idx) =>
+                                idx === index ? { ...img, color: value } : img
+                              )
+                            );
+                          }
+                        }}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Select Color" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Colors</SelectLabel>
+                            {colors
+                              ?.split(",")
+                              ?.filter((color) => color !== "")
+                              ?.map((color, i) => (
+                                <SelectItem key={i} value={color}>
+                                  {color}
+                                </SelectItem>
+                              ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                       {/* Color Select Dropdown */}
                       <Select
                         value={image.color[0]} // Controlled value
