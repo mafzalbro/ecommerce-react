@@ -16,11 +16,13 @@ import UsersPageWrapper from "../../pages/admin/users/UsersPageWrapper";
 import AddUserPage from "../../pages/admin/users/AddUserPage";
 import UpdateUserPage from "../../pages/admin/users/UpdateUserPage";
 import DashboardPage from "../../pages/admin/dashboard/DashboardPage";
+import OrdersPage from "../../pages/user/ordersPage";
 
 const userRoutes = (
   <>
     <Route path="/admin" element={<DashboardPage />} />
     <Route path="/admin/profile" element={<Profile />} />
+    <Route path="/user/orders" element={<OrdersPage />} />
     <Route path="/admin/users" element={<UsersPageWrapper />} />
     <Route path="/admin/users/new" element={<AddUserPage />} />
     <Route path="/admin/users/:id" element={<UpdateUserPage />} />

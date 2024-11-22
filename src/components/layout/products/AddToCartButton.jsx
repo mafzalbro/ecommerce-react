@@ -8,7 +8,13 @@ import { ShoppingCart } from "lucide-react";
 import { ToastAction } from "@/components/ui/toast";
 import useAuth from "@/hooks/AuthProvider";
 
-const AddToCartButton = ({ product, selectedColor, selectedSize }) => {
+const AddToCartButton = ({
+  product,
+  selectedColor,
+  price,
+  selectedSize,
+  disabled,
+}) => {
   const { cart, addCart } = useCartContext();
   const { isAuthenticated, role, logout } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
@@ -55,7 +61,7 @@ const AddToCartButton = ({ product, selectedColor, selectedSize }) => {
     const existingItem = cart.cartItem.find(
       (item) => item.productId === product._id
     );
-    
+
     if (existingItem) {
       toast({
         variant: "default",
@@ -129,7 +135,7 @@ const AddToCartButton = ({ product, selectedColor, selectedSize }) => {
     <Button
       className="w-full py-2 rounded-md flex items-center justify-center"
       onClick={handleAddToCart}
-      disabled={isAdding}
+      disabled={disabled || isAdding}
     >
       {existingItem ? (
         <>

@@ -38,39 +38,36 @@ export default function CheckoutPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   // Get cart items and calculate total price
- useEffect(() => {
-  const get = async () => {
-    try {
-      setCartItems(cart.cartItem);
+  useEffect(() => {
+    const get = async () => {
+      try {
+        setCartItems(cart.cartItem);
 
-      const totalDiscount = cart.cartItem?.reduce(
-        (total, item) =>
-          total +
-          item.quantity *
-            (item.price * (item.totalProductDiscount / 100)),
-        0
-      );
+        const totalDiscount = cart.cartItem?.reduce(
+          (total, item) =>
+            total +
+            item.quantity * (item.price * (item.totalProductDiscount / 100)),
+          0
+        );
 
-      const total = cart.cartItem?.reduce(
-        (total, item) =>
-          total +
-          item.quantity *
-            (item.price -
-              item.price * (item.totalProductDiscount / 100)),
-        0
-      );
+        const total = cart.cartItem?.reduce(
+          (total, item) =>
+            total +
+            item.quantity *
+              (item.price - item.price * (item.totalProductDiscount / 100)),
+          0
+        );
 
-      setTotalProductDiscount(totalDiscount || 0);
-      setTotalPrice(total || 0);
-    } catch (error) {
-      console.error("Error fetching cart:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  get();
-}, [cart]);
-
+        setTotalProductDiscount(totalDiscount || 0);
+        setTotalPrice(total || 0);
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    get();
+  }, [cart]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -183,11 +180,12 @@ export default function CheckoutPage() {
                       )}
                       <span className="font-bold text-gray-800 dark:text-gray-100">
                         PKR{" "}
-                        {item.totalProductDiscount !== 0
+                        {(item.totalProductDiscount !== 0
                           ? (item.price -
                               (item.price * item.totalProductDiscount) / 100) *
                             item.quantity
-                          : item?.price * item?.quantity}
+                          : item?.price * item?.quantity
+                        )?.toFixed(2)}
                       </span>
                     </div>
                   </div>

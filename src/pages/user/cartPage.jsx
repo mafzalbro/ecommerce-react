@@ -141,10 +141,11 @@ const CartPage = () => {
                         <div className="flex gap-2 items-center flex-wrap">
                           <p className="text-sm text-gray-600 dark:text-gray-200">
                             PKR{" "}
-                            {item.totalProductDiscount !== 0
+                            {(item.totalProductDiscount !== 0
                               ? item.price -
                                 (item.price * item.totalProductDiscount) / 100
-                              : item.price}
+                              : item.price
+                            )?.toFixed(2)}
                           </p>
 
                           {item.totalProductDiscount !== 0 && (

@@ -20,6 +20,7 @@ import { PencilIcon } from "lucide-react";
 
 export default function ProductDetailsPage() {
   const { productId } = useParams();
+
   const {
     getProductById,
     productById: product,
@@ -30,13 +31,12 @@ export default function ProductDetailsPage() {
   const [selectedSize, setSelectedSize] = useState(product?.size || ""); // Track selected size
   const [selectedColor, setSelectedColor] = useState(product?.color?.[0] || ""); // Track selected color
   const [selectedCover, setSelectedCover] = useState(product?.imgCover || []); // Track selected color
+  const [sizePrice, setSizePrice] = useState(product?.price || 0);
 
   // Fetch the product details using the provided productId
   React.useEffect(() => {
     getProductById(productId);
   }, [productId, getProductById]);
-
-  console.log(product);
 
   if (loadingProductById) {
     return (
@@ -84,6 +84,14 @@ export default function ProductDetailsPage() {
         return image.sizes[0] === size;
       })
       .map((imgArr) => imgArr.images);
+
+    const currentPrice = product?.imagesArray
+      ?.filter((image) => {
+        return image.sizes[0] === size;
+      })
+      .map((imgArr) => imgArr?.price);
+
+    setSizePrice(currentPrice);
 
     setSelectedCover(currentImage);
 
@@ -197,13 +205,10 @@ export default function ProductDetailsPage() {
           <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
             {product.title}
           </h1>
-          <h2 className="text-xl text-gray-600 dark:text-gray-300">
-            {product?.subtitle}
-          </h2>
 
           <div className="flex items-baseline space-x-4">
             <span className="text-3xl font-bold text-blue-600">
-              PKR {product?.price}
+              PKR {sizePrice || product?.price}
             </span>
             {product?.quantity > 0 ? (
               <Badge className="bg-green-500 text-white rounded-full py-1 px-4">
@@ -288,8 +293,10 @@ export default function ProductDetailsPage() {
 
           {/* Add to Cart Button */}
           <AddToCartButton
+            disabled={(!selectedSize && !selectedColor) || !sizePrice}
             product={product}
             selectedSize={selectedSize}
+            price={sizePrice}
             selectedColor={selectedColor}
           />
         </div>

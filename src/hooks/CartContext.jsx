@@ -13,7 +13,7 @@ export const CartProvider = ({ children }) => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   // Add item to cart
-  const addCart = async (item, size, color) => {
+  const addCart = async (item, size, color, price) => {
     setIsProcessing(true);
 
     try {
@@ -25,7 +25,7 @@ export const CartProvider = ({ children }) => {
             productId: item._id,
             producttitle: item.title,
             quantity: item.quantity || 1,
-            price: item.price,
+            price: price,
             totalProductDiscount: item.discount || 0,
           },
         ],
@@ -45,7 +45,7 @@ export const CartProvider = ({ children }) => {
           size,
           title: item.title,
           quantity: item.quantity || 1,
-          price: item.price,
+          price,
           totalProductDiscount: item.totalProductDiscount || 0,
         });
       }
