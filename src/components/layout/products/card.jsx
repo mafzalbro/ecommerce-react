@@ -60,7 +60,11 @@ function ProductCard({ product }) {
           <h3 className="text-xl font-bold">{product?.title}</h3>
         </Link>
 
-        <p className="text-sm mt-2">{product?.description}</p>
+        <p className="text-sm mt-2">
+          {product?.description?.length < 20
+            ? product?.description
+            : product?.description.slice(0, 20) + "..."}
+        </p>
 
         {/* Rating */}
         <div className="flex items-center mt-2">

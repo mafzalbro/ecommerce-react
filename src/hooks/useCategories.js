@@ -15,18 +15,19 @@ export function useCategories() {
     if (loadingCategories) return;
     setLoadingCategories(true);
 
-    // const cachedCategories = getCache("categories");
-    // if (cachedCategories) {
-    //   setCategories(cachedCategories);
-    //   setLoadingCategories(false);
-    //   return cachedCategories;
-    // }
+    const cachedCategories = getCache("categories");
+    if (cachedCategories) {
+      setCategories(cachedCategories);
+      setLoadingCategories(false);
+      return cachedCategories;
+    }
 
     try {
       const response = await fetcher.get(
         "/restorex/categories/getAllCategories"
       );
       const fetchedCategories = response.data.getAllCategories;
+console.log(fetchedCategories);
 
       setCategories(fetchedCategories);
       setCache("categories", fetchedCategories);
