@@ -214,7 +214,7 @@ export default function ProductDetailsPage() {
                 Out of stock
               </Badge>
             )}
-            {product?.discount && (
+            {product?.discount !== 0 && (
               <span className="text-sm font-bold text-red-500 border rounded-lg px-4 py-1">
                 {product?.discount}% Discount
               </span>

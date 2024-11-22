@@ -17,49 +17,6 @@ export function useProducts(searchParams) {
   // Memoize searchParams to prevent unnecessary re-renders
   const memoizedSearchParams = useMemo(() => searchParams, [searchParams]);
 
-  // Function to add a new product
-  const addProduct = useCallback(
-    async (productData) => {
-      try {
-        const response = await fetcher.post(
-          "/api/v1/products/addProduct",
-          productData
-        );
-
-        if (response.status === 201) {
-          const newProduct = response.data.product;
-
-          // Update products list with the new product
-          setProducts((prevProducts) => [newProduct, ...prevProducts]);
-
-          // Clear and update cache
-          const cacheKey = "/api/v1/products/getAllProducts";
-          setCache(cacheKey, {
-            products: [newProduct, ...products],
-            totalResults: totalResults + 1,
-          });
-
-          toast({
-            title: "Success",
-            description: "Product added successfully!",
-            variant: "success",
-          });
-
-          return newProduct;
-        }
-      } catch (err) {
-        console.error("Error adding product:", err);
-        toast({
-          title: "Error",
-          description: "Failed to add the product. Please try again.",
-          variant: "destructive",
-        });
-        throw err;
-      }
-    },
-    [products, totalResults]
-  );
-
   const getProducts = useCallback(async () => {
     setLoadingProducts(true);
 
@@ -99,7 +56,7 @@ export function useProducts(searchParams) {
     // Apply filters
     const filteredProducts = productData.filter((product) => {
       // Category filter
-      
+
       if (category && product.category?._id !== category) return false;
 
       // Subcategory filter
@@ -129,57 +86,50 @@ export function useProducts(searchParams) {
     setTotalResults(filteredProducts.length);
   };
 
-  // Fetch products with caching mechanism
-  const getDBProducts = useCallback(async () => {
-    setLoadingProducts(true);
-    try {
-      let query = new URLSearchParams();
+  // Function to add a new product
+  const addProduct = useCallback(
+    async (productData) => {
+      try {
+        const response = await fetcher.post(
+          "/api/v1/products/addProduct",
+          productData
+        );
 
-      // Add existing filters
-      if (memoizedSearchParams?.category)
-        query.set("category", memoizedSearchParams.category);
-      if (memoizedSearchParams?.searchTerm)
-        query.set("keyword", memoizedSearchParams.searchTerm);
-      if (memoizedSearchParams?.subCategory)
-        query.set("subcategory", memoizedSearchParams.subCategory);
+        if (response.status === 201) {
+          const newProduct = response.data.product;
 
-      // Add price filters (mapped to price[gte] and price[lte])
-      if (
-        memoizedSearchParams?.priceGte &&
-        !isNaN(memoizedSearchParams.priceGte)
-      ) {
-        query.set("price[gte]", memoizedSearchParams.priceGte);
+          // Update products list with the new product
+          setProducts((prevProducts) => [newProduct, ...prevProducts]);
+
+          sessionStorage.removeItem("getAllProductsCache");
+
+          // Clear and update cache
+          const cacheKey = "/api/v1/products/getAllProducts";
+          setCache(cacheKey, {
+            products: [newProduct, ...products],
+            totalResults: totalResults + 1,
+          });
+
+          toast({
+            title: "Success",
+            description: "Product added successfully!",
+            variant: "success",
+          });
+
+          return newProduct;
+        }
+      } catch (err) {
+        console.error("Error adding product:", err);
+        toast({
+          title: "Error",
+          description: "Failed to add the product. Please try again.",
+          variant: "destructive",
+        });
+        throw err;
       }
-      if (
-        memoizedSearchParams?.priceLte &&
-        !isNaN(memoizedSearchParams.priceLte)
-      ) {
-        query.set("price[lte]", memoizedSearchParams.priceLte);
-      }
-
-      const queryString = query.toString();
-      const cacheKey = `/api/v1/products/getAllProducts?${queryString}`;
-
-      const cachedData = getCache(cacheKey);
-      if (cachedData) {
-        setProducts(cachedData.products);
-        setTotalResults(cachedData.totalResults);
-      } else {
-        const response = await fetcher.get(cacheKey);
-        const data = {
-          products: response.data.getAllProducts,
-          totalResults: response.data.totalResults,
-        };
-        setProducts(data.products);
-        setTotalResults(data.totalResults);
-        setCache(cacheKey, data);
-      }
-    } catch (err) {
-      console.error("Error fetching products:", err);
-    } finally {
-      setLoadingProducts(false);
-    }
-  }, [memoizedSearchParams]);
+    },
+    [products, totalResults]
+  );
 
   // Fetch populated (heavy) products with cache
   const getPopulatedProducts = useCallback(async () => {
@@ -189,7 +139,7 @@ export function useProducts(searchParams) {
     if (cachedData) {
       setHeavyProducts(cachedData);
       setLoadingHeavyProducts(false);
-      return cachedData
+      return cachedData;
     } else {
       try {
         const response = await fetcher.get("/api/v1/products/getProducts");
@@ -271,7 +221,9 @@ export function useProducts(searchParams) {
         removeCache(`/api/v1/products/deleteProduct/${productId}`);
       }
 
-      getDBProducts();
+      
+      sessionStorage.removeItem("getAllProductsCache")
+            
     } catch (err) {
       console.log("Error deleting product:", err);
     } finally {
@@ -293,6 +245,9 @@ export function useProducts(searchParams) {
             product._id === id ? updatedData : product
           )
         );
+
+        sessionStorage.removeItem("getAllProductsCache");
+
         setCache(
           `/api/v1/products/getAllProducts?category=${updatedProduct.category}`,
           updatedData
@@ -341,6 +296,5 @@ export function useProducts(searchParams) {
     deleteProduct,
     updateProduct,
     addProduct,
-    getDBProducts,
   };
 }

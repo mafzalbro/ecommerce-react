@@ -119,7 +119,7 @@ const AddProductPage = () => {
           colors: colorSizeImages[index]?.color
             ? [colorSizeImages[index].color]
             : colors?.split(",").map((color) => color.trim()),
-          price: colorSizeImages[index].price,
+          price: parseInt(colorSizeImages[index].price),
           quantity: colorSizeImages[index].quantity,
         })),
       };
@@ -260,6 +260,22 @@ const AddProductPage = () => {
                 {colorSizeImages.map((image, index) => (
                   <div key={index} className="space-y-2 flex items-center">
                     <div className="flex space-x-2 items-center flex-col my-2 sm:flex-row border rounded-md p-2">
+                      <Input
+                        type="number"
+                        value={image.price || 0}
+                        onChange={(e) =>
+                          setColorSizeImages(
+                            colorSizeImages.map((img, idx) =>
+                              idx === index
+                                ? { ...img, price: e.target.value }
+                                : img
+                            )
+                          )
+                        }
+                        placeholder="Enter the price"
+                        required
+                      />
+
                       {/* Color Select Dropdown */}
                       <Select
                         value={image.color}
