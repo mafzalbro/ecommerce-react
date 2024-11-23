@@ -291,19 +291,8 @@ export function useProducts(searchParams) {
       // Update the state with seller's products
       setProducts(sellerProducts);
       setTotalResults(sellerProducts?.length);
-
-      toast({
-        title: "Success",
-        description: "Seller products fetched successfully.",
-        variant: "success",
-      });
     } catch (err) {
       console.error("Error fetching seller's products:", err);
-      toast({
-        title: "Error",
-        description: "Failed to fetch seller's products. Please try again.",
-        variant: "destructive",
-      });
     } finally {
       setLoadingProducts(false);
     }

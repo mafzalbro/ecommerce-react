@@ -125,7 +125,7 @@ const AddProductPage = () => {
       };
 
       await addProduct(newProduct);
-      navigate("/selller/products");
+      navigate("/seller/products");
     } catch (error) {
       console.error("Error adding product:", error);
     } finally {

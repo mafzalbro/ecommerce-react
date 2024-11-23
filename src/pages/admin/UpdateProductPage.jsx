@@ -171,8 +171,6 @@ const UpdateProductPage = () => {
         })),
       };
 
-      console.log(updatedProduct);
-
       await updateProduct(id, updatedProduct);
       navigate("/admin/products");
     } catch (error) {

@@ -26,6 +26,11 @@ const sellerMenuItems = [
     icon: <AiOutlineAppstore />,
   },
   {
+    label: "Send Request",
+    link: "/seller/request",
+    icon: <AiOutlineAppstore />,
+  },
+  {
     label: "Your Customers",
     link: "/seller/customers",
     icon: <AiOutlineDashboard />,
