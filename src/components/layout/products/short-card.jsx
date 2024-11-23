@@ -9,7 +9,7 @@ function ShortProductCard({ product }) {
         <img
           src={product?.imgCover}
           alt={product.title}
-          className="w-full md:w-[220px] h-48 md:h-56 object-cover"
+          className="w-full h-48 md:h-56 object-cover"
         />
       </div>
       <div className="p-4">
