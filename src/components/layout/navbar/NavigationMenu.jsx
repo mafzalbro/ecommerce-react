@@ -20,7 +20,17 @@ const NavigationMenuWrapper = ({ className }) => {
         <NavigationMenuItem>
           <div className="flex items-center hover:text-gray-300">
             <Button variant="outline" className="flex items-center">
-              <Link to={"/"}>Home</Link>
+              <Link
+                to={`${
+                  role === "admin"
+                    ? "/admin"
+                    : role === "seller"
+                    ? "/seller"
+                    : "/"
+                }`}
+              >
+                Home
+              </Link>
             </Button>
           </div>
         </NavigationMenuItem>

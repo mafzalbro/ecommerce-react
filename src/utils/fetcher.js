@@ -72,11 +72,18 @@ fetcher.interceptors.response.use(
       // Handle different HTTP status codes
       if (status === 401) {
         console.error("Unauthorized request. Please login again.");
-        localStorage.removeItem("token"); // Remove expired token
+        localStorage.clear();
         console.error("Session expired. Please log in again.");
       } else if (status === 403) {
         console.error(errorMessage); // Forbidden error (using the message from server)
       } else if (status === 500) {
+        if (
+          error.response.data?.error == "Token has expired" &&
+          window.location.pathname !== "/"
+        ) {
+          localStorage.clear();
+          window.location.href = "/";
+        }
         console.error(errorMessage); // Internal server error (using the message from server)
       } else {
         console.error(errorMessage); // Generic error message (using the server error)

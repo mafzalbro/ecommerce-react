@@ -3,7 +3,13 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
 const SellerRequestForm = ({ onSubmit }) => {
@@ -47,7 +53,10 @@ const SellerRequestForm = ({ onSubmit }) => {
   };
 
   return (
-    <form className="max-w-md p-4 space-y-4 border rounded shadow" onSubmit={handleSubmit}>
+    <form
+      className="mx-auto p-4 space-y-4 border rounded shadow"
+      onSubmit={handleSubmit}
+    >
       <h2 className="text-xl font-semibold">Submit a Seller Request</h2>
 
       <div>

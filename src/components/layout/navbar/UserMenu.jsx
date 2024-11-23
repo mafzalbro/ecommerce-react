@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
 import {
   AiOutlineUser,
-  AiOutlineShoppingCart,
   AiOutlineSetting,
-  AiOutlineDown,
   AiOutlineDownCircle,
 } from "react-icons/ai";
 import useAuth from "@/hooks/AuthProvider";

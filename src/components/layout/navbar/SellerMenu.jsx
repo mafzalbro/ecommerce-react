@@ -2,7 +2,11 @@ import { Link } from "react-router-dom";
 import {
   AiOutlineDashboard,
   AiOutlineAppstore,
-  AiOutlineDownCircle,
+  AiOutlineUser,
+  AiOutlineShop,
+  AiOutlineShoppingCart,
+  AiOutlineFileText,
+  AiOutlineDownCircle
 } from "react-icons/ai";
 import {
   DropdownMenu,
@@ -21,6 +25,11 @@ const sellerMenuItems = [
     icon: <AiOutlineDashboard />,
   },
   {
+    label: "Seller Profile",
+    link: "/seller/profile",
+    icon: <AiOutlineUser />,
+  },
+  {
     label: "Product Management",
     link: "/seller/products",
     icon: <AiOutlineAppstore />,
@@ -28,17 +37,17 @@ const sellerMenuItems = [
   {
     label: "Send Request",
     link: "/seller/request",
-    icon: <AiOutlineAppstore />,
+    icon: <AiOutlineFileText />,
   },
   {
     label: "Your Customers",
     link: "/seller/customers",
-    icon: <AiOutlineDashboard />,
+    icon: <AiOutlineUser />,
   },
   {
     label: "Your Orders",
     link: "/seller/orders",
-    icon: <AiOutlineAppstore />,
+    icon: <AiOutlineShoppingCart />,
   },
 ];
 
@@ -63,7 +72,7 @@ const SellerMenu = ({ className }) => {
         <small className="text-xs hidden sm:block">
           Hey, Seller
         </small>
-        <AiOutlineDownCircle className="ml-1 w-4 h-4 text-gray-500" />{" "}
+        <AiOutlineDownCircle className="ml-1 w-4 h-4 text-gray-500" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-[200px] p-2">
         <DropdownMenuLabel>Menu</DropdownMenuLabel>
