@@ -47,10 +47,10 @@ export const QuickLinksDashboard = () => {
       {/* Title and Description */}
       <div className="text-center my-4">
         <h1 className="text-4xl font-semibold text-gray-800 dark:text-white mb-2">
-          Admin Dashboard
+          Seller Dashboard
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300">
-          Quick access to key functionalities of the admin panel.
+          Quick access to key functionalities of the seller panel.
         </p>
       </div>
 

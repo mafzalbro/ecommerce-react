@@ -61,11 +61,11 @@ const adminMenuItems = [
     link: "/admin/products",
     icon: <AiOutlineShoppingCart />,
   },
-  {
-    label: "Queries",
-    link: "/admin/queries",
-    icon: <AiOutlineQuestionCircle />,
-  },
+  // {
+  //   label: "Queries",
+  //   link: "/admin/queries",
+  //   icon: <AiOutlineQuestionCircle />,
+  // },
   {
     label: "Requests",
     link: "/admin/requests",

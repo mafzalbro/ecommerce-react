@@ -1,8 +1,8 @@
 import { Route } from "react-router-dom";
 import Profile from "../../pages/user/UserProfile";
 import CategoryPageWrapper from "../../pages/admin/categories/CategoryPageWrapper";
-import QueriesPage from "../../pages/admin/QueriesPage";
-import RequestsPage from "../../pages/admin/RequestsPage";
+// import QueriesPage from "../../pages/admin/QueriesPage";
+// import RequestsPage from "../../pages/admin/RequestsPage";
 import ProductPageWrapper from "../../pages/admin/products/ProductPageWrapper";
 import UpdateProductPage from "../../pages/admin/UpdateProductPage";
 import AddProductPage from "../../pages/admin/AddProductPage";
@@ -38,7 +38,7 @@ const userRoutes = (
     <Route path="/admin/products" element={<ProductPageWrapper />} />
     <Route path="/admin/products/:id" element={<UpdateProductPage />} />
     <Route path="/admin/products/new" element={<AddProductPage />} />
-    <Route path="/admin/queries" element={<QueriesPage />} />
+    {/* <Route path="/admin/queries" element={<QueriesPage />} /> */}
     <Route path="/admin/requests/all" element={<RequestsAllPageWrapper />} />
     <Route path="/admin/requests" element={<RequestsPageWrapper />} />
   </>
