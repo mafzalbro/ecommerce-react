@@ -122,7 +122,7 @@ export function useLogin() {
     localStorage.removeItem("user");
     localStorage.removeItem("cart");
     localStorage.removeItem("token");
-    window.location.href = "/"; // Redirect to home
+    // window.location.href = "/"; // Redirect to home
   };
 
   return {

@@ -62,7 +62,7 @@ const ProductPageWrapper = () => {
           <ExportButton products={filteredProducts} />
           <Button
             onClick={() => {
-              navigate("/admin/products/new");
+              navigate("/seller/products/new");
             }}
           >
             Add New

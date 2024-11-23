@@ -162,7 +162,7 @@ const ProductTable = ({ products, loading, deleteProduct }) => (
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuItem>
                       <Edit2 className="w-4 h-4 mr-2" />
-                      <Link to={`/admin/products/${product._id}`}>
+                      <Link to={`/seller/products/${product._id}`}>
                         Edit Product
                       </Link>
                     </DropdownMenuItem>
