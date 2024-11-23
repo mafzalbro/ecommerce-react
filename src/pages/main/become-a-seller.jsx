@@ -22,8 +22,7 @@ function Seller() {
         <div className="carousel-inner">
           <div className="carousel-item active">
             <img
-              src={""}
-              srcSet="/placeholder.png"
+              src={"/res.png"}
               className="d-block w-full object-cover rounded-md"
               alt="Sell here"
             />
@@ -33,7 +32,9 @@ function Seller() {
 
       {/* Welcome Section */}
       <div className="sellers-heading mt-8 text-center">
-        <h2 className="text-2xl font-semibold">Welcome to Restorex – Your Ultimate Selling Partner!</h2>
+        <h2 className="text-2xl font-semibold">
+          Welcome to Restorex – Your Ultimate Selling Partner!
+        </h2>
         <p className="mt-4 text-lg">
           Want to Sell with Restorex?{" "}
           <Link
@@ -80,38 +81,40 @@ export function SellerDetail() {
               <h6 className="font-semibold">Enhanced Visibility</h6>
               <p className="sellparagraph text-md">
                 Boost Your Reach: Our platform provides high visibility for your
-                products, ensuring they reach a wide audience of potential buyers.
+                products, ensuring they reach a wide audience of potential
+                buyers.
               </p>
             </li>
             <li>
               <h6 className="font-semibold">Advanced Tools</h6>
               <p className="sellparagraph text-md">
-                Grow Your Sales: Utilize our state-of-the-art selling tools, from
-                advanced analytics to promotional features, to maximize your sales
-                and business growth. No Selling Fees.
+                Grow Your Sales: Utilize our state-of-the-art selling tools,
+                from advanced analytics to promotional features, to maximize
+                your sales and business growth. No Selling Fees.
               </p>
             </li>
             <li>
               <h6 className="font-semibold">No Selling Fees</h6>
               <p className="sellparagraph text-md">
-                Keep All Your Profits: Enjoy the benefit of selling your products
-                on Restorex with no transaction fees. Every penny you earn is yours
-                to keep.
+                Keep All Your Profits: Enjoy the benefit of selling your
+                products on Restorex with no transaction fees. Every penny you
+                earn is yours to keep.
               </p>
             </li>
             <li>
               <h6 className="font-semibold">Priority Support</h6>
               <p className="sellparagraph text-md">
-                We’re Here for You: Access our dedicated priority support team to
-                quickly resolve any issues and get back to selling without delays.
+                We’re Here for You: Access our dedicated priority support team
+                to quickly resolve any issues and get back to selling without
+                delays.
               </p>
             </li>
             <li>
               <h6 className="font-semibold">Community and Training</h6>
               <p className="sellparagraph text-md">
-                Learn and Connect: Join exclusive training sessions and webinars,
-                and connect with other sellers to share tips and strategies for
-                success.
+                Learn and Connect: Join exclusive training sessions and
+                webinars, and connect with other sellers to share tips and
+                strategies for success.
               </p>
             </li>
           </ul>
@@ -125,29 +128,30 @@ export function SellerDetail() {
           <ul>
             <li>
               <h6 className="font-semibold">Create Your Account</h6>
-              <p className="sellparagraph text-md">Sign up quickly and easily on Restorex.</p>
+              <p className="sellparagraph text-md">
+                Sign up quickly and easily on Restorex.
+              </p>
             </li>
             <li>
               <h6 className="font-semibold">Choose Premium Membership</h6>
-              <p className="sellparagraph text-md">Unlock exclusive features with our Premium Membership.</p>
+              <p className="sellparagraph text-md">
+                Unlock exclusive features with our Premium Membership.
+              </p>
             </li>
             <li>
               <h6 className="font-semibold">List Your Products</h6>
-              <p className="sellparagraph text-md">Add your products with high-quality images and detailed descriptions.</p>
+              <p className="sellparagraph text-md">
+                Add your products with high-quality images and detailed
+                descriptions.
+              </p>
             </li>
             <li>
               <h6 className="font-semibold">Start Selling</h6>
-              <p className="sellparagraph text-md">Reach thousands of customers and grow your business!</p>
+              <p className="sellparagraph text-md">
+                Reach thousands of customers and grow your business!
+              </p>
             </li>
           </ul>
-        </div>
-        <div className="col-md-8 w-50">
-          <img
-            src={""}
-            srcSet="/placeholder.png"
-            alt="Sell here"
-            className="sell-img w-full rounded-md my-10 object-cover"
-          />
         </div>
       </div>
 
