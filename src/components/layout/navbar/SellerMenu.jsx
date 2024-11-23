@@ -11,7 +11,7 @@ import {
 const sellerMenuItems = [
   {
     label: "Seller Dashboard",
-    link: "/seller/dashboard",
+    link: "/seller",
     icon: <AiOutlineDashboard />,
   },
   {

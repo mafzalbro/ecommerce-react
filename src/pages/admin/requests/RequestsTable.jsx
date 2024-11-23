@@ -28,6 +28,7 @@ const RequestsTable = ({
       } else {
         await respondToRequest(requestId, payload);
       }
+      fetchRequests();
     } catch (error) {
       console.error(`Failed to ${action} request ${requestId}:`, error);
     } finally {
@@ -40,6 +41,8 @@ const RequestsTable = ({
       <TableHeader>
         <TableRow>
           <TableHead>Seller ID</TableHead>
+          <TableHead>Seller Info</TableHead>
+          <TableHead>Request Type</TableHead>
           <TableHead>Request Details</TableHead>
           <TableHead>Response</TableHead>
           <TableHead>Status</TableHead>
@@ -67,8 +70,15 @@ const RequestsTable = ({
               </TableRow>
             ))
           : requests.map((request) => (
-              <TableRow key={request.id}>
-                <TableCell>{request.sellerId}</TableCell>
+              <TableRow key={request._id}>
+                <TableCell>{request?.sellerId?._id}</TableCell>
+                <TableCell>
+                  <p className="font-medium">{request?.sellerId?.name}</p>
+                  <p className="text-gray-500 text-sm">
+                    {request?.sellerId?.email}
+                  </p>
+                </TableCell>
+                <TableCell>{request.requestType}</TableCell>
                 <TableCell>{request.requestDetails}</TableCell>
                 <TableCell>{request.response}</TableCell>
                 <TableCell>{request.status}</TableCell>

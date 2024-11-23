@@ -12,8 +12,11 @@ export default useAuth;
 // eslint-disable-next-line react/prop-types
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [role, setRole] = useState("user"); // role could be 'user', 'seller', or 'admin'
+  const [approved, setSellerApproved] = useState(false);
+  const [sellerStatus, setSellerStatus] = useState("");
+  const [role, setRole] = useState(null); // role could be 'user', 'seller', or 'admin'
   const [user, setUser] = useState(null); // Store user data
+  const [userLoading, setUserLoading] = useState(true);
 
   const logout = () => {
     localStorage.removeItem("user");
@@ -22,36 +25,42 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setRole("");
     setIsAuthenticated(false);
-    window.location.href = "/signin";
+    // window.location.href = "/";
   };
 
-  // Get the user data from localStorage
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    try {
+      const storedUser = localStorage.getItem("user");
 
-    if (!storedUser) {
-      setIsAuthenticated(false);
-      setRole(null);
-      return;
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+
+        setUser(parsedUser?.user || null);
+        setRole(parsedUser?.user?.role || null);
+        setSellerApproved(parsedUser?.user?.seller_approved || false);
+        setSellerStatus(parsedUser?.user?.seller_status || "");
+        setIsAuthenticated(true);
+      }
+    } catch (err) {
+      console.error("Failed to load user data:", err);
+      logout(); // Clear invalid data
+    } finally {
+      setUserLoading(false);
     }
-
-    const parsedUser = JSON.parse(storedUser);
-    setUser(parsedUser?.user);
-
-    // Set authentication status to true
-    setIsAuthenticated(true);
-
-    // Set the role from the user data (assuming the user data contains the role)
-    setRole(parsedUser?.user?.role || null);
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <AuthContext.Provider
       value={{
+        userLoading,
         isAuthenticated,
         setIsAuthenticated,
         setRole,
         setUser,
+        approved,
+        sellerStatus,
+        setSellerStatus,
+        setSellerApproved,
         role,
         user,
         logout,

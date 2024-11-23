@@ -27,7 +27,6 @@ export function useCategories() {
         "/restorex/categories/getAllCategories"
       );
       const fetchedCategories = response.data.getAllCategories;
-console.log(fetchedCategories);
 
       setCategories(fetchedCategories);
       setCache("categories", fetchedCategories);

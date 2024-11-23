@@ -76,12 +76,11 @@ export const createRequest = async (requestData) => {
 // Respond to a request
 export const respondToRequest = async (requestId, responseData) => {
   try {
+    removeCache("pending-requests");
     const response = await fetcher.put(
       `/restorex/request/respondToRequest/${requestId}`,
       responseData
     );
-    fetchPendingRequests();
-    removeCache("pending-requests");
     const updatedRequest = response.data.request;
 
     // Optionally, update the cache for pending requests

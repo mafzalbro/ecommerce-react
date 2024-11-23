@@ -35,7 +35,7 @@ const UserTable = ({ users, deleteUser, loading, deletingUserId }) => (
         <TableHead className="text-left">Name</TableHead>
         <TableHead className="text-left">Email</TableHead>
         <TableHead className="text-center">Role</TableHead>
-        <TableHead className="text-center">Blocked</TableHead>
+        {/* <TableHead className="text-center">Blocked</TableHead> */}
         <TableHead className="text-center">isActive</TableHead>
         <TableHead className="text-center">isVarified</TableHead>
         {/* <TableHead className="text-center">Wishlist</TableHead> */}
@@ -91,9 +91,9 @@ const UserTable = ({ users, deleteUser, loading, deletingUserId }) => (
             <TableCell>{user.name}</TableCell>
             <TableCell>{user.email}</TableCell>
             <TableCell className="text-center">{user.role}</TableCell>
-            <TableCell className="text-center">
+            {/* <TableCell className="text-center">
               {user.blocked ? "Yes" : "No"}
-            </TableCell>
+            </TableCell> */}
             <TableCell className="text-center">
               {user.isActive ? "Yes" : "No"}
             </TableCell>

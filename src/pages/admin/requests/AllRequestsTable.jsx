@@ -21,6 +21,7 @@ const AllRequestsTable = ({
       <TableHeader>
         <TableRow>
           <TableHead>Seller Info</TableHead>
+          <TableHead>Request Type</TableHead>
           <TableHead>Request Details</TableHead>
           <TableHead>Response</TableHead>
           <TableHead>Status</TableHead>
@@ -67,6 +68,7 @@ const AllRequestsTable = ({
                     </p>
                   </div>
                 </TableCell>
+                <TableCell>{request.requestType}</TableCell>
                 <TableCell>{request.requestDetails}</TableCell>
                 <TableCell>{request.response || "N/A"}</TableCell>
                 <TableCell>{request.status || "Pending"}</TableCell>

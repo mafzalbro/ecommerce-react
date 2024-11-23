@@ -26,6 +26,7 @@ const SellerRegisterPage = () => {
     city: "",
     address1: "",
     phone: "",
+   role: "seller",
     businessName: "",
     businessAddress: "",
     businessType: "",

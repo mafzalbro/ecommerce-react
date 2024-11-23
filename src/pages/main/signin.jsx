@@ -18,8 +18,9 @@ import { Navigate, useNavigate } from "react-router-dom";
 const SignIn = () => {
   const { login, loading, error } = useLogin();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, setSellerStatus } = useAuth();
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [toastMessage, setToastMessage] = useState("");
@@ -54,18 +55,36 @@ const SignIn = () => {
     if (!validateForm()) return;
 
     try {
-      await login(email, password);
+      const data = await login(email, password);
+
       setToastMessage("Successfully logged in!");
       setToastType("success");
-      navigate("/");
+
+      // Redirect based on user role
+      if (data?.user?.role === "seller") {
+        navigate("/seller");
+      } else if (data?.user?.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     } catch {
       setToastMessage(error || "An error occurred. Please try again.");
       setToastType("error");
     }
   };
 
-  if (isAuthenticated) {
-    return <Navigate to={"/"} />;
+  if (!isAuthenticated && role === null) {
+    return <Spinner />;
+  }
+  if (isAuthenticated && role === "user") {
+    return <Navigate to="/" />;
+  }
+  if (isAuthenticated && role === "admin") {
+    return <Navigate to="/admin" />;
+  }
+  if (isAuthenticated && role === "seller") {
+    return <Navigate to="/seller" />;
   }
 
   return (
@@ -111,7 +130,11 @@ const SignIn = () => {
           </form>
           <div className="mt-4 text-center">
             <span>Don&apos;t have an account? </span>
-            <Link href="/signup">Sign Up</Link>
+            <div className="flex items-center justify-between gap-2">
+              <Link href="/signup">Sign Up</Link>
+              <p>or</p>
+              <Link href="/become-a-seller">Sign Up as Seller</Link>
+            </div>
           </div>
         </div>
       </div>
