@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import useOrder from "@/hooks/useOrder";
+import { useOrder } from "@/hooks/useOrder";
 import {
   Table,
   TableBody,

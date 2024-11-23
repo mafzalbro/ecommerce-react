@@ -1,99 +1,192 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import fetcher from "@/utils/fetcher";
 
-const useOrder = () => {
-  const [order, setOrder] = useState([]);
+export const useOrder = () => {
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch orders when the component mounts (or when the order state is empty)
-  useEffect(() => {
-    if (order.length === 0) {
-      getOrders();
-    }
-  }, [order.length]); // This ensures the request happens only if the order is empty
+  const handleError = (err) => {
+    console.error(err);
+    setError(err.response?.data?.message || "Something went wrong");
+  };
 
-  const createOrders = async () => {
+  const createOrder = async (orderData) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetcher.post("/restorex/orders/createOrder");
-      console.log(response.data.orderItem);
-      setOrder(response.data);
+      const response = await fetcher.post(
+        "/restorex/orders/createOrder",
+        orderData
+      );
+      console.log(response.data);
       return response.data;
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || "Something went wrong");
+      handleError(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const getOrders = async () => {
+  const getAllOrders = async () => {
     setLoading(true);
     setError(null);
     try {
       const response = await fetcher.get("/restorex/orders/getAllOrders");
       console.log(response.data.orders);
-      setOrder(response.data.orders); // Assuming getAllOrders is an array
+      setOrders(response.data.orders);
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || "Something went wrong");
+      handleError(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const deleteOrder = async (id) => {
+  const getOrderById = async (id) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetcher.delete(
-        `/restorex/orders/deleteOrder/${id}`
-      );
-      console.log(response.data);
-      setOrder((prevOrders) => prevOrders.filter((order) => order._id !== id));
-      return response.data;
+      const response = await fetcher.get(`/restorex/orders/getOrderById/${id}`);
+      console.log(response.data.order);
+      return response.data.order;
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || "Something went wrong");
+      handleError(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const updateOrder = async (id, data) => {
+  const cancelOrder = async (id) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetcher.put(
-        `/restorex/orders/updateOrder/${id}`,
-        data
-      );
+      const response = await fetcher.put(`/restorex/orders/cancelOrder/${id}`);
       console.log(response.data);
-      setOrder((prevOrders) =>
-        prevOrders.map((order) =>
-          order._id === id ? { ...order, ...data } : order
-        )
-      );
+      setOrders((prevOrders) => prevOrders.filter((order) => order._id !== id));
       return response.data;
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || "Something went wrong");
+      handleError(err);
     } finally {
       setLoading(false);
     }
   };
+
+  const getOrdersForSeller = async (sellerId) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetcher.get(
+        `/restorex/orders/getOrdersForSeller/${sellerId}`
+      );
+      console.log(response.data.orders);
+      return response.data.orders;
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getCustomersBySellerId = async (sellerId) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetcher.get(
+        `/restorex/orders/getCustomersBySellerId/${sellerId}`
+      );
+      console.log(response.data.customers);
+      return response.data.customers;
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // const getAccessToken = async () => {
+  //   setLoading(true);
+  //   setError(null);
+  //   try {
+  //     const response = await fetcher.post("/restorex/orders/getAccessToken");
+  //     console.log(response.data);
+  //     return response.data;
+  //   } catch (err) {
+  //     handleError(err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // const processPayment = async (paymentData) => {
+  //   setLoading(true);
+  //   setError(null);
+  //   try {
+  //     const response = await fetcher.post("/restorex/orders/processPayment", paymentData);
+  //     console.log(response.data);
+  //     return response.data;
+  //   } catch (err) {
+  //     handleError(err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // const paymentWebhook = async (webhookData) => {
+  //   setLoading(true);
+  //   setError(null);
+  //   try {
+  //     const response = await fetcher.post("/restorex/orders/paymentWebhook", webhookData);
+  //     console.log(response.data);
+  //     return response.data;
+  //   } catch (err) {
+  //     handleError(err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // const paymentCallback = async () => {
+  //   setLoading(true);
+  //   setError(null);
+  //   try {
+  //     const response = await fetcher.get("/restorex/orders/paymentCallback");
+  //     console.log(response.data);
+  //     return response.data;
+  //   } catch (err) {
+  //     handleError(err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // const validatePayment = async (token) => {
+  //   setLoading(true);
+  //   setError(null);
+  //   try {
+  //     const response = await fetcher.get(`/restorex/orders/validatePayment/${token}`);
+  //     console.log(response.data);
+  //     return response.data;
+  //   } catch (err) {
+  //     handleError(err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return {
-    order,
+    orders,
     loading,
     error,
-    createOrders,
-    getOrders,
-    deleteOrder,
-    updateOrder,
+    createOrder,
+    getAllOrders,
+    getOrderById,
+    cancelOrder,
+    getOrdersForSeller,
+    getCustomersBySellerId,
+    // getAccessToken,
+    // processPayment,
+    // paymentWebhook,
+    // paymentCallback,
+    // validatePayment,
   };
 };
-
-export default useOrder;
