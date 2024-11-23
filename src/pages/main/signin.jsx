@@ -57,7 +57,7 @@ const SignIn = () => {
       await login(email, password);
       setToastMessage("Successfully logged in!");
       setToastType("success");
-      navigate("/signin");
+      navigate("/");
     } catch {
       setToastMessage(error || "An error occurred. Please try again.");
       setToastType("error");

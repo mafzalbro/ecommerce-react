@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Card,
   CardContent,
@@ -19,16 +20,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useNavigate } from "react-router-dom";
-import { useProducts } from "../../hooks/useProducts";
-import GoBack from "../../components/layout/admin/GoBack";
-import CategorySelection from "./products/CategorySelection";
+import { useNavigate, useParams } from "react-router-dom";
+import { useProducts } from "../../../hooks/useProducts";
+import GoBack from "@/components/layout/admin/GoBack";
 import { pinataUpload } from "@/utils/uploads";
+import CategorySelection from "../products/CategorySelection";
 
-const AddProductPage = () => {
+const UpdateProductPage = () => {
   const navigate = useNavigate();
-  const { addProduct } = useProducts();
+  const { id } = useParams();
+  const { getProductById, updateSellerProduct } = useProducts();
 
+  const [product, setProduct] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
@@ -40,14 +43,55 @@ const AddProductPage = () => {
   const [imgCover, setImgCover] = useState("");
   const [imgCoverPreview, setImgCoverPreview] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [fileUploading, setFileUploading] = useState(false);
-  const [imagesUploading, setImagesUploading] = useState(-1);
+  const [isLoading, setIsLoading] = useState(true);
   const [colors, setColors] = useState("");
   const [sizes, setSizes] = useState("");
+  const [fileUploading, setFileUploading] = useState(false);
+  const [imagesUploading, setImagesUploading] = useState(-1);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const data = await getProductById(id);
+
+      if (!data) {
+        console.error("Product not found!");
+        navigate("/admin/products", { replace: true });
+        return;
+      }
+
+      setProduct(data);
+      setTitle(data?.title);
+      setDescription(data?.description);
+      setPrice(data?.price);
+      setQuantity(data?.quantity);
+      setDiscount(data?.discount);
+      setImgCoverPreview(data?.imgCover);
+      setImgCover(data?.imgCover);
+      setSelectedCategory(data?.category);
+      setSelectedSubCategory(data?.subcategory);
+      setColors(data?.color?.join());
+      setSizes(data?.size?.join());
+
+      const colorSizeMappedImages = data?.imagesArray?.map((item) => ({
+        color: item.colors,
+        size: item.sizes,
+        image: item.images,
+        price: item.price,
+        quantity: item.quantity,
+        file: null,
+        preview: item.images,
+        mode: "url",
+      }));
+
+      setColorSizeImages(colorSizeMappedImages || []);
+      setIsLoading(false);
+    };
+    fetchProduct();
+  }, [id]);
 
   const handleCategoryChange = (categoryId) => {
     setSelectedCategory(categoryId);
-    setSelectedSubCategory(null); // Reset subcategory when a new category is selected
+    setSelectedSubCategory(null);
   };
 
   const handleSubCategoryChange = (subCategoryId) => {
@@ -58,7 +102,6 @@ const AddProductPage = () => {
     const file = e.target.files[0];
     if (file) {
       try {
-        // Upload file to Pinata and get the URL
         setImagesUploading(index);
         const uploadedUrl = await pinataUpload(file);
         setImagesUploading(-1);
@@ -67,10 +110,11 @@ const AddProductPage = () => {
           ...updatedColorSizeImages[index],
           image: uploadedUrl,
           file,
-          preview: uploadedUrl ? URL.createObjectURL(file) : null,
+          preview: URL.createObjectURL(file),
           mode: "upload",
         };
         setColorSizeImages(updatedColorSizeImages);
+        // openImagePreview(URL.createObjectURL(file));
       } catch (error) {
         console.error("Error uploading image to Pinata:", error);
       }
@@ -91,6 +135,15 @@ const AddProductPage = () => {
       },
     ]);
   };
+
+  // const openImagePreview = (previewUrl) => {
+  //   setCurrentImagePreview(previewUrl);
+  // };
+
+  // const closeImagePreview = () => {
+  //   setCurrentImagePreview("");
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -100,46 +153,66 @@ const AddProductPage = () => {
         image.mode === "upload" ? image.image : image.preview
       );
 
-      const newProduct = {
+      const updatedProduct = {
         title,
         description,
         price,
         quantity,
         discount,
-        color: colors?.split(",").map((color) => color.trim()),
-        size: sizes?.split(",").map((size) => size.trim()),
         category: selectedCategory,
         subcategory: selectedSubCategory,
         imgCover,
         imagesArray: updatedColorSizeImages.map((item, index) => ({
           images: item,
-          sizes: colorSizeImages[index]?.size
-            ? [colorSizeImages[index].size]
-            : sizes?.split(",").map((size) => size.trim()),
-          colors: colorSizeImages[index]?.color
-            ? [colorSizeImages[index].color]
-            : colors?.split(",").map((color) => color.trim()),
+          sizes: sizes?.split(",").map((size) => size.trim()),
+          colors: colors?.split(",").map((color) => color.trim()),
           price: parseInt(colorSizeImages[index].price),
           quantity: colorSizeImages[index].quantity,
         })),
       };
 
-      await addProduct(newProduct);
-      navigate("/admin/products");
+      console.log(updatedProduct);
+
+      await updateSellerProduct(id, updatedProduct);
+      // navigate("/admin/products");
     } catch (error) {
-      console.error("Error adding product:", error);
+      console.error("Error updating product:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="p-6 space-y-4 max-w-screen-lg mx-auto">
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-8 w-32" />
+            <Skeleton className="h-4 w-64 mt-2" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-10 w-full mb-4" />
+            <Skeleton className="h-10 w-full mb-4" />
+            <Skeleton className="h-10 w-full mb-4" />
+            <Skeleton className="h-10 w-full mb-4" />
+            <Skeleton className="h-32 w-full mb-4" />
+            <Skeleton className="h-24 w-24 mb-4" />
+            <Skeleton className="h-10 w-32" />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 space-y-4 max-w-screen-lg mx-auto">
-      <GoBack to="/admin/products" />
+      <GoBack to="/admin/products"></GoBack>
       <Card>
         <CardHeader>
-          <CardTitle className={"text-2xl"}>Add Product</CardTitle>
-          <CardDescription>Add a new product to the inventory.</CardDescription>
+          <CardTitle className={"text-2xl"}>Update Product</CardTitle>
+          <CardDescription>
+            Update the details for your product.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
@@ -165,7 +238,7 @@ const AddProductPage = () => {
                   }}
                   placeholder="Enter a description (10-100 characters)"
                   required
-                  maxLength={400}
+                  maxLength={400} // Enforces max characters at the HTML level
                 />
                 <p className="text-sm text-gray-500 my-2 placeholder:text-xs">
                   {description?.length || 0}/400 characters
@@ -180,6 +253,8 @@ const AddProductPage = () => {
               <CategorySelection
                 onCategoryChange={handleCategoryChange}
                 onSubCategoryChange={handleSubCategoryChange}
+                selectedSubCategory={selectedSubCategory}
+                selectedCategory={selectedCategory}
               />
 
               <div>
@@ -278,14 +353,17 @@ const AddProductPage = () => {
 
                       {/* Color Select Dropdown */}
                       <Select
-                        value={image.color}
-                        onValueChange={(value) =>
-                          setColorSizeImages(
-                            colorSizeImages.map((img, idx) =>
-                              idx === index ? { ...img, color: value } : img
-                            )
-                          )
-                        }
+                        value={image.color[0]} // Controlled value
+                        onValueChange={(value) => {
+                          // Avoid state updates that cause infinite loops
+                          if (image.color !== value) {
+                            setColorSizeImages(
+                              colorSizeImages.map((img, idx) =>
+                                idx === index ? { ...img, color: value } : img
+                              )
+                            );
+                          }
+                        }}
                       >
                         <SelectTrigger className="w-[180px]">
                           <SelectValue placeholder="Select Color" />
@@ -294,10 +372,9 @@ const AddProductPage = () => {
                           <SelectGroup>
                             <SelectLabel>Colors</SelectLabel>
                             {colors
-                              .split(",")
-                              .map((color) => color.trim())
-                              .filter((color) => color !== "")
-                              .map((color, i) => (
+                              ?.split(",")
+                              ?.filter((color) => color !== "")
+                              ?.map((color, i) => (
                                 <SelectItem key={i} value={color}>
                                   {color}
                                 </SelectItem>
@@ -308,14 +385,17 @@ const AddProductPage = () => {
 
                       {/* Size Select Dropdown */}
                       <Select
-                        value={image.size}
-                        onValueChange={(value) =>
-                          setColorSizeImages(
-                            colorSizeImages.map((img, idx) =>
-                              idx === index ? { ...img, size: value } : img
-                            )
-                          )
-                        }
+                        value={image.size[0]} // Controlled value
+                        onValueChange={(value) => {
+                          // Avoid state updates that cause infinite loops
+                          if (image.size !== value) {
+                            setColorSizeImages(
+                              colorSizeImages.map((img, idx) =>
+                                idx === index ? { ...img, size: value } : img
+                              )
+                            );
+                          }
+                        }}
                       >
                         <SelectTrigger className="w-[180px]">
                           <SelectValue placeholder="Select Size" />
@@ -324,10 +404,9 @@ const AddProductPage = () => {
                           <SelectGroup>
                             <SelectLabel>Sizes</SelectLabel>
                             {sizes
-                              .split(",")
-                              .map((size) => size.trim())
-                              .filter((size) => size !== "")
-                              .map((size, i) => (
+                              ?.split(",")
+                              ?.filter((size) => size !== "")
+                              ?.map((size, i) => (
                                 <SelectItem key={i} value={size}>
                                   {size}
                                 </SelectItem>
@@ -337,7 +416,7 @@ const AddProductPage = () => {
                       </Select>
 
                       {/* Image Upload */}
-                      {imagesUploading === index ? (
+                      {false ? (
                         "Uploading..."
                       ) : (
                         <Input
@@ -361,7 +440,7 @@ const AddProductPage = () => {
               </div>
 
               <Button type="submit" disabled={isSubmitting} className="mt-4">
-                {isSubmitting ? "Adding..." : "Add Product"}
+                {isSubmitting ? "Updating..." : "Update Product"}
               </Button>
             </div>
           </form>
@@ -371,4 +450,4 @@ const AddProductPage = () => {
   );
 };
 
-export default AddProductPage;
+export default UpdateProductPage;

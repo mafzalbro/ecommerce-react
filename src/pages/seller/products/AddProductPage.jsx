@@ -20,9 +20,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
-import { useProducts } from "../../hooks/useProducts";
-import GoBack from "../../components/layout/admin/GoBack";
-import CategorySelection from "./products/CategorySelection";
+import { useProducts } from "../../../hooks/useProducts";
+import GoBack from "@/components/layout/admin/GoBack";
+import CategorySelection from "../products/CategorySelection";
 import { pinataUpload } from "@/utils/uploads";
 
 const AddProductPage = () => {

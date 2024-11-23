@@ -221,9 +221,8 @@ export function useProducts(searchParams) {
         removeCache(`/api/v1/products/deleteProduct/${productId}`);
       }
 
-      
-      sessionStorage.removeItem("getAllProductsCache")
-            
+      sessionStorage.removeItem("getAllProductsCache");
+      getProducts();
     } catch (err) {
       console.log("Error deleting product:", err);
     } finally {
@@ -246,6 +245,7 @@ export function useProducts(searchParams) {
           )
         );
 
+        getProducts();
         sessionStorage.removeItem("getAllProductsCache");
 
         setCache(
@@ -269,6 +269,109 @@ export function useProducts(searchParams) {
     }
   }, []);
 
+  // Fetch seller-specific products
+  const getSellerProducts = useCallback(async () => {
+    const user = JSON.parse(window.localStorage.getItem("user")); // Get user details from localStorage
+    if (!user || user.role !== "seller") return; // Exit if user is not a seller
+
+    setLoadingProducts(true);
+
+    try {
+      const response = await fetcher.get(`/api/v1/products/getSellerProducts`);
+      const sellerProducts = response.data.getSellerProducts;
+
+      // Cache the seller products locally (if required)
+      const cacheKey = "getSellerProductsCache";
+      sessionStorage.setItem(cacheKey, JSON.stringify(sellerProducts));
+
+      // Update the state with seller's products
+      setProducts(sellerProducts);
+      setTotalResults(sellerProducts.length);
+
+      toast({
+        title: "Success",
+        description: "Seller products fetched successfully.",
+        variant: "success",
+      });
+    } catch (err) {
+      console.error("Error fetching seller's products:", err);
+      toast({
+        title: "Error",
+        description: "Failed to fetch seller's products. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingProducts(false);
+    }
+  }, []);
+
+  const updateSellerProduct = useCallback(async (id, updatedProduct) => {
+    try {
+      const response = await fetcher.put(
+        `/api/v1/products/updateSellerProduct/${id}`,
+        updatedProduct
+      );
+
+      if (response.status === 201) {
+        const updatedData = response.data.updateProduct;
+
+        // Update the product list with the updated product
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === id ? updatedData : product
+          )
+        );
+
+        sessionStorage.removeItem("getAllProductsCache"); // Clear cache
+
+        toast({
+          title: "Success",
+          description: "Seller product updated successfully!",
+          variant: "success",
+        });
+      }
+    } catch (err) {
+      console.error("Error updating seller product:", err);
+      toast({
+        title: "Error",
+        description: "Failed to update the product. Please try again.",
+        variant: "destructive",
+      });
+      throw err;
+    }
+  }, []);
+
+  const deleteSellerProduct = useCallback(async (productId) => {
+    try {
+      const response = await fetcher.delete(
+        `/api/v1/products/deleteSellerProduct/${productId}`
+      );
+
+      if (response.status === 200) {
+        // Remove the product from the local state
+        setProducts((prevProducts) =>
+          prevProducts.filter((product) => product._id !== productId)
+        );
+
+        sessionStorage.removeItem("getAllProductsCache"); // Clear cache
+
+        toast({
+          title: "Success",
+          description: "Seller product deleted successfully!",
+          variant: "success",
+        });
+      }
+    } catch (err) {
+      console.error("Error deleting seller product:", err);
+      toast({
+        title: "Error",
+        description: "Failed to delete the product. Please try again.",
+        variant: "destructive",
+      });
+      throw err;
+    }
+  }, []);
+
   useEffect(() => {
     getProducts();
   }, [getProducts]);
@@ -280,6 +383,10 @@ export function useProducts(searchParams) {
   useEffect(() => {
     getNewArrivals();
   }, [getNewArrivals]);
+
+  useEffect(() => {
+    getSellerProducts();
+  }, [getSellerProducts]);
 
   return {
     products,
@@ -296,5 +403,8 @@ export function useProducts(searchParams) {
     deleteProduct,
     updateProduct,
     addProduct,
+    getSellerProducts,
+    updateSellerProduct,
+    deleteSellerProduct,
   };
 }

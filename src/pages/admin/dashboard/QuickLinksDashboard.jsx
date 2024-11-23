@@ -23,6 +23,7 @@ const adminMenuItems = [
     link: "/admin/profile",
     icon: <AiOutlineProfile />,
   },
+  { label: "Orders", link: "/user/orders", icon: <AiOutlineShoppingCart /> },
   {
     label: "User Management",
     link: "/admin/users",

@@ -17,6 +17,8 @@ import AddUserPage from "../../pages/admin/users/AddUserPage";
 import UpdateUserPage from "../../pages/admin/users/UpdateUserPage";
 import DashboardPage from "../../pages/admin/dashboard/DashboardPage";
 import OrdersPage from "../../pages/user/ordersPage";
+import RequestsPageWrapper from "../../pages/admin/requests/RequestsPageWrapper";
+import RequestsAllPageWrapper from "../../pages/admin/requests/RequestsAllPageWrapper";
 
 const userRoutes = (
   <>
@@ -37,7 +39,8 @@ const userRoutes = (
     <Route path="/admin/products/:id" element={<UpdateProductPage />} />
     <Route path="/admin/products/new" element={<AddProductPage />} />
     <Route path="/admin/queries" element={<QueriesPage />} />
-    <Route path="/admin/requests" element={<RequestsPage />} />
+    <Route path="/admin/requests/all" element={<RequestsAllPageWrapper />} />
+    <Route path="/admin/requests" element={<RequestsPageWrapper />} />
   </>
 );
 

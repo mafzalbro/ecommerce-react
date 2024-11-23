@@ -18,7 +18,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"; //
 
 const userMenuItems = [
   { label: "Profile", link: "/user/profile", icon: <AiOutlineUser /> },
-  { label: "Orders", link: "/user/orders", icon: <AiOutlineShoppingCart /> },
   { label: "Settings", link: "/user/settings", icon: <AiOutlineSetting /> },
 ];
 

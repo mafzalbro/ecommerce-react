@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import DateDisplay from "@/components/layout/items/DateDisplay";
 import { useProducts } from "../../hooks/useProducts";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import AddToCartButton from "../../components/layout/products/AddToCartButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -17,6 +17,10 @@ import { Button } from "@/components/ui/button";
 import GoBack from "../../components/layout/admin/GoBack";
 import useAuth from "../../hooks/AuthProvider";
 import { PencilIcon } from "lucide-react";
+import AddReview from "../../components/layout/products/AddReview";
+import fetcher from "@/utils/fetcher";
+import { toast } from "@/hooks/use-toast";
+import { AiOutlineLock } from "react-icons/ai";
 
 export default function ProductDetailsPage() {
   const { productId } = useParams();
@@ -32,6 +36,14 @@ export default function ProductDetailsPage() {
   const [selectedColor, setSelectedColor] = useState(product?.color?.[0] || ""); // Track selected color
   const [selectedCover, setSelectedCover] = useState(product?.imgCover || []); // Track selected color
   const [sizePrice, setSizePrice] = useState(product?.price || 0);
+  const [reviews, setReviews] = useState([]);
+
+  // Update reviews when product is fetched
+  React.useEffect(() => {
+    if (product?.reviews) {
+      setReviews(product.reviews);
+    }
+  }, [product]);
 
   // Fetch the product details using the provided productId
   React.useEffect(() => {
@@ -85,17 +97,16 @@ export default function ProductDetailsPage() {
       })
       .map((imgArr) => imgArr.images);
 
+    setSelectedCover(currentImage);
+    setSelectedSize(size);
+
     const currentPrice = product?.imagesArray
       ?.filter((image) => {
         return image.sizes[0] === size;
       })
-      .map((imgArr) => imgArr?.price);
+      .map((imgArr) => imgArr?.price)[0];
 
-    setSizePrice(currentPrice);
-
-    setSelectedCover(currentImage);
-
-    setSelectedSize(size); // Update selected size
+    setSizePrice(currentPrice || product?.price);
   };
 
   const handleColorChange = (color) => {
@@ -106,8 +117,49 @@ export default function ProductDetailsPage() {
       .map((imgArr) => imgArr.images);
     setSelectedCover(currentImage);
     setSelectedColor(color);
+
+    const currentPrice = product?.imagesArray
+      ?.filter((image) => {
+        return image.sizes[0] === color;
+      })
+      .map((imgArr) => imgArr?.price)[0];
+
+    setSizePrice(currentPrice || product?.price);
   };
-  const { role } = useAuth();
+
+  // Add review function
+  const addReview = async (productId, reviewData) => {
+    try {
+      // Send the review to the backend API
+      const response = await fetcher.post(
+        `/api/v1/products/addReview/${productId}`,
+        { reviewText: reviewData.comment, rating: reviewData.rating }
+      );
+
+      if (response.data.message.includes("Review added successfully")) {
+        const newReview = response.data.product.reviews;
+        // Update reviews locally
+        setReviews(() => [...newReview]);
+        if (newReview) {
+          toast({
+            title: "Success",
+            description: "Review added successfully!",
+            variant: "success",
+          });
+        }
+        return newReview;
+      }
+    } catch (error) {
+      console.error("Error adding review:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add the review. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const { role, isAuthenticated } = useAuth();
   return (
     <>
       {role === "admin" && (
@@ -292,6 +344,7 @@ export default function ProductDetailsPage() {
           </p>
 
           {/* Add to Cart Button */}
+
           <AddToCartButton
             disabled={(!selectedSize && !selectedColor) || !sizePrice}
             product={product}
@@ -301,6 +354,18 @@ export default function ProductDetailsPage() {
           />
         </div>
       </div>
+      <div className="space-y-6 my-10 flex justify-center items-center">
+        {/* Add the AddReview component */}
+        {isAuthenticated ? (
+          <AddReview productId={product._id} addReview={addReview} />
+        ) : (
+          <Link to={"/signin"}>
+            <Button variant="ghost">
+              <AiOutlineLock /> Login to add review
+            </Button>
+          </Link>
+        )}
+      </div>
 
       {/* Product Reviews Section */}
       <div className="mt-8 space-y-6 p-4 bg-gray-100 dark:bg-gray-900 rounded-lg">
@@ -308,26 +373,26 @@ export default function ProductDetailsPage() {
           Reviews
         </h3>
         <div className="space-y-4">
-          {product.reviews?.length > 0 ? (
-            product.reviews.map((review, index) => (
+          {reviews?.length > 0 ? (
+            reviews.map((review, index) => (
               <div key={index} className="border-b pb-4">
-                <p className="font-semibold">{review.user}</p>
+                <p className="font-semibold">{review.username}</p>
                 <p className="text-gray-600 dark:text-gray-300">
-                  {review.comment}
+                  {review.reviewText}
                 </p>
                 <div className="flex items-center space-x-2">
                   <span className="text-yellow-500">
                     {"★".repeat(review.rating)}
                     {"☆".repeat(5 - review.rating)}
                   </span>
-                  <span className="text-gray-500 dark:text-gray-400">
+                  <span className="text-gray-500 dark:text-gray-200">
                     ({review.rating}/5)
                   </span>
                 </div>
               </div>
             ))
           ) : (
-            <p className="text-gray-500 dark:text-gray-400">No reviews yet.</p>
+            <p className="text-gray-500 dark:text-gray-300">No reviews yet.</p>
           )}
         </div>
       </div>
