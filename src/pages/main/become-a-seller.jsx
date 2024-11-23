@@ -22,7 +22,7 @@ function Seller() {
         <div className="carousel-inner">
           <div className="carousel-item active">
             <img
-              src={"/res.png"}
+              src={"/res.jpg"}
               className="d-block w-full object-cover rounded-md"
               alt="Sell here"
             />

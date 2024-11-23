@@ -187,7 +187,7 @@ export default function ProductDetailsPage() {
                   }
                   // srcSet={"/placeholder.png"}
                   alt="Product Image"
-                  className="object-cover w-full h-80"
+                  className="object-contain w-full h-80"
                   onClick={() =>
                     setSelectedImage(
                       selectedCover?.length !== 0
@@ -210,7 +210,7 @@ export default function ProductDetailsPage() {
                   <img
                     src={selectedImage}
                     alt="Full Product Image"
-                    className="object-contain rounded-md "
+                    className="object-contain rounded-md"
                   />
                 )}
               </div>

@@ -20,7 +20,10 @@ export function useProducts(searchParams) {
   const getProducts = useCallback(async () => {
     const user = JSON.parse(window.localStorage.getItem("user"));
 
-    if (!user || user.user.role === "seller") return;
+    if (user?.user?.role === "seller") {
+      setLoadingProducts(false);
+      return;
+    }
 
     setLoadingProducts(true);
 
@@ -51,44 +54,6 @@ export function useProducts(searchParams) {
       setLoadingProducts(false);
     }
   }, [memoizedSearchParams]);
-
-  // Filter and search products from cache or fetched data
-  const applyFilters = (productData) => {
-    const { category, subCategory, searchTerm, priceGte, priceLte } =
-      memoizedSearchParams || {};
-
-    // Apply filters
-    const filteredProducts = productData.filter((product) => {
-      // Category filter
-
-      if (category && product.category?._id !== category) return false;
-
-      // Subcategory filter
-      if (subCategory && product.subcategory?._id !== subCategory) return false;
-
-      // Keyword search (title or description)
-      if (
-        searchTerm &&
-        !(
-          product?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product?.description?.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      ) {
-        return false;
-      }
-
-      // Price range filter
-      const price = product.price;
-      if (priceGte && price < priceGte) return false;
-      if (priceLte && price > priceLte) return false;
-
-      return true; // Include the product if all conditions are met
-    });
-
-    // Update state with filtered products
-    setProducts(filteredProducts);
-    setTotalResults(filteredProducts.length);
-  };
 
   // Function to add a new product
   const addProduct = useCallback(
@@ -280,6 +245,16 @@ export function useProducts(searchParams) {
 
     setLoadingProducts(true);
 
+    // Check if data exists in sessionStorage
+    const cachedData = sessionStorage.getItem("getSellerProductsCache");
+    if (cachedData) {
+      // console.log("Using cached products from sessionStorage");
+      const parsedData = JSON.parse(cachedData);
+      setLoadingProducts(false);
+      applyFilters(parsedData);
+      return;
+    }
+
     try {
       const response = await fetcher.get(`/api/v1/products/getSellerProducts`);
       const sellerProducts = response.data.products;
@@ -291,12 +266,13 @@ export function useProducts(searchParams) {
       // Update the state with seller's products
       setProducts(sellerProducts);
       setTotalResults(sellerProducts?.length);
+      applyFilters(sellerProducts);
     } catch (err) {
       console.error("Error fetching seller's products:", err);
     } finally {
       setLoadingProducts(false);
     }
-  }, []);
+  }, [memoizedSearchParams]);
 
   const updateSellerProduct = useCallback(async (id, updatedProduct) => {
     try {
@@ -316,7 +292,7 @@ export function useProducts(searchParams) {
         );
 
         sessionStorage.removeItem("getAllProductsCache"); // Clear cache
-
+        getSellerProducts();
         toast({
           title: "Success",
           description: "Seller product updated successfully!",
@@ -348,6 +324,8 @@ export function useProducts(searchParams) {
 
         sessionStorage.removeItem("getAllProductsCache"); // Clear cache
 
+        getSellerProducts();
+
         toast({
           title: "Success",
           description: "Seller product deleted successfully!",
@@ -364,7 +342,42 @@ export function useProducts(searchParams) {
       throw err;
     }
   }, []);
+  // Filter and search products from cache or fetched data
+  const applyFilters = (productData) => {
+    const { category, subCategory, searchTerm, priceGte, priceLte } =
+      memoizedSearchParams || {};
+    // Apply filters
+    const filteredProducts = productData.filter((product) => {
+      // Category filter
 
+      if (category && product.category?._id !== category) return false;
+
+      // Subcategory filter
+      if (subCategory && product.subcategory?._id !== subCategory) return false;
+
+      // Keyword search (title or description)
+      if (
+        searchTerm &&
+        !(
+          product?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          product?.description?.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      ) {
+        return false;
+      }
+
+      // Price range filter
+      const price = product.price;
+      if (priceGte && price < priceGte) return false;
+      if (priceLte && price > priceLte) return false;
+
+      return true; // Include the product if all conditions are met
+    });
+
+    // Update state with filtered products
+    setProducts(filteredProducts);
+    setTotalResults(filteredProducts.length);
+  };
   useEffect(() => {
     getProducts();
   }, [getProducts]);
