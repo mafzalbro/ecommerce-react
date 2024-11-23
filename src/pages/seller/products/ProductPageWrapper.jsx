@@ -75,7 +75,7 @@ const ProductPageWrapper = () => {
         <ProductTable
           products={paginatedProducts}
           deleteProduct={deleteSellerProduct}
-          loading={loading || loadingProducts}
+          loading={loadingProducts}
         />
       </div>
 
@@ -83,14 +83,15 @@ const ProductPageWrapper = () => {
         Total Products:
         <span className="font-bold mx-1">{totalResults}</span>
       </p>
-
       {/* Pagination */}
-      <Pagination
-        currentPage={currentPage}
-        totalItems={filteredProducts?.length}
-        itemsPerPage={itemsPerPage}
-        onPageChange={handlePageChange}
-      />
+      {filteredProducts?.length !== 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalItems={filteredProducts?.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+        />
+      )}
     </div>
   );
 };

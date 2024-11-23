@@ -85,12 +85,14 @@ const ProductPageWrapper = () => {
       </p>
 
       {/* Pagination */}
-      <Pagination
-        currentPage={currentPage}
-        totalItems={filteredProducts?.length}
-        itemsPerPage={itemsPerPage}
-        onPageChange={handlePageChange}
-      />
+      {filteredProducts?.length !== 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalItems={filteredProducts?.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+        />
+      )}
     </div>
   );
 };
