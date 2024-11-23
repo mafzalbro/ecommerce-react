@@ -55,7 +55,7 @@ const UpdateProductPage = () => {
 
       if (!data) {
         console.error("Product not found!");
-        navigate("/admin/products", { replace: true });
+        navigate("/seller/products", { replace: true });
         return;
       }
 
@@ -174,7 +174,7 @@ const UpdateProductPage = () => {
       console.log(updatedProduct);
 
       await updateSellerProduct(id, updatedProduct);
-      // navigate("/admin/products");
+      navigate("/seller/products");
     } catch (error) {
       console.error("Error updating product:", error);
     } finally {
@@ -206,7 +206,7 @@ const UpdateProductPage = () => {
 
   return (
     <div className="p-6 space-y-4 max-w-screen-lg mx-auto">
-      <GoBack to="/admin/products"></GoBack>
+      <GoBack to="/seller/products"></GoBack>
       <Card>
         <CardHeader>
           <CardTitle className={"text-2xl"}>Update Product</CardTitle>

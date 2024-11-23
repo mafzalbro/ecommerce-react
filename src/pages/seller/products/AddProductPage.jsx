@@ -125,7 +125,7 @@ const AddProductPage = () => {
       };
 
       await addProduct(newProduct);
-      navigate("/admin/products");
+      navigate("/selller/products");
     } catch (error) {
       console.error("Error adding product:", error);
     } finally {
@@ -135,7 +135,7 @@ const AddProductPage = () => {
 
   return (
     <div className="p-6 space-y-4 max-w-screen-lg mx-auto">
-      <GoBack to="/admin/products" />
+      <GoBack to="/seller/products" />
       <Card>
         <CardHeader>
           <CardTitle className={"text-2xl"}>Add Product</CardTitle>

@@ -25,6 +25,16 @@ const sellerMenuItems = [
     link: "/seller/products",
     icon: <AiOutlineAppstore />,
   },
+  {
+    label: "Your Customers",
+    link: "/seller/customers",
+    icon: <AiOutlineDashboard />,
+  },
+  {
+    label: "Your Orders",
+    link: "/seller/orders",
+    icon: <AiOutlineAppstore />,
+  },
 ];
 
 // eslint-disable-next-line react/prop-types

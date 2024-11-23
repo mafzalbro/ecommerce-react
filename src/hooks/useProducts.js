@@ -18,6 +18,10 @@ export function useProducts(searchParams) {
   const memoizedSearchParams = useMemo(() => searchParams, [searchParams]);
 
   const getProducts = useCallback(async () => {
+    const user = JSON.parse(window.localStorage.getItem("user"));
+
+    if (!user || user.user.role === "seller") return;
+
     setLoadingProducts(true);
 
     try {
@@ -272,13 +276,13 @@ export function useProducts(searchParams) {
   // Fetch seller-specific products
   const getSellerProducts = useCallback(async () => {
     const user = JSON.parse(window.localStorage.getItem("user")); // Get user details from localStorage
-    if (!user || user.role !== "seller") return; // Exit if user is not a seller
+    if (!user || user.user.role !== "seller") return; // Exit if user is not a seller
 
     setLoadingProducts(true);
 
     try {
       const response = await fetcher.get(`/api/v1/products/getSellerProducts`);
-      const sellerProducts = response.data.getSellerProducts;
+      const sellerProducts = response.data.products;
 
       // Cache the seller products locally (if required)
       const cacheKey = "getSellerProductsCache";
@@ -286,7 +290,7 @@ export function useProducts(searchParams) {
 
       // Update the state with seller's products
       setProducts(sellerProducts);
-      setTotalResults(sellerProducts.length);
+      setTotalResults(sellerProducts?.length);
 
       toast({
         title: "Success",
