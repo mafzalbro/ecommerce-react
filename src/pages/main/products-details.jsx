@@ -190,7 +190,7 @@ export default function ProductDetailsPage() {
                   }
                   // srcSet={"/placeholder.png"}
                   alt="Product Image"
-                  className="object-contain w-full h-80"
+                  className="object-contain w-full h-auto"
                   onClick={() =>
                     setSelectedImage(
                       selectedCover?.length !== 0
