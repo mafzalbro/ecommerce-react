@@ -90,7 +90,7 @@ export default function NewArrivalCarousel() {
   }, [newArrivals]);
 
   return (
-    <div className="min-h-screen py-12 bg-white dark:bg-primary-foreground">
+    <div className="py-12 bg-white dark:bg-primary-foreground">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center text-primary dark:text-primary mb-8">
           New Arrivals
