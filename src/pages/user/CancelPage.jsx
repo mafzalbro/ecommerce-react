@@ -24,25 +24,27 @@ const CancelPage = () => {
     setTimeout(() => {
       setLoading(false);
     }, 1000);
-    
+
     // If the user is not authenticated or does not have the role 'user', redirect to '/'
     if (
       !isAuthenticated ||
       role !== "user" ||
       (check_cancel !== "payment" && !orderId)
     ) {
-      navigate("/"); // Redirect if not authenticated or role is not 'user'
+      if (window.location.pathname === "/") {
+        navigate("/"); // Redirect if not authenticated or role is not 'user'
+      }
     }
   }, [isAuthenticated, role]);
-  
+
   if (window.location.pathname !== "/") {
     return null;
   }
-  
+
   if (check_cancel !== "payment" || !orderId) {
     return null;
   }
-  
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-red-100 p-6">
       <div className="bg-white shadow-md rounded-lg max-w-lg w-full p-8">
