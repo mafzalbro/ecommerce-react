@@ -37,9 +37,12 @@ export default function ProductDetailsPage() {
   const [selectedCover, setSelectedCover] = useState(product?.imgCover || []); // Track selected color
   const [sizePrice, setSizePrice] = useState(product?.price || 0);
   const [reviews, setReviews] = useState([]);
+  const [allImages, setAllImages] = useState([]);
 
   // Update reviews when product is fetched
   React.useEffect(() => {
+    const allImage = product?.imagesArray.map((imgArr) => imgArr.images);
+    setAllImages(allImage);
     if (product?.reviews) {
       setReviews(product.reviews);
     }
@@ -223,32 +226,34 @@ export default function ProductDetailsPage() {
 
           {/* Additional Product Images */}
           <div className="grid grid-cols-4 gap-2">
-            {selectedCover?.slice(1)?.map((image, index) => (
-              <Dialog key={index}>
-                <DialogTrigger asChild>
-                  <img
-                    src={image}
-                    alt={`Product Image Thumbnail ${index + 1}`}
-                    className="aspect-square border-2 border-gray-300 rounded-lg overflow-hidden cursor-pointer transition transform hover:scale-105"
-                    onClick={() => setSelectedImage(image)}
-                  />
-                </DialogTrigger>
-                <DialogContent className="sm:max- sm:max-h-full p-0">
-                  <DialogHeader>
-                    <DialogTitle className="p-4">Product Image</DialogTitle>
-                  </DialogHeader>
-                  <div className=" h-full flex justify-center items-center">
-                    {selectedImage && (
-                      <img
-                        src={selectedImage}
-                        alt={`Full Product Image ${index + 1}`}
-                        className="object-contain max- max-h-full"
-                      />
-                    )}
-                  </div>
-                </DialogContent>
-              </Dialog>
-            ))}
+            {(selectedCover > 1 ? selectedCover : allImages)
+              ?.slice(1)
+              ?.map((image, index) => (
+                <Dialog key={index}>
+                  <DialogTrigger asChild>
+                    <img
+                      src={image}
+                      alt={`Product Image Thumbnail ${index + 1}`}
+                      className="aspect-square border-2 border-gray-300 rounded-lg overflow-hidden cursor-pointer transition transform hover:scale-105"
+                      onClick={() => setSelectedImage(image)}
+                    />
+                  </DialogTrigger>
+                  <DialogContent className="sm:max- sm:max-h-full p-0">
+                    <DialogHeader>
+                      <DialogTitle className="p-4">Product Image</DialogTitle>
+                    </DialogHeader>
+                    <div className=" h-full flex justify-center items-center">
+                      {selectedImage && (
+                        <img
+                          src={selectedImage}
+                          alt={`Full Product Image ${index + 1}`}
+                          className="object-contain max- max-h-full"
+                        />
+                      )}
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              ))}
           </div>
         </div>
 
@@ -281,7 +286,7 @@ export default function ProductDetailsPage() {
           {/* Quantity, Sold, and Stock */}
           <div className="flex space-x-4 mt-4 text-gray-700 dark:text-gray-300">
             <div>
-              <span className="font-semibold">Stock:</span> {product?.quantity}{" "}
+              <span className="font-semibold">Stock:</span> {product?.quantity}
               Pcs
             </div>
             {/* <div>
@@ -338,11 +343,6 @@ export default function ProductDetailsPage() {
             </div>
           </div>
 
-          {/* Product Description */}
-          <p className="text-gray-700 dark:text-gray-300">
-            {product?.description}
-          </p>
-
           {/* Add to Cart Button */}
 
           <AddToCartButton
@@ -354,6 +354,15 @@ export default function ProductDetailsPage() {
           />
         </div>
       </div>
+
+      <div className="mt-8 space-y-6 p-4 bg-gray-100 dark:bg-gray-900">
+        <h2 className="text-2xl">Product Details</h2>
+        {/* Product Description */}
+        <p className="text-gray-700 dark:text-gray-300">
+          {product?.description}
+        </p>
+      </div>
+
       <div className="space-y-6 my-10 flex justify-center items-center">
         {/* Add the AddReview component */}
         {isAuthenticated ? (
@@ -368,6 +377,7 @@ export default function ProductDetailsPage() {
       </div>
 
       {/* Product Reviews Section */}
+
       <div className="mt-8 space-y-6 p-4 bg-gray-100 dark:bg-gray-900 rounded-lg">
         <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
           Reviews

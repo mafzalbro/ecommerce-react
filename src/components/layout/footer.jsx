@@ -30,8 +30,8 @@ const Footer = () => {
 
         {/* Copyright */}
         <p className="mt-2 md:mt-0 text-gray-500 dark:text-gray-400">
-          &copy; {new Date().getFullYear()}{" "}
           <span className="font-medium">Rstorex</span>
+          &copy; {new Date().getFullYear()}{" "}
         </p>
       </div>
     </footer>

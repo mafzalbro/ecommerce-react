@@ -10,9 +10,9 @@ export default function ProductGrid({ products }) {
     return (
       <div className="">
         {/* First Row */}
-        <div className="flex flex-wrap justify-center gap-4">
+        <div className="flex flex-wrap justify-center gap-4 max-w-screen-xl mx-auto">
           {displayedProducts.map((product) => (
-            <div key={product._id}>
+            <div key={product._id} className="w-1/2 sm:1/3 md:h-1/4 lg:w-1/5">
               <ShortProductCard product={product} />
             </div>
           ))}
