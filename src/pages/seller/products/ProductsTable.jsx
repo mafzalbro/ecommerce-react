@@ -82,7 +82,12 @@ const ProductTable = ({ products, loading, deleteProduct }) => (
             <TableCell>
               <img src={product.imgCover} className="w-20 h-20 rounded-md" />
             </TableCell>
-            <TableCell>{product.title}</TableCell>
+            <TableCell>
+              {product?.title?.length < 30
+                ? product?.title
+                : product?.title?.slice(0, 30) + "..."}
+              {/* {product.title} */}
+            </TableCell>
             <TableCell className="text-right">PKR{product.price}</TableCell>
             <TableCell className="text-center">
               {product.category ? (

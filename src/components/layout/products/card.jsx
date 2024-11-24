@@ -57,7 +57,12 @@ function ProductCard({ product }) {
           to={`/products/${product._id}`}
           className="hover:text-blue-500 dark:hover:text-blue-300"
         >
-          <h3 className="text-xl font-bold">{product?.title}</h3>
+          <h3 className="text-xl font-bold">
+            {product?.title?.length < 30
+              ? product?.title
+              : product?.title?.slice(0, 30) + "..."}
+            {/* {product?.title} */}
+          </h3>
         </Link>
 
         <p className="text-sm mt-2">

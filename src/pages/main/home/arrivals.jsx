@@ -42,7 +42,9 @@ function NewArrivalCard({ product }) {
           className="hover:text-blue-500 dark:hover:text-blue-300"
         >
           <h3 className="text-lg font-semibold mb-2 text-primary dark:text-primary">
-            {title}
+            {title?.length < 30 ? title : title?.slice(0, 30) + "..."}
+
+            {/* {title} */}
           </h3>
         </Link>
         <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
