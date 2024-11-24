@@ -12,6 +12,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import Spinner from "../components/ui/spinner";
 import { Toaster } from "../components/ui/toaster";
 import SellerRejected from "../pages/seller/SellerRejected";
+import CancelPage from "../pages/user/CancelPage";
+import SuccessPage from "../pages/user/SuccessPage";
 
 // Lazy load pages
 const NotFound = React.lazy(() => import("../pages/main/NotFound"));
@@ -27,6 +29,8 @@ const AppRoutes = () => {
   return (
     <Router>
       <Navbar />
+      <CancelPage />
+      <SuccessPage />
         <Routes>
           {/* Main routes */}
           {mainRoutes}

@@ -12,8 +12,6 @@ const userRoutes = (
     <Route path="/user/cart" element={<CartPage />} />
     <Route path="/user/checkout" element={<CheckoutPage />} />
     <Route path="/user/orders" element={<OrdersPage />} />
-    <Route path="/" element={<SuccessPage />} />
-    <Route path="/" element={<CancelPage />} />
     <Route path="/user/profile" element={<UserProfile />} />
     <Route path="/user/settings" element={<UserSettings />} />
   </>

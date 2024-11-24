@@ -33,7 +33,11 @@ const CancelPage = () => {
     ) {
       navigate("/"); // Redirect if not authenticated or role is not 'user'
     }
-  }, [isAuthenticated, role, history]);
+  }, [isAuthenticated, role]);
+
+  if (check_cancel !== "payment" || !orderId) {
+    return null;
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-red-100 p-6">
@@ -50,7 +54,7 @@ const CancelPage = () => {
               Payment Failed!
             </h1>
             <p className="text-lg text-gray-700 mt-2">{errorMessage}</p>
-            <Button className="mt-6" onClick={() => history.push("/products")}>
+            <Button className="mt-6" onClick={() => navigate("/products")}>
               Shop Again
             </Button>
           </div>
