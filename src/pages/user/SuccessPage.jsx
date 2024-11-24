@@ -1,0 +1,77 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // React Router hooks
+import useAuth from "@/hooks/AuthProvider"; // Assuming useAuth hook is available
+import { useOrder } from "@/hooks/useOrder"; // Assuming useOrder is correctly set up
+import { Button } from "@/components/ui/button"; // Your Button component
+import Spinner from "@/components/ui/spinner"; // Optional: Spinner for loading
+import { CheckCircleIcon } from "lucide-react";
+
+const SuccessPage = () => {
+  const navigate = useNavigate(); // To access the current location (URL) and query params
+  const [loading, setLoading] = useState(false);
+  const { createOrder } = useOrder(); // Assuming useOrder is correctly set up
+
+  // Use useAuth hook to check the current user's role
+  const { role, isAuthenticated } = useAuth();
+
+  // Parse query parameters
+  const queryParams = new URLSearchParams(window.location.search);
+  const sessionId = queryParams.get("session_id");
+  const check_success = queryParams.get("check_success");
+
+  useEffect(() => {
+    // Check if the user is authenticated and their role is 'user'
+    if (!isAuthenticated || role !== "user" || !check_success !== "payment") {
+      // Redirect to home page if not authenticated or role is not 'user'
+      navigate("/");
+      return;
+    }
+
+    // Proceed with order creation if sessionId exists
+    if (sessionId && check_success === "payment") {
+      setLoading(true);
+      createOrder({ payment: "success" })
+        .then(() => {
+          // Additional logic on successful order creation (e.g., redirect or show confirmation)
+          setLoading(false);
+        })
+        .catch((error) => {
+          // Handle any errors that may occur
+          console.error("Error creating order:", error);
+          setLoading(false);
+        });
+    } else {
+      // If no session_id, redirect or show an error (optional)
+      navigate("/");
+    }
+  }, [sessionId, isAuthenticated, role, history, createOrder]);
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-green-100 p-6">
+      <div className="bg-white shadow-md rounded-lg max-w-lg w-full p-8">
+        {loading ? (
+          <div className="flex justify-center items-center">
+            <Spinner /> {/* Show spinner while loading */}
+            <span className="ml-4">Processing your order...</span>
+          </div>
+        ) : (
+          <div className="text-center">
+            <CheckCircleIcon className="w-16 h-16 text-green-500 mx-auto" />
+            <h1 className="text-2xl font-semibold text-green-600 mt-4">
+              Payment Successful!
+            </h1>
+            <p className="text-lg text-gray-700 mt-2">
+              Your order has been successfully processed. Thank you for your
+              purchase!
+            </p>
+            <Button className="mt-6" onClick={() => history.push("/orders")}>
+              View Your Orders
+            </Button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default SuccessPage;

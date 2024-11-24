@@ -88,7 +88,7 @@ const SellerMenu = ({ className }) => {
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-};
+  )
+}
 
 export default SellerMenu;

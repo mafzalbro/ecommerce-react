@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
+  // CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -15,12 +15,12 @@ import { Separator } from "@/components/ui/separator";
 import { ShoppingCart, CreditCard, Truck } from "lucide-react";
 import useAuth from "../../hooks/AuthProvider";
 import { useCartContext } from "@/hooks/CartContext";
+import { useOrder } from "../../hooks/useOrder";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
-import PaymentForm from "./payment-form";
-import StripeProvider from "@/hooks/StripeProvider";
 
 export default function CheckoutPage() {
+  const { createOrder } = useOrder();
   const { user } = useAuth();
   const { cart } = useCartContext();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -72,10 +72,23 @@ export default function CheckoutPage() {
   const handleSubmit = (event) => {
     event.preventDefault();
     setIsProcessing(true);
-    setTimeout(() => {
-      alert("Payment successful!");
+
+    const orderData = {
+      userId: user._id, // user ID from the current logged-in user
+      cartId: cart._id, // cart ID from the cart context
+      shippingAddress: formData, // shipping address from form data
+      paymentMethod, // payment method selected (card)
+      totalAmount: totalPrice, // total amount based on cart items
+    };
+
+    createOrder(orderData).then((order) => {
       setIsProcessing(false);
-    }, 2000);
+      if (order) {
+        alert("Order placed successfully!");
+        // Optionally redirect or reset the cart
+        // history.push('/order-success');
+      }
+    });
   };
 
   const handleChange = (e) => {
@@ -207,95 +220,101 @@ export default function CheckoutPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <Truck className="mr-2" />
-                Shipping Information
+                <Truck className="mr-2" /> Shipping Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
+
+            <CardContent>
+              <div className="space-y-6">
+                <div>
                   <Label htmlFor="firstName">First Name</Label>
                   <Input
                     id="firstName"
-                    value={formData.firstName}
+                    type="text"
+                    value={formData.firstName || ""}
                     onChange={handleChange}
                     required
                   />
                 </div>
-                <div className="space-y-2">
+
+                <div>
                   <Label htmlFor="lastName">Last Name</Label>
                   <Input
                     id="lastName"
-                    value={formData.lastName}
+                    type="text"
+                    value={formData.lastName || ""}
                     onChange={handleChange}
                     required
                   />
                 </div>
-                <div className="space-y-2">
+
+                <div>
                   <Label htmlFor="address">Address</Label>
                   <Input
                     id="address"
-                    value={formData.address}
+                    type="text"
+                    value={formData.address || ""}
                     onChange={handleChange}
                     required
                   />
                 </div>
-                <div className="space-y-2">
+
+                <div>
                   <Label htmlFor="city">City</Label>
                   <Input
                     id="city"
-                    value={formData.city}
+                    type="text"
+                    value={formData.city || ""}
                     onChange={handleChange}
                     required
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="zipCode">Zip Code</Label>
+
+                <div>
+                  <Label htmlFor="zipCode">ZIP Code</Label>
                   <Input
                     id="zipCode"
-                    value={formData.zipCode}
+                    type="text"
+                    value={formData.zipCode || ""}
                     onChange={handleChange}
                     required
                   />
+                </div>
+
+                <div>
+                  <Label>Payment Method</Label>
+                  <RadioGroup
+                    value={paymentMethod}
+                    onValueChange={setPaymentMethod}
+                    defaultValue="card"
+                    className="flex justify-start items-center"
+                  >
+                    <RadioGroupItem value="card" id="card"></RadioGroupItem>
+                    {/* <div className="space-y-2"> */}
+                    <Label
+                      htmlFor="card"
+                      className="flex items-center space-x-2"
+                    >
+                      <CreditCard />
+                      <span>Credit Card</span>
+                    </Label>
+                    {/* </div> */}
+                  </RadioGroup>
                 </div>
               </div>
             </CardContent>
-          </Card>
 
-          {/* Payment Method Selection */}
-          <Card className="mt-8">
-            <CardHeader>
-              <CardTitle>Payment Method</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <RadioGroup
-                value={paymentMethod}
-                onValueChange={setPaymentMethod}
+            <CardFooter>
+              <Button
+                variant="default"
+                size="lg"
+                disabled={isProcessing}
+                type="submit"
               >
-                <div className="space-y-2 flex items-center gap-2">
-                  <RadioGroupItem value="card" id="creditCard" />
-                  <Label htmlFor="creditCard">Credit Card</Label>
-                </div>
-              </RadioGroup>
-            </CardContent>
+                {isProcessing ? "Processing..." : "Place Order"}
+              </Button>
+            </CardFooter>
           </Card>
-
-          {/* Stripe Payment Form */}
-          {paymentMethod === "card" && (
-            <StripeProvider>
-              <PaymentForm
-                totalPrice={totalPrice}
-                cartItems={cartItems}
-                setIsProcessing={setIsProcessing}
-              />
-            </StripeProvider>
-          )}
-
-          <CardFooter>
-            <Button type="submit" disabled={isProcessing}>
-              {isProcessing ? "Processing..." : "Complete Order"}
-            </Button>
-          </CardFooter>
         </form>
       </div>
     </div>

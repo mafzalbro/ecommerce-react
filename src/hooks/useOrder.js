@@ -10,19 +10,55 @@ export const useOrder = () => {
     console.error(err);
     setError(err.response?.data?.message || "Something went wrong");
   };
-
   const createOrder = async (orderData) => {
     setLoading(true);
     setError(null);
+
     try {
+      // Step 1: Create Order and Return Payment Link
       const response = await fetcher.post(
         "/restorex/orders/createOrder",
         orderData
       );
-      console.log(response.data);
-      return response.data;
+
+      if (response.data) {
+        // If payment URL is provided, return the payment link (order placed)
+        if (response.data.paymentURL) {
+          window.location.href = response.data.paymentURL;
+          console.log("Order created, payment link:", response.data.paymentURL);
+          return {
+            status: "placed",
+            message: "Order created successfully. Complete payment to proceed.",
+            paymentURL: response.data.paymentURL,
+          };
+        }
+
+        // Step 2: Handle Payment Success
+        if (response.data.payment === "success") {
+          console.log("Payment successful for order:", response.data.orderId);
+          return {
+            status: "paymentSuccess",
+            message: `Your payment for order ${response.data.orderId} was successful. Your order will be processed shortly.`,
+          };
+        }
+
+        // Step 3: Handle Delivered Success
+        if (response.data.delivered === "success") {
+          console.log("Order successfully delivered:", response.data.orderId);
+          return {
+            status: "deliveredSuccess",
+            message: `Your order ${response.data.orderId} has been successfully delivered.`,
+          };
+        }
+
+        // Default case if none of the expected conditions are met
+        throw new Error("Unexpected response from server.");
+      }
+
+      throw new Error("No data received from the server.");
     } catch (err) {
       handleError(err);
+      return { status: "error", message: err.message };
     } finally {
       setLoading(false);
     }
@@ -75,9 +111,7 @@ export const useOrder = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetcher.get(
-        `/restorex/orders/getOrdersForSeller/${sellerId}`
-      );
+      const response = await fetcher.get(`/restorex/orders/getOrdersForSeller`);
       console.log(response.data.orders);
       return response.data.orders;
     } catch (err) {
@@ -87,12 +121,12 @@ export const useOrder = () => {
     }
   };
 
-  const getCustomersBySellerId = async (sellerId) => {
+  const getCustomersBySeller = async (sellerId) => {
     setLoading(true);
     setError(null);
     try {
       const response = await fetcher.get(
-        `/restorex/orders/getCustomersBySellerId/${sellerId}`
+        `/restorex/orders/getCustomersBySeller`
       );
       console.log(response.data.customers);
       return response.data.customers;
@@ -182,7 +216,7 @@ export const useOrder = () => {
     getOrderById,
     cancelOrder,
     getOrdersForSeller,
-    getCustomersBySellerId,
+    getCustomersBySeller,
     // getAccessToken,
     // processPayment,
     // paymentWebhook,

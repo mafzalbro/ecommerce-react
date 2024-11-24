@@ -9,15 +9,15 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link } from "react-router-dom";
 import { TrashIcon, Edit2 } from "lucide-react";
 
-const OrderTable = ({ orders, loading, deleteOrder, cancelOrder }) => (
+const OrderTable = ({ orders, loading, cancelOrder, handleOrderAction }) => (
   <Table>
     <TableHeader>
       <TableRow>
         <TableHead>User ID</TableHead>
         <TableHead>Cart ID</TableHead>
+        <TableHead>Products IDs</TableHead>
         <TableHead>Total Amount</TableHead>
         <TableHead>Payment Method</TableHead>
         <TableHead>Status</TableHead>
@@ -48,10 +48,15 @@ const OrderTable = ({ orders, loading, deleteOrder, cancelOrder }) => (
               </TableCell>
             </TableRow>
           ))
-        : orders.map((order) => (
+        : orders?.map((order) => (
             <TableRow key={order._id}>
               <TableCell>{order.userId}</TableCell>
               <TableCell>{order.cartId}</TableCell>
+              <TableCell>
+                {order.products.map((product) => (
+                  <>{product?.productId}, </>
+                ))}
+              </TableCell>
               <TableCell>{order.totalAmount}</TableCell>
               <TableCell>{order.paymentMethod}</TableCell>
               <TableCell>
@@ -60,24 +65,36 @@ const OrderTable = ({ orders, loading, deleteOrder, cancelOrder }) => (
               </TableCell>
               <TableCell>
                 <div className="flex space-x-2">
-                  <Link to={`/orders/${order._id}`}>
-                    <Button variant="outline" size="sm">
-                      <Edit2 className="w-4 h-4" />
-                    </Button>
-                  </Link>
                   <Button
-                    variant="destructive"
+                    variant="outline"
                     size="sm"
-                    onClick={() => deleteOrder(order._id)}
+                    onClick={() =>
+                      handleOrderAction({
+                        ...order,
+                        payment: "success",
+                      })
+                    }
                   >
-                    <TrashIcon className="w-4 h-4" />
+                    Mark Payment as Success
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
+                    onClick={() =>
+                      handleOrderAction({
+                        ...order,
+                        delivered: "success",
+                      })
+                    }
+                  >
+                    Mark as Delivered
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
                     onClick={() => cancelOrder(order._id)}
                   >
-                    Cancel
+                    Cancel Order
                   </Button>
                 </div>
               </TableCell>

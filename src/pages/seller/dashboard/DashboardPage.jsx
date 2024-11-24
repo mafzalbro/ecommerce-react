@@ -2,7 +2,7 @@ import { QuickLinksDashboard } from "./QuickLinksDashboard";
 const DashboardPage = () => {
   return (
     <>
-      <QuickLinksDashboard />;
+      <QuickLinksDashboard />
     </>
   );
 };
