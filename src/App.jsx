@@ -13,27 +13,29 @@ function App() {
 
   useEffect(() => {
     // Remove loader after 2 seconds
-    const timer = setTimeout(() => setLoading(false), 2000);
+    const timer = setTimeout(() => setLoading(false), 4000);
     return () => clearTimeout(timer); // Cleanup timeout
   }, []);
 
   if (loading) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-white dark:bg-black z-50">
-        <div className="flex flex-col items-center space-y-4">
-          <img
-            src="/loader.png"
-            alt="Loading..."
-            className="w-full animate-pulse object-contain"
-          />
-          {/* <div className="flex gap-4">
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="flex flex-col items-center space-y-4">
+            <img
+              src="/loader.png"
+              alt="Loading..."
+              className="w-full animate-pulse object-contain drop-shadow-lg"
+            />
+            {/* <div className="flex gap-4">
             <Loader2 className="animate-spin" />
             <div className="animate-pulse text-gray-500 dark:text-gray-200 font-medium">
               Loading, please wait...
             </div>
           </div> */}
+          </div>
         </div>
-      </div>
+      </ThemeProvider>
     );
   }
 
