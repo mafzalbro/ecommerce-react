@@ -67,7 +67,7 @@ const UpdateSubCategoryPage = () => {
     try {
       const updatedSubCategory = {
         name: subCategoryName,
-        category: categoryId,
+        // category: categoryId,
       };
 
       await updateSubCategoryById(id, updatedSubCategory);
@@ -112,7 +112,7 @@ const UpdateSubCategoryPage = () => {
                 />
               </div>
 
-              <div>
+              {/* <div>
                 <Label>Category</Label>
                 {categories?.length === 0 ? (
                   <div>No categories available</div> // Handle empty state
@@ -143,7 +143,7 @@ const UpdateSubCategoryPage = () => {
                     </SelectContent>
                   </Select>
                 )}
-              </div>
+              </div> */}
 
               <div>
                 <Button

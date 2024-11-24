@@ -81,7 +81,7 @@ export function useCategories() {
         const newCategory = response.data.addcategory;
 
         // Invalidate the cache and fetch categories again
-        removeCache("/restorex/subcategories/getAllSubCategories");
+        removeCache("categories");
         await getCategories();
 
         return newCategory;

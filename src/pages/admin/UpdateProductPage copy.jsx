@@ -158,17 +158,17 @@ const UpdateProductPage = () => {
         description,
         price,
         quantity,
-        // discount,
+        discount,
         category: selectedCategory,
         subcategory: selectedSubCategory,
         imgCover,
-        // imagesArray: updatedColorSizeImages.map((item, index) => ({
-        //   images: item,
-        //   sizes: sizes?.split(",").map((size) => size.trim()),
-        //   colors: colors?.split(",").map((color) => color.trim()),
-        //   price: parseInt(colorSizeImages[index].price),
-        //   quantity: colorSizeImages[index].quantity,
-        // })),
+        imagesArray: updatedColorSizeImages.map((item, index) => ({
+          images: item,
+          sizes: sizes?.split(",").map((size) => size.trim()),
+          colors: colors?.split(",").map((color) => color.trim()),
+          price: parseInt(colorSizeImages[index].price),
+          quantity: colorSizeImages[index].quantity,
+        })),
       };
 
       await updateProduct(id, updatedProduct);
@@ -276,15 +276,16 @@ const UpdateProductPage = () => {
                 />
               </div>
               <div>
-                {/* <Label>Discount (%)</Label>
+                <Label>Discount (%)</Label>
                 <Input
                   type="number"
-                  // value={discount}
+                  value={discount}
                   onChange={(e) => setDiscount(e.target.value)}
                   placeholder="Enter the discount"
                   required
-                />*/}
+                />
               </div>
+
               <div>
                 <Label>Main Image</Label>
                 {fileUploading ? (
@@ -324,6 +325,116 @@ const UpdateProductPage = () => {
                   onChange={(e) => setSizes(e.target.value)}
                   placeholder="Small, Medium, Large"
                 />
+              </div>
+
+              {/* Color and Size Images Section */}
+              <div>
+                <Label>Color and Size Images</Label>
+                {colorSizeImages.map((image, index) => (
+                  <div key={index} className="space-y-2 flex items-center">
+                    <div className="flex space-x-2 items-center flex-col my-2 sm:flex-row border rounded-md p-2">
+                      <Input
+                        type="number"
+                        value={image.price || 0}
+                        onChange={(e) =>
+                          setColorSizeImages(
+                            colorSizeImages.map((img, idx) =>
+                              idx === index
+                                ? { ...img, price: e.target.value }
+                                : img
+                            )
+                          )
+                        }
+                        placeholder="Enter the price"
+                        required
+                      />
+
+                      {/* Color Select Dropdown */}
+                      <Select
+                        value={image.color[0]} // Controlled value
+                        onValueChange={(value) => {
+                          // Avoid state updates that cause infinite loops
+                          if (image.color !== value) {
+                            setColorSizeImages(
+                              colorSizeImages.map((img, idx) =>
+                                idx === index ? { ...img, color: value } : img
+                              )
+                            );
+                          }
+                        }}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Select Color" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Colors</SelectLabel>
+                            {colors
+                              ?.split(",")
+                              ?.filter((color) => color !== "")
+                              ?.map((color, i) => (
+                                <SelectItem key={i} value={color}>
+                                  {color}
+                                </SelectItem>
+                              ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+
+                      {/* Size Select Dropdown */}
+                      <Select
+                        value={image.size[0]} // Controlled value
+                        onValueChange={(value) => {
+                          // Avoid state updates that cause infinite loops
+                          if (image.size !== value) {
+                            setColorSizeImages(
+                              colorSizeImages.map((img, idx) =>
+                                idx === index ? { ...img, size: value } : img
+                              )
+                            );
+                          }
+                        }}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Select Size" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Sizes</SelectLabel>
+                            {sizes
+                              ?.split(",")
+                              ?.filter((size) => size !== "")
+                              ?.map((size, i) => (
+                                <SelectItem key={i} value={size}>
+                                  {size}
+                                </SelectItem>
+                              ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+
+                      {/* Image Upload */}
+                      {false ? (
+                        "Uploading..."
+                      ) : (
+                        <Input
+                          type="file"
+                          onChange={(e) => handleImageChange(index, e)}
+                        />
+                      )}
+                      {image.preview && (
+                        <img
+                          src={image.preview}
+                          alt="Preview"
+                          className="w-24 h-24"
+                        />
+                      )}
+                    </div>
+                  </div>
+                ))}
+                <Button type="button" onClick={addColorSizeImageField}>
+                  Add Color-Size Image
+                </Button>
               </div>
 
               <Button type="submit" disabled={isSubmitting} className="mt-4">

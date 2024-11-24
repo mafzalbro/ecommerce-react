@@ -86,7 +86,7 @@ const UpdateCategoryPage = () => {
       const updatedCategory = {
         name: categoryName,
         // description,
-        Image: categoryImage,
+        // Image: categoryImage,
       };
 
       await updateCategory(categoryId, updatedCategory);
@@ -95,7 +95,7 @@ const UpdateCategoryPage = () => {
         description: "Category updated successfully!",
         variant: "default",
       });
-      navigate.push("/admin/categories"); // Redirect to categories page
+      navigate("/admin/categories");
     } catch (error) {
       toast({
         title: "Error",
@@ -142,7 +142,7 @@ const UpdateCategoryPage = () => {
                 />
               </div> */}
 
-              <div>
+              {/* <div>
                 <Label>Category Image (Optional)</Label>
                 <Input type="file" onChange={handleCategoryImageChange} />
                 {categoryImagePreview && (
@@ -152,7 +152,7 @@ const UpdateCategoryPage = () => {
                     className="w-24 h-24 mt-2"
                   />
                 )}
-              </div>
+              </div> */}
 
               <div>
                 <Button
