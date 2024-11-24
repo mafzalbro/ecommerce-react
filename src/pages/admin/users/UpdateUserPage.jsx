@@ -29,23 +29,25 @@ const UpdateUserPage = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
     name: "",
-    email: "",
+    // email: "",
     password: "",
     role: "",
     city: "",
     address1: "",
     phone: "",
-    businessName: "",
-    businessAddress: "",
-    businessType: "",
-    taxIdNumber: "",
-    bankAccountNumber: "",
-    bankName: "",
-    accountHolderName: "",
-    branchCode: "",
-    idCardNumber: "",
-    idImage1: null,
-    idImage2: null,
+    sellerInfo: {
+      businessName: "",
+      businessAddress: "",
+      businessType: "",
+      taxIdNumber: "",
+      bankAccountNumber: "",
+      bankName: "",
+      accountHolderName: "",
+      branchCode: "",
+      idCardNumber: "",
+      idImage1: null,
+      idImage2: null,
+    },
     isActive: true,
     verified: false,
     blocked: false,
@@ -81,10 +83,43 @@ const UpdateUserPage = () => {
     setUserData((prevData) => ({ ...prevData, [name]: checked }));
   };
 
+  const handleNestedInputChange = (e, parentKey) => {
+    const { name, value } = e.target;
+    setUserData((prevData) => ({
+      ...prevData,
+      [parentKey]: {
+        ...prevData[parentKey],
+        [name]: value,
+      },
+    }));
+  };
+
   const handleUpdate = async () => {
     setLoading(true);
     try {
-      const response = await updateUser(id, userData); // Update user by ID
+      console.log({
+        ...userData,
+        sellerInfo: {
+          ...userData.sellerInfo,
+          documents: {
+            idCardNumber: userData.sellerInfo.idCardNumber,
+            idImage1: "nothing_here",
+            idImage2: "nothing_here",
+          },
+        },
+      });
+
+      const response = await updateUser(id, {
+        ...userData,
+        sellerInfo: {
+          ...userData.sellerInfo,
+          documents: {
+            idCardNumber: userData.sellerInfo.idCardNumber,
+            // idImage1: "nothing_here",
+            // idImage2: "nothing_here",
+          },
+        },
+      }); // Update user by ID
       if (response) {
         setToastMessage("User updated successfully!");
         setToastType("success");
@@ -123,7 +158,8 @@ const UpdateUserPage = () => {
                   placeholder="Full Name"
                 />
               </div>
-              <div>
+
+              {/* <div>
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -133,7 +169,7 @@ const UpdateUserPage = () => {
                   onChange={handleInputChange}
                   placeholder="Email"
                 />
-              </div>
+              </div> */}
             </div>
 
             {/* Password */}
@@ -213,8 +249,8 @@ const UpdateUserPage = () => {
                     <Input
                       id="businessName"
                       name="businessName"
-                      value={userData.businessName}
-                      onChange={handleInputChange}
+                      value={userData?.sellerInfo?.businessName}
+                      onChange={(e) => handleNestedInputChange(e, "sellerInfo")}
                       placeholder="Business Name"
                     />
                   </div>
@@ -223,8 +259,8 @@ const UpdateUserPage = () => {
                     <Input
                       id="businessAddress"
                       name="businessAddress"
-                      value={userData.businessAddress}
-                      onChange={handleInputChange}
+                      value={userData?.sellerInfo?.businessAddress}
+                      onChange={(e) => handleNestedInputChange(e, "sellerInfo")}
                       placeholder="Business Address"
                     />
                   </div>
@@ -236,8 +272,8 @@ const UpdateUserPage = () => {
                     <Input
                       id="businessType"
                       name="businessType"
-                      value={userData.businessType}
-                      onChange={handleInputChange}
+                      value={userData?.sellerInfo?.businessType}
+                      onChange={(e) => handleNestedInputChange(e, "sellerInfo")}
                       placeholder="Business Type"
                     />
                   </div>
@@ -246,8 +282,8 @@ const UpdateUserPage = () => {
                     <Input
                       id="taxIdNumber"
                       name="taxIdNumber"
-                      value={userData.taxIdNumber}
-                      onChange={handleInputChange}
+                      value={userData?.sellerInfo?.taxIdNumber}
+                      onChange={(e) => handleNestedInputChange(e, "sellerInfo")}
                       placeholder="Tax ID Number"
                     />
                   </div>
@@ -261,8 +297,8 @@ const UpdateUserPage = () => {
                     <Input
                       id="bankAccountNumber"
                       name="bankAccountNumber"
-                      value={userData.bankAccountNumber}
-                      onChange={handleInputChange}
+                      value={userData?.sellerInfo?.bankAccountNumber}
+                      onChange={(e) => handleNestedInputChange(e, "sellerInfo")}
                       placeholder="Bank Account Number"
                     />
                   </div>
@@ -271,14 +307,13 @@ const UpdateUserPage = () => {
                     <Input
                       id="bankName"
                       name="bankName"
-                      value={userData.bankName}
-                      onChange={handleInputChange}
+                      value={userData?.sellerInfo?.bankName}
+                      onChange={(e) => handleNestedInputChange(e, "sellerInfo")}
                       placeholder="Bank Name"
                     />
                   </div>
                 </div>
 
-                {/* Account Holder Info */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="accountHolderName">
@@ -287,8 +322,8 @@ const UpdateUserPage = () => {
                     <Input
                       id="accountHolderName"
                       name="accountHolderName"
-                      value={userData.accountHolderName}
-                      onChange={handleInputChange}
+                      value={userData?.sellerInfo?.accountHolderName}
+                      onChange={(e) => handleNestedInputChange(e, "sellerInfo")}
                       placeholder="Account Holder Name"
                     />
                   </div>
@@ -297,8 +332,8 @@ const UpdateUserPage = () => {
                     <Input
                       id="branchCode"
                       name="branchCode"
-                      value={userData.branchCode}
-                      onChange={handleInputChange}
+                      value={userData?.sellerInfo?.branchCode}
+                      onChange={(e) => handleNestedInputChange(e, "sellerInfo")}
                       placeholder="Branch Code"
                     />
                   </div>
@@ -310,8 +345,8 @@ const UpdateUserPage = () => {
                     <Input
                       id="idCardNumber"
                       name="idCardNumber"
-                      value={userData.idCardNumber}
-                      onChange={handleInputChange}
+                      value={userData?.sellerInfo?.documents?.idCardNumber}
+                      onChange={(e) => handleNestedInputChange(e, "sellerInfo")}
                       placeholder="ID Card Number"
                     />
                   </div>
@@ -320,7 +355,9 @@ const UpdateUserPage = () => {
             )}
 
             {/* Admin-specific Fields */}
-            <h3 className="my-4 mt-10 font-semibold">Admin Details</h3>
+            <h3 className="my-4 mt-10 font-semibold">
+              Admin Control For This Account
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="isActive">Is Active</Label>

@@ -51,6 +51,7 @@ export const fetchUserById = async (userId) => {
 // Add a new user
 export const addUser = async (userData) => {
   try {
+    window.sessionStorage.clear();
     const response = await fetcher.post("/api/v1/users/addUser", userData);
     return response.data.user;
   } catch (error) {
@@ -66,6 +67,7 @@ export const updateUser = async (userId, userData) => {
       `/api/v1/users/updateUser/${userId}`,
       userData
     );
+    window.sessionStorage.clear();
     return response.data.updateUser;
   } catch (error) {
     console.error(`Error updating user with ID ${userId}:`, error);
@@ -77,6 +79,7 @@ export const updateUser = async (userId, userData) => {
 export const deleteUser = async (userId) => {
   try {
     const response = await fetcher.delete(`/api/v1/users/deleteUser/${userId}`);
+    window.sessionStorage.clear();
     return response.data;
   } catch (error) {
     console.error(`Error deleting user with ID ${userId}:`, error);
@@ -92,6 +95,7 @@ export const changeUserPassword = async (userId, passwordData) => {
       passwordData
     );
 
+    window.sessionStorage.clear();
     // Invalidate cache for this user
     removeCache(`user-${userId}`);
 
