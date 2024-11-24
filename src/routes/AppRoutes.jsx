@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import React, { Suspense } from "react";
+import React from "react";
 import Navbar from "../components/layout/navbar/Navbar";
 import SellerNotApproved from "@/pages/seller/SellerNotApproved.jsx";
 import Footer from "../components/layout/footer";
@@ -27,7 +27,6 @@ const AppRoutes = () => {
   return (
     <Router>
       <Navbar />
-      <Suspense fallback={<Spinner />}>
         <Routes>
           {/* Main routes */}
           {mainRoutes}
@@ -75,7 +74,6 @@ const AppRoutes = () => {
           {/* Catch-all route for 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </Suspense>
       <Toaster />
       <Footer />
     </Router>

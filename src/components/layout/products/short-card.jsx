@@ -4,7 +4,7 @@ import AddToCartButton from "./AddToCartButton";
 
 function ShortProductCard({ product }) {
   return (
-    <div className="max-w-full sm:max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl overflow-hidden border rounded-lg p-4 flex justify-between flex-col">
+    <div className="max-w-full sm:max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl overflow-hidden border rounded-lg flex justify-between flex-col">
       <div className="relative">
         <img
           src={product?.imgCover}
