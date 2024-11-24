@@ -16,10 +16,8 @@ const Products = ({ searchParams }) => {
   // const [showLoadMore, setShowLoadMore] = useState(true);
   // const [loadingMore, setLoadingMore] = useState(false);
 
-  const limit = 8; // Set your limit per page
-  const totalPages = Math.floor(
-    (products.length > 8 ? totalResults : 7) / limit
-  );
+  const limit = 8;
+  const totalPages = Math.ceil(products.length / limit);
 
   // Handle loading more products with a delay
   // const loadMoreProducts = () => {
@@ -89,14 +87,14 @@ const Products = ({ searchParams }) => {
       </div>
 
       {/* Pagination Component */}
-      {totalPages > 1 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          searchParams={searchParams}
-          onPageChange={setCurrentPage}
-        />
-      )}
+      {/* {totalPages > 1 && ( */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        searchParams={searchParams}
+        onPageChange={setCurrentPage}
+      />
+      {/* )} */}
 
       {/* Load More Button */}
       {/* {showLoadMore && (
