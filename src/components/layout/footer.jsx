@@ -26,7 +26,7 @@ const Footer = () => {
         </ul>
 
         {/* Dark Mode Toggle */}
-        <ModeToggle />
+        {/* <ModeToggle /> */}
 
         {/* Copyright */}
         <p className="mt-2 md:mt-0 text-gray-500 dark:text-gray-400">

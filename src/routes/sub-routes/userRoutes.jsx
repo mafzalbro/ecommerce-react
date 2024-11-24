@@ -13,7 +13,7 @@ const userRoutes = (
     <Route path="/user/checkout" element={<CheckoutPage />} />
     <Route path="/user/orders" element={<OrdersPage />} />
     <Route path="/user/profile" element={<UserProfile />} />
-    <Route path="/user/settings" element={<UserSettings />} />
+    {/* <Route path="/user/settings" element={<UserSettings />} /> */}
   </>
 );
 

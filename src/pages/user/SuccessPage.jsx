@@ -15,35 +15,36 @@ const SuccessPage = () => {
   // Use useAuth hook to check the current user's role
   const { role, isAuthenticated, user } = useAuth();
 
+  
   // Parse query parameters
   const queryParams = new URLSearchParams(window.location.search);
   const sessionId = queryParams.get("session_id");
   const check_success = queryParams.get("check_success");
   const orderId = queryParams.get("orderId");
-
+  
   // console.log(queryParams, role, isAuthenticated);
-
+  
   useEffect(() => {
     // Check if the user is authenticated and their role is 'user'
     // if (!isAuthenticated || role !== "user" || check_success !== "payment") {
-    //   // Redirect to home page if not authenticated or role is not 'user'
-    //   // navigate("/");
-    //   return;
-    // }
-    console.log(
-      sessionId && check_success === "payment" && !!orderId && !!user,
-      sessionId,
-      check_success,
-      !!orderId,
-      !!user
-    );
-
-    // Proceed with order creation if sessionId exists
-    if (sessionId && check_success === "payment" && !!orderId && !!user) {
-      setLoading(true);
-      // Artificial delay of 2 seconds before sending the request
-      setTimeout(() => {
-        createOrder({ payment: "success", orderId, userId: user._id })
+      //   // Redirect to home page if not authenticated or role is not 'user'
+      //   // navigate("/");
+      //   return;
+      // }
+      console.log(
+        sessionId && check_success === "payment" && !!orderId && !!user,
+        sessionId,
+        check_success,
+        !!orderId,
+        !!user
+      );
+      
+      // Proceed with order creation if sessionId exists
+      if (sessionId && check_success === "payment" && !!orderId && !!user) {
+        setLoading(true);
+        // Artificial delay of 2 seconds before sending the request
+        setTimeout(() => {
+          createOrder({ payment: "success", orderId, userId: user._id })
           .then(() => {
             // Additional logic on successful order creation (e.g., redirect or show confirmation)
             setLoading(false);
@@ -59,12 +60,16 @@ const SuccessPage = () => {
             }, 4000);
             setLoading(false);
           });
-      }, 2000); // 2 seconds delay
-    } else {
-      // If no session_id, redirect or show an error (optional)
+        }, 2000); // 2 seconds delay
+      } else {
+        // If no session_id, redirect or show an error (optional)
+      }
+    }, []);
+    
+    if (window.location.pathname !== "/") {
+      return null;
     }
-  }, []);
-
+  
   if (!sessionId || check_success !== "payment" || !orderId) {
     return null;
   }

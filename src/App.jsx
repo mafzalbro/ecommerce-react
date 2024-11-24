@@ -19,7 +19,7 @@ function App() {
 
   if (loading) {
     return (
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      // <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="flex flex-col items-center space-y-4">
             <img
@@ -35,20 +35,20 @@ function App() {
           </div> */}
           </div>
         </div>
-      </ThemeProvider>
+      // </ThemeProvider>
     );
   }
 
   return (
     <>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      {/* <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme"> */}
         <CartProvider>
           <AuthProvider>
             <AppRoutes />
             <NetworkErrorDialog />
           </AuthProvider>
         </CartProvider>
-      </ThemeProvider>
+      {/* </ThemeProvider> */}
     </>
   );
 }

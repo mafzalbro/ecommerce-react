@@ -126,13 +126,13 @@ const NotFound = () => {
         >
           Lost? Don't worry, we've got you covered. Choose a destination above.
           {/* Theme Toggle Button */}
-          <div className="my-10">
+          {/* <div className="my-10">
             <Button variant="outline" onClick={toggleTheme}>
               {theme === "dark"
                 ? "Switch to Light Mode"
                 : "Switch to Dark Mode"}
             </Button>
-          </div>
+          </div> */}
         </motion.div>
       </motion.div>
     </div>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
-import GeneratePasswordInput from "../../../components/ui/generate-password-input";
+// import GeneratePasswordInput from "../../../components/ui/generate-password-input";
 import {
   Toast,
   ToastClose,
@@ -30,11 +30,12 @@ const UpdateUserPage = () => {
   const [userData, setUserData] = useState({
     name: "",
     // email: "",
-    password: "",
+    // password: "",
     role: "",
-    city: "",
-    address1: "",
-    phone: "",
+    // addresses: {
+    //   city: "",
+    //   phone: "",
+    // },
     sellerInfo: {
       businessName: "",
       businessAddress: "",
@@ -99,6 +100,7 @@ const UpdateUserPage = () => {
     try {
       console.log({
         ...userData,
+        // addresses: {},
         sellerInfo: {
           ...userData.sellerInfo,
           documents: {
@@ -173,16 +175,16 @@ const UpdateUserPage = () => {
             </div>
 
             {/* Password */}
-            <GeneratePasswordInput
+            {/* <GeneratePasswordInput
               id="password"
               name="password"
               value={userData.password}
               onChange={handleInputChange}
               placeholder="Enter Password"
-            />
+            /> */}
 
             {/* City and Address */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="city">City</Label>
                 <Input
@@ -203,10 +205,10 @@ const UpdateUserPage = () => {
                   placeholder="Address"
                 />
               </div>
-            </div>
+            </div> */}
 
             {/* Phone */}
-            <div>
+            {/* <div>
               <Label htmlFor="phone">Phone</Label>
               <Input
                 id="phone"
@@ -215,7 +217,7 @@ const UpdateUserPage = () => {
                 onChange={handleInputChange}
                 placeholder="Phone"
               />
-            </div>
+            </div> */}
 
             {/* Role */}
             <div>
