@@ -28,7 +28,7 @@ const SearchDropdown = ({ products }) => {
                 >
                   {/* Product Image */}
                   <img
-                    src={product.images[0]}
+                    src={product.imgCover}
                     alt={product.title}
                     className="h-10 w-10 rounded-lg object-cover"
                   />

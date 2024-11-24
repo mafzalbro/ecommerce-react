@@ -4,7 +4,7 @@ import ShortProductCard from "@/components/layout/products/short-card";
 // eslint-disable-next-line react/prop-types
 export default function ProductGrid({ products }) {
   // Limit the products to the first 8 items
-  const displayedProducts = products.slice(0, 8);
+  const displayedProducts = products.slice(0, 10);
 
   if (products.length !== 0)
     return (
