@@ -23,7 +23,7 @@ function NewArrivalCard({ product }) {
   const salePrice = price - (price * discount) / 100; // Apply discount to the price
 
   return (
-    <Card className="w-full overflow-hidden bg-white dark:bg-primary-foreground shadow-md dark:shadow-lg border-gray-300 dark:border-gray-700">
+    <Card className="w-full overflow-hidden bg-white dark:bg-primary-foreground shadow-md dark:shadow-lg border-gray-300 dark:border-gray-500 flex justify-between flex-col">
       <div className="relative">
         <img
           src={imgCover}
@@ -123,7 +123,7 @@ export default function NewArrivalCarousel() {
                   key={index}
                   className="sm:md:basis-1/2 md:basis-1/3"
                 >
-                  <div className="flex justify-center">
+                  <div className="flex justify-center h-full">
                     <NewArrivalCard product={product} />
                   </div>
                 </CarouselItem>

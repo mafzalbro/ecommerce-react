@@ -70,7 +70,7 @@ const TestimonialsCard = () => {
           What our user say!
         </p>
       </div>
-      <Card className="w-full max-w-2xl mx-auto mb-20">
+      <Card className="w-full max-w-2xl mx-auto mb-20 overflow-hidden">
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-6">
             <Avatar className="h-16 w-16">

@@ -17,9 +17,9 @@ function ProductCard({ product }) {
   // };
 
   return (
-    <div className="max-w-full sm:max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl overflow-hidden border rounded-lg p-4">
+    <div className="max-w-full sm:max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl overflow-hidden border rounded-lg p-4 flex justify-between flex-col">
       {/* Breadcrumbs */}
-      <div className="text-sm text-gray-600 dark:text-gray-300 mb-2 flex gap-2">
+      {/* <div className="text-sm text-gray-600 dark:text-gray-300 mb-2 flex gap-2">
         {product?.category && (
           <Link
             to={`/products?category=${product?.category?._id}`}
@@ -39,7 +39,7 @@ function ProductCard({ product }) {
             </Link>
           </>
         )}
-      </div>
+      </div> */}
 
       <div className="relative">
         <img
@@ -47,9 +47,11 @@ function ProductCard({ product }) {
           alt={product.title}
           className="w-full h-48 object-cover rounded-md"
         />
-        <span className="absolute top-3 right-3 px-2 py-1 text-sm bg-white text-black rounded-md">
-          {product?.category?.name}
-        </span>
+        {product?.category?.name && (
+          <span className="absolute top-3 right-3 px-2 py-1 text-sm bg-white text-black rounded-md">
+            {product?.category?.name}
+          </span>
+        )}
       </div>
 
       <div className="p-4">
@@ -74,7 +76,7 @@ function ProductCard({ product }) {
         {/* Rating */}
         <div className="flex items-center mt-2">
           <span className="text-yellow-500">
-            {"★".repeat(Math.round(product?.rating))}
+            {"★".repeat(Math.round(product?.ratings))}
           </span>
           {product?.reviewCount ? (
             <span className="ml-2 text-sm">
@@ -85,32 +87,27 @@ function ProductCard({ product }) {
           )}
         </div>
 
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex justify-between gap-2 text-sm items-center mt-4">
           {product.price && product.priceAfterDiscount ? (
             <div className="flex items-center">
-              <span className="text-base font-bold text-red-500 line-through mr-2">
+              <span className="font-bold text-red-500 line-through mr-2">
                 PKR {product.price?.toFixed(2)}
               </span>
-              <span className="text-base font-bold">
+              <span className="font-bold">
                 PKR {product.priceAfterDiscount?.toFixed(2)}
               </span>
             </div>
           ) : (
-            <span className="text-base  font-bold">
-              PKR {product.price?.toFixed(2)}
-            </span>
+            <span className="font-bold">PKR {product.price?.toFixed(2)}</span>
           )}
         </div>
+        <AddToCartButton product={product} />
 
         {/* Badge */}
         {/* We will skip availability check */}
-        <div className="flex justify-between items-center mt-4">
+        {/* <div className="flex justify-between items-center mt-4">
           {/* Optional: Badge logic can be added if needed */}
-        </div>
-
-        <div className="flex items-center space-x-2 mt-4">
-          <AddToCartButton product={product} />
-        </div>
+        {/* </div> */}
       </div>
     </div>
   );
