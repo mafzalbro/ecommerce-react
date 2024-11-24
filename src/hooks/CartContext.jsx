@@ -15,6 +15,7 @@ export const CartProvider = ({ children }) => {
   // Add item to cart
   const addCart = async (item, size, color, price) => {
     setIsProcessing(true);
+    console.log(item);
 
     try {
       const cartData = {

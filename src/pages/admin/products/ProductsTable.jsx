@@ -83,7 +83,7 @@ const ProductTable = ({ products, loading, deleteProduct }) => (
               <img src={product.imgCover} className="w-20 h-20 rounded-md" />
             </TableCell>
             <TableCell>{product.title}</TableCell>
-            <TableCell className="text-right">PRK{product.price}</TableCell>
+            <TableCell className="text-right">PKR{product.price}</TableCell>
             <TableCell className="text-center">
               {product.category ? (
                 <TooltipProvider>

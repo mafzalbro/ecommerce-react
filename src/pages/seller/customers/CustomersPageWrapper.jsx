@@ -22,7 +22,7 @@ const CustomerPageWrapper = () => {
     setLoadingUsers(true);
     try {
       const data = await getCustomersBySeller();
-      setUsers(data);
+      setUsers(data || []);
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
@@ -54,13 +54,13 @@ const CustomerPageWrapper = () => {
 
   return (
     <div className="p-4 max-w-screen-xl mx-auto">
-      <h1 className="text-4xl my-10">Manage Users</h1>
+      <h1 className="text-4xl my-10">Your Customers</h1>
       <div className="flex justify-between items-center mb-4">
         <Input
           type="text"
           className="w-full max-w-md"
           placeholder="Search users..."
-          value={searchQuery}
+          value={searchQuery} 
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>

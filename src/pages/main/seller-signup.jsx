@@ -26,7 +26,7 @@ const SellerRegisterPage = () => {
     city: "",
     address1: "",
     phone: "",
-   role: "seller",
+    role: "seller",
     businessName: "",
     businessAddress: "",
     businessType: "",
@@ -45,7 +45,7 @@ const SellerRegisterPage = () => {
   const handleRegister = async () => {
     const response = await signup(userData);
     if (response) {
-      navigate("/signin");
+      navigate("/");
     } else {
       setToastMessage(error || "An error occurred during registration.");
       setToastType("error");
@@ -60,7 +60,9 @@ const SellerRegisterPage = () => {
   if (isAuthenticated) {
     return (
       <div className="my-40 flex justify-center items-center">
-        <Button onClick={() => logout()}>Please Logout From Old Account to create</Button>
+        <Button onClick={() => logout()}>
+          Please Logout From Old Account to create
+        </Button>
       </div>
     );
   }

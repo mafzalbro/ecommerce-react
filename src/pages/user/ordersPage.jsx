@@ -47,7 +47,7 @@ const OrdersPage = () => {
   }
 
   return (
-    <div className="container overflow-x-auto p-6">
+    <div className="container mx-auto overflow-x-auto p-6">
       <h1 className="text-3xl font-bold mb-8 text-center">All Orders</h1>
 
       {/* Check if there are orders */}
@@ -71,8 +71,13 @@ const OrdersPage = () => {
           <TableBody>
             {orders?.map((orderItem) => (
               <TableRow key={orderItem._id}>
+                {/* Order ID */}
                 <TableCell>{orderItem._id}</TableCell>
+
+                {/* User Name */}
                 <TableCell>{orderItem.userId.name}</TableCell>
+
+                {/* Products */}
                 <TableCell>
                   <HoverCard>
                     <HoverCardTrigger asChild>
@@ -93,7 +98,7 @@ const OrdersPage = () => {
                                 </Link>
                               </h4>
                               <p className="text-xs text-muted-foreground">
-                                Price: PKR{product.price}
+                                Price: PKR {product.price}
                               </p>
                               <p className="text-xs">
                                 Quantity: {product.quantity}
@@ -123,33 +128,63 @@ const OrdersPage = () => {
                     </HoverCardContent>
                   </HoverCard>
                 </TableCell>
+
+                {/* Shipping Address */}
                 <TableCell>
                   {orderItem.shippingAddress.street},{" "}
                   {orderItem.shippingAddress.address},{" "}
                   {orderItem.shippingAddress.city} -{" "}
                   {orderItem.shippingAddress.phone}
                 </TableCell>
+
+                {/* Payment Method */}
                 <TableCell>{orderItem.paymentMethod}</TableCell>
-                <TableCell>{orderItem.totalAmount}</TableCell>
-                <TableCell>{orderItem.isPaid ? "Yes" : "No"}</TableCell>
-                <TableCell>{orderItem.isDelivered ? "Yes" : "No"}</TableCell>
+
+                {/* Total Amount */}
+                <TableCell>PKR {orderItem.totalAmount}</TableCell>
+
+                {/* Is Paid (Styled Tag) */}
+                <TableCell>
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-medium ${
+                      orderItem.isPaid
+                        ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100"
+                        : "bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100"
+                    }`}
+                  >
+                    {orderItem.isPaid ? "Paid" : "Unpaid"}
+                  </span>
+                </TableCell>
+
+                {/* Is Delivered (Styled Tag) */}
+                <TableCell>
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-medium ${
+                      orderItem.isDelivered
+                        ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100"
+                        : "bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100"
+                    }`}
+                  >
+                    {orderItem.isDelivered ? "Delivered" : "Pending"}
+                  </span>
+                </TableCell>
+
+                {/* Optional: Confirm Delivered Button */}
                 {/* {!orderItem.isDelivered &&
                   orderItem.isPaid &&
                   role !== "seller" && (
                     <TableCell>
-                      {
-                        <Button
-                          onClick={() => {
-                            createOrder({
-                              delivered: "success",
-                              orderId: orderItem._id,
-                              userId: user._id,
-                            });
-                          }}
-                        >
-                          Comfirm Delivered
-                        </Button>
-                      }
+                      <Button
+                        onClick={() =>
+                          createOrder({
+                            delivered: "success",
+                            orderId: orderItem._id,
+                            userId: user._id,
+                          })
+                        }
+                      >
+                        Confirm Delivered
+                      </Button>
                     </TableCell>
                   )} */}
               </TableRow>

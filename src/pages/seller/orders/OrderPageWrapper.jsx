@@ -8,8 +8,8 @@ const OrderPageWrapper = () => {
   const {
     getOrdersForSeller,
     loading,
-    totalResults,
-    deleteOrder,
+    // totalResults,
+    // deleteOrder,
     cancelOrder,
     createOrder,
   } = useOrder();
@@ -22,14 +22,14 @@ const OrderPageWrapper = () => {
   useEffect(() => {
     async function fetchOrders() {
       const orders = await getOrdersForSeller();
-      console.log(orders);
+      // console.log(orders);
 
-      let filtered = orders;
+      let filtered = orders || [];
       if (searchQuery) {
-        filtered = filtered.filter(
-          (order) =>
-            order.userId?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            order.cartId?.toLowerCase().includes(searchQuery.toLowerCase())
+        filtered = filtered.filter((order) =>
+          JSON.stringify(order.products)
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase())
         );
       }
       setFilteredOrders(filtered);
@@ -52,7 +52,9 @@ const OrderPageWrapper = () => {
     } else if (response.status === "paymentSuccess") {
       setMessage(`Your payment for order ${response.message} was successful.`);
     } else if (response.status === "deliveredSuccess") {
-      setMessage(`Your order ${response.message} has been successfully delivered.`);
+      setMessage(
+        `Your order ${response.message} has been successfully delivered.`
+      );
     } else {
       setMessage(`Error: ${response.message}`);
     }

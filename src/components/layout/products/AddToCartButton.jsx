@@ -82,6 +82,8 @@ const AddToCartButton = ({
       });
     } else {
       try {
+        console.log(product);
+
         const success = await addCart(
           { ...product, quantity: 1 },
           selectedSize,

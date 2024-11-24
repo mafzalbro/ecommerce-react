@@ -146,6 +146,7 @@ const UpdateProductPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setIsSubmitting(true);
 
     try {
@@ -170,8 +171,6 @@ const UpdateProductPage = () => {
           quantity: colorSizeImages[index].quantity,
         })),
       };
-
-      console.log(updatedProduct);
 
       await updateSellerProduct(id, updatedProduct);
       navigate("/seller/products");

@@ -35,7 +35,7 @@ const RegisterPage = () => {
         });
 
         // Navigate to the signin page after a short delay
-        setTimeout(() => navigate("/signin"), 1500);
+        setTimeout(() => navigate("/"), 1500);
       } else {
         throw new Error("Registration failed. Please try again.");
       }

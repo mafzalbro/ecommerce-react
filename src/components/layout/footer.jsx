@@ -9,20 +9,31 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="flex bg-gray-900 p-4 mt-8">
-      <div className="container text-secondary dark:text-secondary-foreground mx-auto text-center">
-        <ul className="flex justify-center space-x-4">
+    <footer className="border-t py-3 text-sm">
+      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between px-4">
+        {/* Navigation Links */}
+        <ul className="flex space-x-4 text-gray-600 dark:text-gray-400">
           {footerLinks.map((link, index) => (
             <li key={index}>
-              <Link to={link.link} className="hover:text-gray-300">
+              <Link
+                to={link.link}
+                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400"
+              >
                 {link.label}
               </Link>
             </li>
           ))}
         </ul>
-        <p className="mt-4">&copy; 2024 My Product. All rights reserved.</p>
+
+        {/* Dark Mode Toggle */}
+        <ModeToggle />
+
+        {/* Copyright */}
+        <p className="mt-2 md:mt-0 text-gray-500 dark:text-gray-400">
+          &copy; {new Date().getFullYear()}{" "}
+          <span className="font-medium">Rstorex</span>
+        </p>
       </div>
-      <ModeToggle />
     </footer>
   );
 };

@@ -27,9 +27,38 @@ const CartPage = () => {
 
   // Calculate subtotal using the updated cart structure
   const subtotal = cart.cartItem.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) =>
+      total +
+      item.quantity *
+        (item.price - item.price * (item.totalProductDiscount / 100)),
     0
   );
+
+  // Calculate subtotal using the updated cart structure
+  const discountedCash = cart.cartItem.reduce(
+    (total, item) =>
+      total + item.quantity * (item.price * (item.totalProductDiscount / 100)),
+    0
+  );
+
+  // Helper: Calculate totals and discounts
+  const calculateTotals = (cartItems) => {
+    const totalDiscount = cartItems?.reduce(
+      (total, item) =>
+        total +
+        item.quantity * (item.price * (item.totalProductDiscount / 100)),
+      0
+    );
+    const total = cartItems?.reduce(
+      (total, item) =>
+        total +
+        item.quantity *
+          (item.price - item.price * (item.totalProductDiscount / 100)),
+      0
+    );
+
+    return { totalDiscount: totalDiscount || 0, total: total || 0 };
+  };
 
   // Redirect after 5 seconds (useful for redirecting after an action like removing an item or applying a coupon)
   useEffect(() => {
@@ -113,7 +142,6 @@ const CartPage = () => {
   };
 
   console.log(cart);
-  
 
   return (
     <div className="container max-w-screen-sm mx-auto p-6 sm:p-4">
@@ -253,9 +281,14 @@ const CartPage = () => {
                 )}
               </div> */}
               <div className="mt-6 flex flex-col sm:flex-row justify-between items-center sm:space-x-4">
-                <h2 className="text-2xl font-bold mb-4 sm:mb-0">
-                  Subtotal: PKR {subtotal?.toFixed(2)}
-                </h2>
+                <div>
+                  <h3 className="text-2xl font-bold mb-4 sm:mb-0">
+                    Subtotal: PKR {subtotal?.toFixed(2)}
+                  </h3>
+                  <p className="text-sm font-bold text-green-400 mb-4 sm:mb-0">
+                    Discounted Cash: PKR {discountedCash?.toFixed(2)}
+                  </p>
+                </div>
                 <Link to="/user/checkout" className="w-full sm:w-auto">
                   <Button variant="default" className="w-full sm:w-auto">
                     Proceed to Checkout

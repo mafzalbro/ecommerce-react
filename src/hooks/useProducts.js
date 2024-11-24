@@ -71,6 +71,8 @@ export function useProducts(searchParams) {
           setProducts((prevProducts) => [newProduct, ...prevProducts]);
 
           sessionStorage.removeItem("getAllProductsCache");
+          sessionStorage.removeItem("getSellerProductsCache");
+          sessionStorage.removeItem("getProducts");
 
           // Clear and update cache
           const cacheKey = "/api/v1/products/getAllProducts";
@@ -275,6 +277,8 @@ export function useProducts(searchParams) {
   }, [memoizedSearchParams]);
 
   const updateSellerProduct = useCallback(async (id, updatedProduct) => {
+    sessionStorage.removeItem("getSellerProductsCache");
+
     try {
       const response = await fetcher.put(
         `/api/v1/products/updateSellerProduct/${id}`,
@@ -286,12 +290,12 @@ export function useProducts(searchParams) {
 
         // Update the product list with the updated product
         setProducts((prevProducts) =>
-          prevProducts.map((product) =>
-            product._id === id ? updatedData : product
-          )
+          prevProducts.map((product) => {
+            console.log(product._id === id);
+            return product._id === id ? updatedData : product;
+          })
         );
 
-        sessionStorage.removeItem("getAllProductsCache"); // Clear cache
         getSellerProducts();
         toast({
           title: "Success",
@@ -300,6 +304,7 @@ export function useProducts(searchParams) {
         });
       }
     } catch (err) {
+      sessionStorage.removeItem("getSellerProductsCache");
       console.error("Error updating seller product:", err);
       toast({
         title: "Error",
@@ -311,6 +316,7 @@ export function useProducts(searchParams) {
   }, []);
 
   const deleteSellerProduct = useCallback(async (productId) => {
+    sessionStorage.removeItem("getSellerProductsCache");
     try {
       const response = await fetcher.delete(
         `/api/v1/products/deleteSellerProduct/${productId}`
@@ -321,8 +327,6 @@ export function useProducts(searchParams) {
         setProducts((prevProducts) =>
           prevProducts.filter((product) => product._id !== productId)
         );
-
-        sessionStorage.removeItem("getAllProductsCache"); // Clear cache
 
         getSellerProducts();
 
