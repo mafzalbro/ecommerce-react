@@ -92,7 +92,7 @@ export default function Categories() {
               className="basis-1/3 sm:md:basis-1/4 md:basis-1/6"
             >
               <div className="p-1">
-                <Link to={`/products?category=${category._id}`} passHref>
+                <Link to={`/products?category=${category._id}`}>
                   <Card className="overflow-hidden rounded-full cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out relative group">
                     <CardContent className="p-0">
                       <div className="relative w-full h-full aspect-square">

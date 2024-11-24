@@ -11,6 +11,7 @@ const userRoutes = (
   <>
     <Route path="/user/cart" element={<CartPage />} />
     <Route path="/user/checkout" element={<CheckoutPage />} />
+    <Route path="/user/orders" element={<OrdersPage />} />
     <Route path="/user/checkout/success" element={<SuccessPage />} />
     <Route path="/user/checkout/cancel" element={<CancelPage />} />
     <Route path="/user/profile" element={<UserProfile />} />

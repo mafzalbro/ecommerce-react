@@ -14,6 +14,7 @@ const CancelPage = () => {
 
   const queryParams = new URLSearchParams(location.search);
   const check_cancel = queryParams.get("check_cancel");
+  const orderId = queryParams.get("orderId");
 
   // Use useAuth hook to check the current user's role
   const { role, isAuthenticated } = useAuth();
@@ -25,7 +26,11 @@ const CancelPage = () => {
     }, 1000);
 
     // If the user is not authenticated or does not have the role 'user', redirect to '/'
-    if (!isAuthenticated || role !== "user" || check_cancel !== "payment") {
+    if (
+      !isAuthenticated ||
+      role !== "user" ||
+      (check_cancel !== "payment" && !orderId)
+    ) {
       navigate("/"); // Redirect if not authenticated or role is not 'user'
     }
   }, [isAuthenticated, role, history]);

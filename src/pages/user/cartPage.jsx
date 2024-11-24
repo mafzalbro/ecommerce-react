@@ -112,6 +112,9 @@ const CartPage = () => {
     }
   };
 
+  console.log(cart);
+  
+
   return (
     <div className="container max-w-screen-sm mx-auto p-6 sm:p-4">
       <h1 className="text-3xl font-bold mb-6 text-center sm:text-2xl">

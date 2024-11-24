@@ -19,6 +19,8 @@ const AddToCartButton = ({
   const { isAuthenticated, role, logout } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
 
+  // console.log(product, selectedColor, price, selectedSize, disabled);
+
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
       // Show a toast prompting user to log in
@@ -83,7 +85,8 @@ const AddToCartButton = ({
         const success = await addCart(
           { ...product, quantity: 1 },
           selectedSize,
-          selectedColor
+          selectedColor,
+          price
         );
 
         // Only update the cart if the item was successfully added

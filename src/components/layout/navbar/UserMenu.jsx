@@ -3,6 +3,7 @@ import {
   AiOutlineUser,
   AiOutlineSetting,
   AiOutlineDownCircle,
+  AiOutlineOrderedList,
 } from "react-icons/ai";
 import useAuth from "@/hooks/AuthProvider";
 import {
@@ -16,6 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"; //
 
 const userMenuItems = [
   { label: "Profile", link: "/user/profile", icon: <AiOutlineUser /> },
+  { label: "Orders", link: "/user/orders", icon: <AiOutlineOrderedList /> },
   { label: "Settings", link: "/user/settings", icon: <AiOutlineSetting /> },
 ];
 

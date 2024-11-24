@@ -20,12 +20,12 @@ export const CartProvider = ({ children }) => {
       const cartData = {
         cartItem: [
           {
-            productSize: size,
-            productColor: color,
+            size: size,
+            color: color,
             productId: item._id,
-            producttitle: item.title,
+            title: item.title,
             quantity: item.quantity || 1,
-            price: price,
+            price: !!price ? price : item.price,
             totalProductDiscount: item.discount || 0,
           },
         ],
@@ -45,7 +45,7 @@ export const CartProvider = ({ children }) => {
           size,
           title: item.title,
           quantity: item.quantity || 1,
-          price,
+          price: !!price ? price : item.price,
           totalProductDiscount: item.totalProductDiscount || 0,
         });
       }
@@ -63,9 +63,9 @@ export const CartProvider = ({ children }) => {
       );
 
       if (response?.data) {
-        setCart(newCart);
-        console.log("Item added to cart:", response.data);
-        return newCart; // Return the updated cart on success
+        setCart(response?.data.result);
+        console.log("Item added to cart:", response?.data?.result);
+        return response?.data?.result; // Return the updated cart on success
       } else {
         console.error("Failed to update cart on the server");
         throw new Error("Failed to add item to cart");
