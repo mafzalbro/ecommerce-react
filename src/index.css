@@ -89,8 +89,8 @@
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(
     180deg,
-    #4f46e5,
-    #3b82f6
+    #e5469d,
+    #f63b3b
   ); /* Gradient thumb color */
   border-radius: 10px; /* Rounded corners for the thumb */
   transition: background 0.3s ease; /* Smooth transition for color changes */
@@ -99,8 +99,8 @@
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(
     180deg,
-    #4338ca,
-    #2563eb
+    #e54646,
+    #f63b6a
   ); /* Darker gradient on hover */
 }
 
@@ -113,16 +113,16 @@
   ::-webkit-scrollbar-thumb {
     background: linear-gradient(
       180deg,
-      #6366f1,
-      #60a5fa
+      #ff58d5,
+      #ff69f8
     ); /* Lighter gradient for dark mode */
   }
 
   ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(
       180deg,
-      #4c51bf,
-      #3b82f6
+      #bf4c8f,
+      #f63b64
     ); /* Hover effect in dark mode */
   }
 }
