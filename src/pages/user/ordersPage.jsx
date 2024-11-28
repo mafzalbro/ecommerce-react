@@ -30,7 +30,7 @@ const OrdersPage = () => {
   // Handle loading and error states
   if (loading) {
     return (
-      <div className="flex justify-center items-center mt-8">
+      <div className="flex justify-center items-center my-60">
         <Loader2 className="animate-spin h-10 w-10 text-blue-600" />
         <span className="ml-4 text-xl">Loading Orders...</span>
       </div>
@@ -75,7 +75,7 @@ const OrdersPage = () => {
                 <TableCell>{orderItem._id}</TableCell>
 
                 {/* User Name */}
-                <TableCell>{orderItem.userId.name}</TableCell>
+                <TableCell>{orderItem.userId?.name}</TableCell>
 
                 {/* Products */}
                 <TableCell>
