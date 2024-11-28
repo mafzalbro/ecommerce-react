@@ -24,7 +24,7 @@ const userRoutes = (
   <>
     <Route path="/admin" element={<DashboardPage />} />
     <Route path="/admin/profile" element={<Profile />} />
-    <Route path="/user/orders" element={<OrdersPage />} />
+    <Route path="/admin/orders" element={<OrdersPage />} />
     <Route path="/admin/users" element={<UsersPageWrapper />} />
     <Route path="/admin/users/new" element={<AddUserPage />} />
     <Route path="/admin/users/:id" element={<UpdateUserPage />} />
